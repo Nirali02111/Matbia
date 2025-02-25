@@ -1,0 +1,179 @@
+<ng-container *ngIf="!isOrgSignUpDone">
+  <ng-template [ngTemplateOutlet]="signUpContainer"></ng-template>
+</ng-container>
+
+<ng-container *ngIf="isOrgSignUpDone">
+  <ng-template [ngTemplateOutlet]="thankYouOrgSignup"></ng-template>
+</ng-container>
+
+<ng-template #signUpContainer>
+  <div class="signup-container">
+    @if (headerText!=='') {
+    <div class="alert alert-warning mx-auto mb-4 mt-0">
+      {{ headerText }}
+    </div>
+    } @if (headerText!=='') {
+
+    <div class="signup-title text-center">
+      <h2>Create Account</h2>
+      <p>Sign up, and order/activate your card</p>
+    </div>
+    <app-donor-profile-form-group
+      [formGroup]="donorSignupFormGroup"
+      [isAutoSuggestion]="isAutoSuggestion"
+      [isSubmitted]="isDonorSignupSubmitted"
+      (canCallAPI)="doSignUP()"
+      (profileValue)="doSignUP($event)"
+    ></app-donor-profile-form-group>
+    <div class="signup-action">
+      <button class="btn btn-primary w-100 mb-2" (click)="onRegister()" [disabled]="isLoading">
+        <app-button-loader [loading]="isLoading" label="SAVE & CONTINUE"></app-button-loader>
+      </button>
+      <button class="btn btn-cancel w-100">Cancel</button>
+    </div>
+
+    } @if(headerText =='') {
+    <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs signup-tab">
+      <li [ngbNavItem]="1">
+        <button ngbNavLink>Donor</button>
+        <ng-template ngbNavContent>
+          <div class="signup-title text-center">
+            <h2>Create Account</h2>
+            <p>Sign up, and order/activate your card</p>
+          </div>
+          <app-donor-profile-form-group
+            [formGroup]="donorSignupFormGroup"
+            [isAutoSuggestion]="isAutoSuggestion"
+            [isSubmitted]="isDonorSignupSubmitted"
+            (canCallAPI)="doSignUP()"
+            (profileValue)="doSignUP($event)"
+          ></app-donor-profile-form-group>
+          <div class="signup-action">
+            <button class="btn btn-primary w-100 mb-2" (click)="onRegister()" [disabled]="isLoading">
+              <app-button-loader [loading]="isLoading" label="SAVE & CONTINUE"></app-button-loader>
+            </button>
+            <button class="btn btn-cancel w-100">Cancel</button>
+          </div>
+        </ng-template>
+      </li>
+      <li [ngbNavItem]="2">
+        <button ngbNavLink>Org.</button>
+        <ng-template ngbNavContent>
+          <div class="signup-title text-center">
+            <h2>Create Organization Account</h2>
+            <p>Sign up, and start redeeming.</p>
+          </div>
+          <app-organization-profile-form-group
+            [formGroup]="orgSignupFormGroup"
+            [isAutoSuggestion]="isAutoSuggestion"
+            [isSubmitted]="isOrgSignupSubmitted"
+            (canCallAPI)="doOrgSignUP()"
+            (profileValue)="doSignUP($event)"
+          ></app-organization-profile-form-group>
+          <div class="signup-action">
+            <button
+              class="btn btn-primary w-100 mb-2"
+              (click)="onOrgRegister()"
+              [disabled]="isLoading || disableSubmitOrganization"
+            >
+              <app-button-loader [loading]="isLoading" label="Submit"></app-button-loader>
+            </button>
+            <button class="btn btn-cancel w-100">Cancel</button>
+          </div>
+        </ng-template>
+      </li>
+    </ul>
+    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+    }
+  </div>
+</ng-template>
+
+<ng-template #thankYouOrgSignup>
+  <!-- Confirmation HTML -->
+  <div class="signup-thankyou">
+    <div class="thankyou-heading">
+      <span class="material-icons">check_circle_outline</span>
+      <h2>Thanks for signing up!</h2>
+      <p>We will verify the account within 2-3 business days.</p>
+    </div>
+    <div class="thankyou-card">
+      <div class="thankyou-head">
+        <h4>SUBMITTED INFO</h4>
+      </div>
+
+      <ng-container *ngIf="organizationDetails || !organizationDetails">
+        <div class="thankyou-block">
+          <div class="thankyou-row row">
+            <div class="thankyou-col col-md-6">
+              <span class="thankyou-img">
+                <img [src]="base64Image" alt="" />
+              </span>
+              <label>PROFILE:</label>
+            </div>
+            <div class="thankyou-col col-md-6">
+              <label>DISPLAY NAME:</label>
+              <h6>{{ organizationDetails?.displayName }}</h6>
+            </div>
+            <div class="thankyou-col col-md-6">
+              <label>ORG. LEGAL NAME:</label>
+              <h6>{{ organizationDetails?.orgLegalName }}</h6>
+            </div>
+            <div class="thankyou-col col-md-6">
+              <label style="font-weight: 600; font-size: 17px;">שם/נאמען:</label>
+              <h6 appIsHebrew [content]="organizationDetails.yiddishDisplayName">
+                {{ organizationDetails.yiddishDisplayName }}
+              </h6>
+            </div>
+            <div class="thankyou-col col-md-6">
+              <label>DBA NAME:</label>
+              <h6>{{ organizationDetails.dba }}</h6>
+            </div>
+            <div class="thankyou-col col-md-6">
+              <label>PHONE NUMBER:</label>
+              <h6>{{ organizationDetails.phone | mask : '(000)-000-0000' }}</h6>
+            </div>
+            <div class="thankyou-col col-md-6">
+              <label>EIN:</label>
+              <h6>{{ organizationDetails.taxId | mask : '00-0000000' }}</h6>
+            </div>
+            <div class="thankyou-col col-md-6">
+              <label>Email Address:</label>
+              <h6>{{ organizationDetails.email }}</h6>
+            </div>
+            <div class="thankyou-col col-md-6">
+              <label>LEGAL ADDRESS:</label>
+              <h6>
+                {{ organizationDetails.legalAddress }} {{ organizationDetails.legalCity }}
+                {{ organizationDetails.legalState }} {{ organizationDetails.legalZip }}
+              </h6>
+            </div>
+            <div class="thankyou-col col-md-6">
+              <label>MAILING ADDRESS:</label>
+              <h6>
+                {{ organizationDetails.address }} {{ organizationDetails.city }} {{ organizationDetails.state }}
+                {{ organizationDetails.zip }}
+              </h6>
+            </div>
+          </div>
+          <div class="thankyou-row row">
+            <div class="thankyou-col col-md-12 border-top">
+              <h4 class="sub-heading">Owners info</h4>
+            </div>
+            <div class="thankyou-col col-md-4">
+              <label>OWNER NAME:</label>
+              <h6>{{ organizationDetails.ownerName }}</h6>
+            </div>
+            <div class="thankyou-col col-md-4">
+              <label>PHONE NUMBER:</label>
+              <h6>{{ organizationDetails.ownerPhoneNumber | mask : '(000)-000-0000' }}</h6>
+            </div>
+            <div class="thankyou-col col-md-4">
+              <label>EMAIL ADDRESS:</label>
+              <h6>{{ organizationDetails.ownerEmail }}</h6>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>

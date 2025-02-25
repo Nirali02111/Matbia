@@ -1,0 +1,19 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title">Change PIN</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
+  </div>
+  <div
+    class="modal-body"
+    [formGroup]="formGroup"
+    (keyup.enter)="onSave()"
+    [@shakeTrigger]="formGroup?.invalid && inAnimation"
+  >
+    <h6>ENTER YOUR NEW PIN:</h6>
+    <app-card-pin-input [isSubmit]="false" formControlName="cvv" [cardMask]="CVVMASK"></app-card-pin-input>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary w-100" (click)="onSave()">Save new Pin</button>
+    <button type="button" class="btn btn-secondary w-100" data-bs-dismiss="modal" (click)="closePopup()">Cancel</button>
+  </div>
+</div>

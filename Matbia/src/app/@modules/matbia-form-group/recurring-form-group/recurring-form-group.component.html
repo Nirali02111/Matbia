@@ -1,0 +1,449 @@
+<!-- New design -->
+<ng-container *ngIf="IsDonate?.value">
+  <div class="recurring-block" [class.card--custom]="!customLayout">
+    <ng-container *ngIf="!customLayout">
+      <div class="panel--title mb-3 position-relative" [formGroup]="formGroup">
+        <h6>Send On:</h6>
+        <input
+          type="text"
+          readonly
+          ngxDaterangepickerMd
+          formControlName="transDate"
+          class="form-control"
+          [singleDatePicker]="true"
+          [closeOnAutoApply]="true"
+          [autoApply]="true"
+          [isInvalidDate]="isInvalidDate"
+        />
+
+        <a class="ngx-daterangepicker-action" (click)="openDatepicker()">
+          <span class="calender-icon" style="pointer-events: none"><i class="far fa-calendar-alt"></i></span>
+        </a>
+
+        <ng-container *ngIf="TransDate?.touched && TransDate?.invalid">
+          <app-input-error [errors]="TransDate?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </ng-container>
+
+    <div class="recurring--section" [formGroup]="formGroup">
+      <div class="form-check toogle--btn mb-0">
+        <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" formControlName="isRecurring" />
+        <label class="form-check-label" for="flexSwitchCheckDefault">
+          <ng-container *ngIf="customLayout"> Repeat donation </ng-container>
+          <ng-container *ngIf="!customLayout"> Recurring: </ng-container>
+        </label>
+      </div>
+
+      <ng-container *ngIf="Recurring?.value">
+        <div class="recurring--content mt-md-4" formGroupName="recurringPayment">
+          <div class="row">
+            <ng-container *ngIf="customLayout">
+              <ng-template [ngTemplateOutlet]="separateDonate"></ng-template>
+            </ng-container>
+
+            <ng-container *ngIf="!customLayout">
+              <div class="col-6">
+                <ng-template
+                  [ngTemplateOutlet]="frequencyInputTmp"
+                  [ngTemplateOutletContext]="{ form: formGroup.get('recurringPayment'), isFlexClass: true }"
+                ></ng-template>
+              </div>
+              <div class="col-3">
+                <div class="d-flex flex-column panel--title">
+                  <h6>Count:</h6>
+                  <input
+                    type="tel"
+                    class="form-control count--input w-100 me-0"
+                    [placeholder]="CounterPlaceholder"
+                    mask="separator.0"
+                    separatorLimit="100"
+                    formControlName="count"
+                  />
+                </div>
+
+                <ng-container *ngIf="RecurringCount?.touched && RecurringCount?.invalid">
+                  <app-input-error [errors]="RecurringCount?.errors"></app-input-error>
+                </ng-container>
+              </div>
+              <div class="col-3">
+                <div class="panel--title ps-3 donate-count">
+                  <h6>Total:</h6>
+                  <span>
+                    <ng-container *ngIf="this.RecurringAlways?.value"> - </ng-container>
+                    <ng-container *ngIf="!this.RecurringAlways?.value">
+                      {{ displayTotal() | currency }}
+                    </ng-container>
+                  </span>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+          <button class="btn btn-secondary mt-4" (click)="onPreviewSchedule()">PREVIEW SCHEDULE</button>
+        </div>
+      </ng-container>
+    </div>
+    <div class="panel--title recurring-note" [formGroup]="formGroup">
+      <h6 class="mb-2">NOTE:</h6>
+      <textarea class="form-control textarea-input" placeholder="Write a note" formControlName="note"></textarea>
+    </div>
+  </div>
+</ng-container>
+<!-- New design End -->
+
+<ng-container *ngIf="!IsDonate?.value">
+  <div class="row mt-3" [formGroup]="formGroup">
+    <div class="col-md-12">
+      <div class="card--custom recurring--section">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="recurring--label align-items-center">
+              <!-- Recurring switch -->
+              <div class="form-check toogle--btn">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="flexSwitchCheckDefault"
+                  formControlName="isRecurring"
+                />
+                <label class="form-check-label" for="flexSwitchCheckDefault">Recurring:</label>
+              </div>
+              <!-- Recurring switch -->
+            </div>
+          </div>
+
+          <ng-template [ngTemplateOutlet]="sendOnDatePickerTmp" [ngTemplateOutletContext]="{ form: formGroup }">
+          </ng-template>
+        </div>
+
+        <ng-container *ngIf="Recurring?.value">
+          <ng-template [ngTemplateOutlet]="recurringWithPreviewTmp" [ngTemplateOutletContext]="{ form: formGroup }">
+          </ng-template>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- note section -->
+  <app-transaction-note-form-group
+    [formGroup]="formGroup"
+    [noteMessage]="noteMessage"
+  ></app-transaction-note-form-group>
+</ng-container>
+
+<ng-template #previewListTmp>
+  <!-- note:1 remove offset-md-5 class when alert section ready -->
+  <div class="col-md-7 schedule--colm ps-4 offset-md-5" *ngIf="previewList.length !== 0">
+    <div class="panel--title">
+      <h6>Preview Schedule</h6>
+    </div>
+
+    <div class="tbl-list--wrap">
+      <ng-container *ngFor="let item of previewList; let i = index">
+        <div class="tbl-list--item d-flex" [class.mt-1]="i === 0">
+          <div class="col col-md-5">
+            <div class="price--text">${{ item.amount }}</div>
+          </div>
+          <div class="col col-md-7 text-end">
+            <div class="shedule--details">
+              <p>{{ item.date }}</p>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #frequencyInputTmp let-form="form" let-isFlexClass="isFlexClass">
+  <div
+    class="form--group"
+    [class.d-flex]="isFlexClass"
+    [class.flex-column]="isFlexClass"
+    [class.justify-content-center]="isFlexClass"
+    [formGroup]="form"
+  >
+    <label>Frequency:</label>
+    <ng-select
+      bindLabel="name"
+      bindValue="id"
+      formControlName="frequency"
+      [items]="transactionRecurrences"
+      [loading]="isTransactionRecurrencesLoading"
+      [selectOnTab]="true"
+      [searchable]="false"
+    >
+      <ng-template ng-option-tmp let-item="item"> {{ item.name }} </ng-template>
+    </ng-select>
+  </div>
+  <ng-container *ngIf="RecurringFrequency?.touched && RecurringFrequency?.invalid">
+    <app-input-error [errors]="RecurringFrequency?.errors"></app-input-error>
+  </ng-container>
+</ng-template>
+
+<ng-template #countInputTmp let-form="form" let-isFlexClass="isFlexClass">
+  <div class="inside-elements d-flex align-items-start" [formGroup]="form">
+    <ng-container *ngIf="showAlwaysRecurringOption">
+      <ng-template [ngTemplateOutlet]="alwaysRecurringTmp" [ngTemplateOutletContext]="{ form: form }"></ng-template>
+    </ng-container>
+
+    <ng-container *ngIf="!RecurringAlways?.value">
+      <div class="form--group" [class.d-flex]="isFlexClass" [class.align-items-center]="isFlexClass">
+        <label>Count:</label>
+        <input
+          type="tel"
+          class="form-control count--input"
+          mask="separator.0"
+          separatorLimit="100"
+          formControlName="count"
+        />
+      </div>
+      <div class="recurring-total-amount">
+        <label>Total: {{ displayTotal() | currency }}</label>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #sendOnDatePickerTmp let-form="form">
+  <div class="col-md-5" [formGroup]="form">
+    <div class="form--group d-flex align-items-center">
+      <div class="send-on_div">
+        <label>Send On:</label>
+        <input
+          type="text"
+          readonly
+          ngxDaterangepickerMd
+          formControlName="transDate"
+          class="form-control"
+          [singleDatePicker]="true"
+          [closeOnAutoApply]="true"
+          [autoApply]="true"
+          [isInvalidDate]="isInvalidDate"
+        />
+
+        <a class="ngx-daterangepicker-action" (click)="openDatepicker()">
+          <span class="calender-icon" style="pointer-events: none"><i class="far fa-calendar-alt"></i></span>
+        </a>
+      </div>
+
+      <ng-container *ngIf="TransDate?.touched && TransDate?.invalid">
+        <app-input-error [errors]="TransDate?.errors"></app-input-error>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #recurringWithPreviewTmp let-form="form">
+  <div class="recurring--content mt-4" [formGroup]="form">
+    <div class="row" formGroupName="recurringPayment">
+      <div class="col-md-6">
+        <ng-template
+          [ngTemplateOutlet]="frequencyInputTmp"
+          [ngTemplateOutletContext]="{ form: formGroup.get('recurringPayment'), isFlexClass: true }"
+        ></ng-template>
+      </div>
+      <div class="col-md-6">
+        <ng-template
+          [ngTemplateOutlet]="countInputTmp"
+          [ngTemplateOutletContext]="{ form: formGroup.get('recurringPayment'), isFlexClass: true }"
+        ></ng-template>
+
+        <ng-container *ngIf="RecurringCount?.touched && RecurringCount?.invalid">
+          <app-input-error [errors]="RecurringCount?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+
+    <ng-container *ngIf="!IsDonate?.value">
+      <ng-container *ngIf="enableTransferNow">
+        <hr class="mt-4" />
+        <div class="transfer_now_amount">
+          <ng-template [ngTemplateOutlet]="transfernowForm"></ng-template>
+          <div class="input_text_wrap">
+            <div class="input--group">
+              <span class="doller-icon">$</span>
+              <input
+                type="tel"
+                class="form_control"
+                appAmountKeypad
+                mask="separator.2"
+                thousandSeparator=","
+                separatorLimit="1000"
+                placeholder="0.00"
+                formControlName="transferNowAmount"
+              />
+            </div>
+            <ng-container *ngIf="TransferNowAmount?.touched && TransferNowAmount?.invalid">
+              <app-input-error [errors]="TransferNowAmount?.errors"></app-input-error>
+            </ng-container>
+          </div>
+          <div class="note-content">
+            Transfer may take up to 2-4 business<br />
+            days depending on your bank.
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <!-- note:1 remove condition for alert section -->
+    <ng-container *ngIf="previewList.length !== 0">
+      <hr />
+    </ng-container>
+
+    <div class="row">
+      <!-- note:1 remove style -->
+      <div class="col-md-5 alert--colm" style="display: none">
+        <div class="panel--title">
+          <h6>Send alert one day before charge:</h6>
+        </div>
+        <div class="form--group form-check custom--checbox">
+          <input type="checkbox" class="form-check-input" alt="" formControlName="isNotifyOnEmail" id="alert-email" />
+          <label class="form-check-label" for="alert-email">Email</label>
+        </div>
+      </div>
+      <ng-template [ngTemplateOutlet]="previewListTmp"></ng-template>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #transfernowForm>
+  <div class="checkbox_input" [formGroup]="transferNowFormGroup">
+    <input type="checkbox" id="transferNow" alt="" formControlName="isTransferNow" />
+    <label class="blnk-label" for="transferNow">Transfer Now:</label>
+  </div>
+</ng-template>
+
+<ng-template #alwaysRecurringTmp let-form="form">
+  <div class="form--group c-form-check ms-4 mt-2" [formGroup]="form">
+    <input type="checkbox" class="form-check-input" id="alwaysCheck" alt="" formControlName="alwaysRecurring" />
+    <label class="form-check-label" for="alwaysCheck">Always</label>
+  </div>
+</ng-template>
+
+<ng-template #previewScheduleContentModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Preview Schedule</h5>
+    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <ul class="donate-ul list-unstyled m-0 ps-0">
+      <ng-container *ngFor="let item of previewList; let i = index">
+        <li class="d-flex justify-content-between mb-0">
+          <span class="donate-schedule">{{ item.amount | currency }}</span>
+          <div class="d-flex flex-column justify-content-end text-end">
+            <span class="donate-name">{{ item.date | hebrewCalenderDate }}</span>
+            <span class="donate-date">{{ item.dateString }}</span>
+          </div>
+        </li>
+      </ng-container>
+    </ul>
+  </div>
+
+  <div class="modal-footer">
+    <button class="btn btn-secondary text-center" (click)="modal.close()">Done</button>
+  </div>
+</ng-template>
+
+<ng-template #separateDonate>
+  <div class="col-md-12" [formGroup]="formGroup">
+    <div class="donate-frequency mb-3" formGroupName="recurringPayment">
+      <fieldset>
+        <legend>SELECT FREQUENCY:</legend>
+        <ng-container *ngFor="let item of transactionRecurrences">
+          <input type="radio" [id]="item.name" class="d-none" [value]="item.id" formControlName="frequency" />
+          <label [for]="item.name">{{ item.name }}</label>
+        </ng-container>
+      </fieldset>
+    </div>
+
+    <ng-container *ngIf="RecurringFrequency?.touched && RecurringFrequency?.invalid">
+      <app-input-error [errors]="RecurringFrequency?.errors"></app-input-error>
+    </ng-container>
+  </div>
+
+  <ng-container *ngIf="isWeeklyOrBiWeekly">
+    <div class="col-md-4">
+      <div class="form-group">
+        <ng-container *ngIf="isWeeklyOrBiWeekly">
+          <label>SEND ON EVERY:</label>
+          <ng-select
+            bindLabel="value"
+            bindValue="id"
+            [items]="daysList"
+            [selectOnTab]="true"
+            [searchable]="false"
+            [clearable]="false"
+          >
+          </ng-select>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+
+  <div [class.col-md-4]="isWeeklyOrBiWeekly" [class.col-md-6]="!isWeeklyOrBiWeekly" [formGroup]="formGroup">
+    <div class="form-group position-relative">
+      <label>START DATE:</label>
+      <input
+        type="text"
+        readonly
+        ngxDaterangepickerMd
+        formControlName="transDate"
+        class="form-control"
+        [singleDatePicker]="true"
+        [closeOnAutoApply]="true"
+        [autoApply]="true"
+        [isInvalidDate]="isInvalidDate"
+      />
+
+      <a class="ngx-daterangepicker-action" (click)="openDatepicker()">
+        <span class="calender-icon" style="pointer-events: none"><i class="far fa-calendar-alt"></i></span>
+      </a>
+    </div>
+  </div>
+  <div [class.col-md-4]="isWeeklyOrBiWeekly" [class.col-md-6]="!isWeeklyOrBiWeekly" [formGroup]="formGroup">
+    <div class="form-group set-count position-relative" formGroupName="recurringPayment">
+      <!--Add count-disabled when input is not checked-->
+      <label class="w-100">
+        SET Count:
+        <ng-container *ngIf="false">
+          <span style="cursor: pointer; vertical-align: top"
+            ><svg xmlns="http://www.w3.org/2000/svg" width="12.981" height="12.981" viewBox="0 0 12.981 12.981">
+              <g
+                id="Icon_ionic-ios-help-circle-outline"
+                data-name="Icon ionic-ios-help-circle-outline"
+                transform="translate(-3.375 -3.375)"
+              >
+                <path
+                  id="Path_1824"
+                  data-name="Path 1824"
+                  d="M9.865,4.249A5.615,5.615,0,1,1,5.893,5.893,5.58,5.58,0,0,1,9.865,4.249m0-.874a6.49,6.49,0,1,0,6.49,6.49,6.489,6.489,0,0,0-6.49-6.49Z"
+                  transform="translate(0 0)"
+                  fill="#b0b0b0"
+                />
+                <path
+                  id="Path_1825"
+                  data-name="Path 1825"
+                  d="M15.519,11.25c1.17,0,1.975.649,1.975,1.582a1.526,1.526,0,0,1-.877,1.385c-.543.315-.727.546-.727.945v.247H14.807l-.009-.268a1.3,1.3,0,0,1,.736-1.373c.527-.315.749-.515.749-.9a.757.757,0,0,0-.839-.671.789.789,0,0,0-.836.768H13.5A1.781,1.781,0,0,1,15.519,11.25ZM14.7,16.6a.67.67,0,1,1,.668.643A.654.654,0,0,1,14.7,16.6Z"
+                  transform="translate(-5.632 -4.38)"
+                  fill="#b0b0b0"
+                />
+              </g>
+            </svg>
+          </span>
+        </ng-container>
+      </label>
+      <div class="toogle--btn">
+        <input type="checkbox" id="count-check" class="d-none" formControlName="alwaysRecurring" />
+        <label class="form-check-label" for="count-check"></label>
+      </div>
+      <div class="position-relative">
+        <input type="text" class="form-control" mask="separator.0" separatorLimit="100" formControlName="count" />
+        <span class="count">count</span>
+        <!--Replace text 'count' to 'Always' when input is not checked-->
+      </div>
+    </div>
+  </div>
+</ng-template>

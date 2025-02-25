@@ -1,0 +1,8 @@
+.iframe {
+  height: 1750px;
+  width: 100%;
+
+  .submitted-class & {
+    height: calc(100vh - 150px);
+  }
+}

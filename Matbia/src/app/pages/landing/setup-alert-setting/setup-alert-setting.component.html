@@ -1,0 +1,89 @@
+<div class="account-content--wrap small--container w-75 m-auto pt-5 page-notification">
+  <div class="top-head--section">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="title--bar">Alerts</div>
+    </div>
+  </div>
+
+  <div class="notification-list--panel">
+    <app-balance-alert-form-group
+      [formGroup]="balanceAlertSettingFormGroup"
+      [emailList]="emailList"
+      [phoneList]="phoneList"
+    ></app-balance-alert-form-group>
+  </div>
+
+  <ng-template [ngTemplateOutlet]="newLayout"></ng-template>
+
+  <ng-container *ngIf="!isLoading">
+    <div class="action--buttons justify-content-between btn-for-setup-card align-items-center mt-5 d-flex">
+      <button class="btn btn-blue-dark" style="height: 40px" (click)="goToDashboard()">SKIP THIS STEP</button>
+
+      <button type="submit" class="btn btn-primary" (click)="onSaveAlertSetting()">
+        <app-button-loader [loading]="isLoading" label="Save changes"> </app-button-loader>
+      </button>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #newLayout>
+  <div class="notification-list--panel mt-5">
+    <div class="title--bar mb-3">Card notifications</div>
+    <ul
+      ngbNav
+      #nav="ngbNav"
+      [(activeId)]="activeId"
+      class="nav-tabs notification-tabs mb-0"
+      (navChange)="onNavChange($event)"
+      [destroyOnHide]="true"
+    >
+      <ng-container *ngFor="let card of listCards">
+        <li [ngbNavItem]="card.cardId">
+          <button ngbNavLink>Matbia(...{{ card.cardNum | displayLast }})</button>
+          <ng-template ngbNavContent>
+            <ng-container *ngIf="isLoading">
+              <app-matbia-skeleton-loader-component
+                [count]="2"
+                [theme]="{ width: '100%', height: '100px' }"
+              ></app-matbia-skeleton-loader-component>
+            </ng-container>
+
+            <ng-container *ngIf="!isLoading">
+              <app-transaction-alert-form-group
+                [formGroup]="transactionAlertSettingFormGroup"
+                [emailList]="emailList"
+                [phoneList]="phoneList"
+              ></app-transaction-alert-form-group>
+
+              <app-manual-entry-alert-form-group
+                [formGroup]="manualEntryAlertSettingFormGroup"
+                [emailList]="emailList"
+                [phoneList]="phoneList"
+              >
+              </app-manual-entry-alert-form-group>
+
+              <app-transaction-alert-form-group
+                #requestAlert
+                [isRequestType]="true"
+                [formGroup]="requestAlertSettingFormGroup"
+                [emailList]="emailList"
+                [phoneList]="phoneList"
+              ></app-transaction-alert-form-group>
+            </ng-container>
+          </ng-template>
+        </li>
+      </ng-container>
+
+      <ng-container *ngIf="listCards.length === 0">
+        <li [ngbNavItem]="'no-card'">
+          <button ngbNavLink>No card</button>
+          <ng-template ngbNavContent>
+            <p>No cards available yet</p>
+          </ng-template>
+        </li>
+      </ng-container>
+    </ul>
+
+    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+  </div>
+</ng-template>

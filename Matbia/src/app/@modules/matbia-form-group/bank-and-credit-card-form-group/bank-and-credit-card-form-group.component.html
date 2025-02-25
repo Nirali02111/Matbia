@@ -1,0 +1,212 @@
+<form [formGroup]="formGroup">
+  <div class="form--group d-flex account--selection" *ngIf="optionTypeEnable">
+    <div class="lbl--wrap">
+      <label for="" class="lbl--text">Type:</label>
+    </div>
+    <div class="input--box">
+      <div class="selection--input">
+        <div class="form-check">
+          <input type="radio" value="bank" class="form-check-input" alt="" formControlName="optionType" />
+          <label class="form-check-label">Bank Account</label>
+        </div>
+      </div>
+      <div class="selection--input">
+        <div class="form-check">
+          <input type="radio" value="credit_card" class="form-check-input" alt="" formControlName="optionType" />
+          <label class="form-check-label">Credit/Debit Card</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-container *ngIf="OptionType?.value && OptionType?.value === 'bank'">
+    <div class="form--group toggle-input">
+      <div class="toggle-inner d-flex">
+        <div class="form-check">
+          <input
+            type="radio"
+            value="Personal"
+            id="Personal"
+            class="form-check-input"
+            alt=""
+            formControlName="checkType"
+          />
+          <label for="Personal" class="form-check-label">Personal</label>
+        </div>
+        <div class="form-check">
+          <input
+            type="radio"
+            value="Business"
+            id="Business"
+            class="form-check-input"
+            alt=""
+            formControlName="checkType"
+          />
+          <label class="form-check-label" for="Business">Business</label>
+        </div>
+      </div>
+
+      <ng-container *ngIf="CheckType?.touched && CheckType?.invalid">
+        <app-input-error [errors]="CheckType?.errors"></app-input-error>
+      </ng-container>
+    </div>
+
+    <div class="form--group d-flex">
+      <label for="" class="lbl--text">Account Type:</label>
+      <div class="d-flex inline-label flex-wrap">
+        <div class="form-check">
+          <input
+            type="radio"
+            value="CHECKING"
+            id="Checking"
+            class="form-check-input"
+            alt=""
+            formControlName="accountType"
+          />
+          <label class="form-check-label" for="Checking">Checking</label>
+        </div>
+        <div class="form-check">
+          <input
+            type="radio"
+            value="SAVINGS"
+            id="Savings"
+            class="form-check-input"
+            alt=""
+            formControlName="accountType"
+          />
+          <label class="form-check-label" for="Savings">Savings</label>
+        </div>
+
+        <ng-container *ngIf="AccountType?.touched && AccountType?.invalid">
+          <app-input-error [errors]="AccountType?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="form--group d-flex">
+      <label for="" class="lbl--text">acCount Holders name:</label>
+      <div
+        class="input--box"
+        placement="top"
+        ngbTooltip="Name can't be edited, Go back to previous step to change the name"
+        tooltipClass="link-via-routing-tooltip-class"
+      >
+        <input
+          type="text"
+          class="form-control"
+          mask="L*"
+          [patterns]="accountHolderNamePatterns"
+          [dropSpecialCharacters]="false"
+          placeholder="Account Holder name"
+          formControlName="accountName"
+        />
+        <ng-container *ngIf="AccountName?.touched && AccountName?.invalid">
+          <app-input-error [errors]="AccountName?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+    <div class="form--group d-flex">
+      <div>
+        <img src="https://matbiastorage.blob.core.windows.net/email-imgs/Matbia-check-image.png" alt="check" />
+      </div>
+    </div>
+    <div class="form--group d-flex">
+      <label for="" class="lbl--text">Routing number:</label>
+      <div class="input--box">
+        <input
+          type="tel"
+          placeholder="Routing number"
+          class="form-control"
+          mask="000000000"
+          formControlName="routingNumber"
+          id="routingNumber"
+          [class.is-invalid]="RoutingNumber?.touched && RoutingNumber?.invalid"
+        />
+        <ng-container *ngIf="RoutingNumber?.touched && RoutingNumber?.invalid">
+          <app-input-error [errors]="RoutingNumber?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="form--group d-flex">
+      <label for="" class="lbl--text">Account Number:</label>
+      <div class="input--box">
+        <input
+          appBlockCutCopyPaste
+          type="tel"
+          placeholder="Account number"
+          mask="00000999999999999999"
+          class="form-control"
+          formControlName="accountNumber"
+          [class.is-invalid]="AccountNumber?.touched && AccountNumber?.invalid"
+        />
+
+        <ng-container *ngIf="AccountNumber?.touched && AccountNumber?.invalid">
+          <app-input-error [errors]="AccountNumber?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+    <div class="form--group d-flex">
+      <label for="" class="lbl--text">Confirm Account Number:</label>
+      <div class="input--box">
+        <input
+          appBlockCutCopyPaste
+          type="tel"
+          placeholder="Confirm account number"
+          mask="00000999999999999999"
+          class="form-control"
+          formControlName="confirmNumber"
+          [class.is-invalid]="ConfirmNumber?.touched && ConfirmNumber?.invalid"
+        />
+
+        <ng-container *ngIf="ConfirmNumber?.touched && ConfirmNumber?.invalid">
+          <app-input-error [errors]="ConfirmNumber?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="OptionType?.value && OptionType?.value === 'credit_card'">
+    <div class="form--group d-flex">
+      <div class="lbl--wrap">
+        <label for="" class="lbl--text">Name On Card:</label>
+      </div>
+      <div class="input--box">
+        <input type="text" class="form-control" formControlName="nameOnCard" />
+        <ng-container *ngIf="NameOnCard?.touched && NameOnCard?.invalid">
+          <app-input-error [errors]="NameOnCard?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+    <div class="form--group d-flex">
+      <div class="lbl--wrap">
+        <label for="" class="lbl--text">Card Number:</label>
+      </div>
+      <div class="input--box">
+        <app-credit-card-input formControlName="cardNumber"></app-credit-card-input>
+      </div>
+    </div>
+    <div class="form--group d-flex">
+      <div class="row">
+        <div class="col-md-9 d-flex">
+          <div class="lbl--wrap">
+            <label for="" class="lbl--text">Exp. Date</label>
+          </div>
+          <div class="input--box">
+            <app-card-expiry-input formControlName="cardExp"></app-card-expiry-input>
+          </div>
+        </div>
+        <div class="col-md-3 d-flex">
+          <div class="lbl--wrap">
+            <label for="" class="lbl--text">CVV:</label>
+          </div>
+          <div class="input--box">
+            <app-card-pin-input formControlName="cvv" [cardMask]="CVVMask"></app-card-pin-input>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</form>
+
+<!-- {{ formGroup.value | json }} -->

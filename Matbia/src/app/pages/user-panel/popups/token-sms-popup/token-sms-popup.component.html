@@ -1,0 +1,96 @@
+<div class="modal-header">
+  <h5 class="modal-title">Share Token by SMS</h5>
+  <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close" (click)="closePopup()"></button>
+</div>
+
+<form [formGroup]="tokenForm">
+  <div class="modal-body">
+    <div class="token-item d-flex flex-column text-center">
+      <div class="input text-center">
+        {{ tokenAmt | currency }}
+      </div>
+      <span class="small">{{ tokenNum }}</span>
+    </div>
+    <div
+      class="form-group"
+      appHasFocus
+      [class.is-invalid-er]="PhoneNumber?.touched && PhoneNumber?.invalid && isSubmitted"
+    >
+      <div class="lbl-col">
+        <label>ENTER PHONE NUMBER:</label>
+      </div>
+      <div class="input-col col-lg-input contact-phone-field">
+        <app-phone-input [isSubmit]="false" formControlName="phoneNumber"></app-phone-input>
+      </div>
+      @if (PhoneNumber?.touched && PhoneNumber?.invalid || isSubmitted) {
+      <app-input-error [errors]="PhoneNumber?.errors"></app-input-error>
+      }
+    </div>
+    <div class="form-group mb-0" [class.is-invalid-er]="Note?.touched && Note?.invalid && isSubmitted">
+      <label>ADD NOTE:</label>
+      <input type="text" class="form-control" formControlName="note" placeholder="Write a note..." />
+      @if (Note?.touched && Note?.invalid || isSubmitted) {
+      <app-input-error [errors]="Note?.errors"></app-input-error>
+      }
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="confirmTokenSMS()">CONFIRM</button>
+    <button type="button" data-bs-dismiss="modal" (click)="closePopup()" class="btn btn-secondary">Cancel</button>
+  </div>
+</form>
+
+<ng-template #confirmShareTokenSMS let-modal>
+  <div class="modal-header px-5">
+    <i class="mdi mdi-arrow-back align-middle"></i>
+    <h5 class="modal-title">Confirm share token by SMS</h5>
+    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close" (click)="close(modal)"></button>
+  </div>
+  <div class="modal-body">
+    <span class="span text-center mb-3">You're sharing a Token</span>
+    <div class="token-item d-flex flex-column text-center mb-4">
+      <div class="input text-center">
+        {{ tokenAmt | currency }}
+      </div>
+      <span class="small">{{ tokenNum }}</span>
+    </div>
+    <div class="text-center pt-2">
+      <label class="mb-3">{{ PhoneNumber?.value }}</label>
+      @if (Note?.value) {
+      <span class="span">Note: {{ Note?.value }}</span>
+      }
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="sendSMS(modal)">CONFIRM & SEND</button>
+    <button type="button" data-bs-dismiss="modal" class="btn btn-secondary" (click)="close(modal)">Cancel</button>
+  </div>
+</ng-template>
+
+<ng-template #tokenShared let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Token shared!</h5>
+    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close" (click)="close(modal)"></button>
+  </div>
+  <div class="modal-body">
+    <figure class="text-center mb-4">
+      <img src="assets/dist/img/icon-checked.png" alt="Success" />
+    </figure>
+    <div class="token-item d-flex flex-column text-center mb-4">
+      <div class="input text-center">
+        {{ tokenAmt | currency }}
+      </div>
+      <span class="small">{{ tokenNum }}</span>
+    </div>
+    <div class="text-center pt-2">
+      <p class="mb-2">Your token was shared to:</p>
+      <label class="mb-3">{{ PhoneNumber?.value }}</label>
+      @if (Note?.value) {
+      <span class="span">Note: {{ Note?.value }}</span>
+      }
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="close(modal); refresh.emit(true)">DONE</button>
+  </div>
+</ng-template>

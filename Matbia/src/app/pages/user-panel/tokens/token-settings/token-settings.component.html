@@ -1,0 +1,332 @@
+@if (mode==='regular') { @if(isSettingSet){
+<div class="section-fund-deposit modal-tokan-setting">
+  <div class="small--container mx-auto">
+    <span class="d-flex gap-3 align-items-center link-back">
+      <h1 class="m-0">Token Settings</h1>
+    </span>
+
+    <ng-template [ngTemplateOutlet]="popupDisplay"></ng-template>
+  </div>
+</div>
+} @if(!isSettingSet){
+<ng-template [ngTemplateOutlet]="isNotSetting"></ng-template>
+} } @else {
+<ng-template [ngTemplateOutlet]="popupDisplay"></ng-template>
+}
+
+<ng-template #popupDisplay>
+  <div class="modal-tokan-data">
+    <h5 class="mb-0">Expired Tokens Settings</h5>
+    <span
+      >Choose what should happen if a organization processed your Tokens from your account after it has expired.</span
+    >
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 justify-content-center g-3" [formGroup]="form">
+      @if (isLoading) {
+      <div class="col">
+        <app-matbia-skeleton-loader-component
+          [count]="1"
+          [theme]="{ width: '100%', height: '174px' }"
+        ></app-matbia-skeleton-loader-component>
+      </div>
+      <div class="col">
+        <app-matbia-skeleton-loader-component
+          [count]="1"
+          [theme]="{ width: '100%', height: '174px' }"
+        ></app-matbia-skeleton-loader-component>
+      </div>
+      <div class="col">
+        <app-matbia-skeleton-loader-component
+          [count]="1"
+          [theme]="{ width: '100%', height: '174px' }"
+        ></app-matbia-skeleton-loader-component>
+      </div>
+
+      } @else{
+      <ng-container>
+        <div class="col">
+          <input type="radio" formControlName="setting" id="tokenRequest" value="Token Request" />
+          <label class="radio-box" for="tokenRequest">
+            <small class="badge">Default</small>
+
+            <i class="icon-default">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24.276" height="18.941" viewBox="0 0 24.276 18.941">
+                <g id="Group_3384" data-name="Group 3384" transform="translate(-74.07 -17.497)">
+                  <path
+                    id="Icon_awesome-envelope"
+                    data-name="Icon awesome-envelope"
+                    d="M23.816,8.941a.285.285,0,0,1,.46.223v9.7A2.276,2.276,0,0,1,22,21.136H2.276A2.276,2.276,0,0,1,0,18.86V9.169a.284.284,0,0,1,.46-.223c1.062.825,2.47,1.873,7.307,5.386,1,.73,2.688,2.266,4.372,2.257,1.693.014,3.414-1.555,4.376-2.257C21.351,10.818,22.754,9.766,23.816,8.941Z"
+                    transform="translate(74.07 15.303)"
+                    fill="#9395c1"
+                  />
+                  <path
+                    id="Icon_awesome-envelope-2"
+                    data-name="Icon awesome-envelope"
+                    d="M12.138,15.548c1.1.019,2.684-1.384,3.48-1.963,6.292-4.566,6.771-4.964,8.222-6.1a1.135,1.135,0,0,0,.436-.9v-.9A2.276,2.276,0,0,0,22,3.41H2.276A2.276,2.276,0,0,0,0,5.686v.9a1.142,1.142,0,0,0,.436.9c1.451,1.133,1.93,1.536,8.222,6.1C9.454,14.164,11.038,15.567,12.138,15.548Z"
+                    transform="translate(74.07 14.087)"
+                    fill="#9395c1"
+                    opacity="0.55"
+                  />
+                </g>
+              </svg>
+            </i>
+            <i class="icon-hover">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24.276" height="18.941" viewBox="0 0 24.276 18.941">
+                <g id="Group_3384" data-name="Group 3384" transform="translate(-74.07 -17.497)">
+                  <path
+                    id="Icon_awesome-envelope"
+                    data-name="Icon awesome-envelope"
+                    d="M23.816,8.941a.285.285,0,0,1,.46.223v9.7A2.276,2.276,0,0,1,22,21.136H2.276A2.276,2.276,0,0,1,0,18.86V9.169a.284.284,0,0,1,.46-.223c1.062.825,2.47,1.873,7.307,5.386,1,.73,2.688,2.266,4.372,2.257,1.693.014,3.414-1.555,4.376-2.257C21.351,10.818,22.754,9.766,23.816,8.941Z"
+                    transform="translate(74.07 15.303)"
+                    fill="#5d62e0"
+                  />
+                  <path
+                    id="Icon_awesome-envelope-2"
+                    data-name="Icon awesome-envelope"
+                    d="M12.138,15.548c1.1.019,2.684-1.384,3.48-1.963,6.292-4.566,6.771-4.964,8.222-6.1a1.135,1.135,0,0,0,.436-.9v-.9A2.276,2.276,0,0,0,22,3.41H2.276A2.276,2.276,0,0,0,0,5.686v.9a1.142,1.142,0,0,0,.436.9c1.451,1.133,1.93,1.536,8.222,6.1C9.454,14.164,11.038,15.567,12.138,15.548Z"
+                    transform="translate(74.07 14.087)"
+                    fill="#5d62e0"
+                    opacity="0.55"
+                  />
+                </g>
+              </svg>
+            </i>
+            <h6>Send a donation request</h6>
+            <span
+              >You will get an email alert with a donation request from the Organization in the amount of the original
+              token.</span
+            >
+          </label>
+        </div>
+        <div class="col">
+          <input type="radio" formControlName="setting" id="donate" value="Donate" />
+          <label class="radio-box" for="donate">
+            <i class="icon-default">
+              <svg xmlns="http://www.w3.org/2000/svg" width="19.969" height="19.969" viewBox="0 0 19.969 19.969">
+                <g id="Group_3386" data-name="Group 3386" transform="translate(-846.196 -285.903)">
+                  <path
+                    id="Icon_awesome-donate"
+                    data-name="Icon awesome-donate"
+                    d="M18.721,13.022H17.453a9.453,9.453,0,0,1-2.847,2.5h2.488a.348.348,0,0,1,.374.312v.624a.348.348,0,0,1-.374.312H2.871a.348.348,0,0,1-.374-.312V15.83a.348.348,0,0,1,.374-.312H5.359a9.5,9.5,0,0,1-2.847-2.5H1.248A1.247,1.247,0,0,0,0,14.27v3.744a1.247,1.247,0,0,0,1.248,1.248H18.721a1.247,1.247,0,0,0,1.248-1.248V14.27A1.247,1.247,0,0,0,18.721,13.022Z"
+                    transform="translate(846.196 286.609)"
+                    fill="#9395c1"
+                  />
+                  <path
+                    id="Icon_awesome-donate-2"
+                    data-name="Icon awesome-donate"
+                    d="M9.888,16.225A8.112,8.112,0,1,0,1.776,8.112,8.111,8.111,0,0,0,9.888,16.225ZM9.022,3.8V3.144A.646.646,0,0,1,9.67,2.5H10.1a.646.646,0,0,1,.647.647v.663a3.075,3.075,0,0,1,1.677.6.437.437,0,0,1,.047.667l-.636.6a.44.44,0,0,1-.546.039,1.284,1.284,0,0,0-.694-.2H9.081a.678.678,0,0,0-.636.714.7.7,0,0,0,.472.686l2.43.729a2.443,2.443,0,0,1,1.7,2.344,2.4,2.4,0,0,1-2.3,2.434v.655a.646.646,0,0,1-.647.647H9.666a.646.646,0,0,1-.647-.647v-.663a3.075,3.075,0,0,1-1.677-.6.437.437,0,0,1-.047-.667l.636-.6a.44.44,0,0,1,.546-.039,1.284,1.284,0,0,0,.694.2h1.517a.678.678,0,0,0,.636-.714.7.7,0,0,0-.472-.686l-2.43-.729a2.443,2.443,0,0,1-1.7-2.344A2.407,2.407,0,0,1,9.022,3.8Z"
+                    transform="translate(846.293 285.903)"
+                    fill="#9395c1"
+                    opacity="0.55"
+                  />
+                </g>
+              </svg>
+            </i>
+            <i class="icon-hover">
+              <svg xmlns="http://www.w3.org/2000/svg" width="19.969" height="19.969" viewBox="0 0 19.969 19.969">
+                <g id="Group_3451" data-name="Group 3451" transform="translate(-846.196 -285.903)">
+                  <path
+                    id="Icon_awesome-donate"
+                    data-name="Icon awesome-donate"
+                    d="M18.721,13.022H17.453a9.453,9.453,0,0,1-2.847,2.5h2.488a.348.348,0,0,1,.374.312v.624a.348.348,0,0,1-.374.312H2.871a.348.348,0,0,1-.374-.312V15.83a.348.348,0,0,1,.374-.312H5.359a9.5,9.5,0,0,1-2.847-2.5H1.248A1.247,1.247,0,0,0,0,14.27v3.744a1.247,1.247,0,0,0,1.248,1.248H18.721a1.247,1.247,0,0,0,1.248-1.248V14.27A1.247,1.247,0,0,0,18.721,13.022Z"
+                    transform="translate(846.196 286.609)"
+                    fill="#5d62e0"
+                  />
+                  <path
+                    id="Icon_awesome-donate-2"
+                    data-name="Icon awesome-donate"
+                    d="M9.888,16.225A8.112,8.112,0,1,0,1.776,8.112,8.111,8.111,0,0,0,9.888,16.225ZM9.022,3.8V3.144A.646.646,0,0,1,9.67,2.5H10.1a.646.646,0,0,1,.647.647v.663a3.075,3.075,0,0,1,1.677.6.437.437,0,0,1,.047.667l-.636.6a.44.44,0,0,1-.546.039,1.284,1.284,0,0,0-.694-.2H9.081a.678.678,0,0,0-.636.714.7.7,0,0,0,.472.686l2.43.729a2.443,2.443,0,0,1,1.7,2.344,2.4,2.4,0,0,1-2.3,2.434v.655a.646.646,0,0,1-.647.647H9.666a.646.646,0,0,1-.647-.647v-.663a3.075,3.075,0,0,1-1.677-.6.437.437,0,0,1-.047-.667l.636-.6a.44.44,0,0,1,.546-.039,1.284,1.284,0,0,0,.694.2h1.517a.678.678,0,0,0,.636-.714.7.7,0,0,0-.472-.686l-2.43-.729a2.443,2.443,0,0,1-1.7-2.344A2.407,2.407,0,0,1,9.022,3.8Z"
+                    transform="translate(846.293 285.903)"
+                    fill="#5d62e0"
+                    opacity="0.55"
+                  />
+                </g>
+              </svg>
+            </i>
+            <h6>Check funds & donate</h6>
+            <span
+              >If you have enough available funds, the donation will go through. If not, it will be sent to you as a
+              donation request.</span
+            >
+          </label>
+        </div>
+        <div class="col">
+          <input type="radio" formControlName="setting" id="decline" value="Decline" />
+          <label class="radio-box" for="decline">
+            <i class="icon-default">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18.942" height="18.941" viewBox="0 0 18.942 18.941">
+                <path
+                  id="Union_78"
+                  data-name="Union 78"
+                  d="M8517.146,5978.1l-7.118-7.119-7.119,7.119a1.378,1.378,0,0,1-1.949-1.95l7.118-7.118-7.118-7.119a1.378,1.378,0,0,1,1.949-1.949l7.119,7.119,7.118-7.119a1.379,1.379,0,0,1,1.95,1.949l-7.119,7.119,7.119,7.118a1.379,1.379,0,0,1-1.95,1.95Z"
+                  transform="translate(-8500.558 -5959.557)"
+                  fill="#9395c1"
+                  opacity="0.75"
+                />
+              </svg>
+            </i>
+            <i class="icon-hover">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18.942" height="18.941" viewBox="0 0 18.942 18.941">
+                <path
+                  id="Union_78"
+                  data-name="Union 78"
+                  d="M8517.146,5978.1l-7.118-7.119-7.119,7.119a1.378,1.378,0,0,1-1.949-1.95l7.118-7.118-7.118-7.119a1.378,1.378,0,0,1,1.949-1.949l7.119,7.119,7.118-7.119a1.379,1.379,0,0,1,1.95,1.949l-7.119,7.119,7.119,7.118a1.379,1.379,0,0,1-1.95,1.95Z"
+                  transform="translate(-8500.558 -5959.557)"
+                  fill="#5d62e0"
+                />
+              </svg>
+            </i>
+            <h6>Decline Token</h6>
+            <span>Keep the Tokens expired status. Token will simply be declined for the organization.</span>
+          </label>
+        </div>
+      </ng-container>
+      }
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end modal-footer p-0">
+    @if (isLoading) {
+    <app-matbia-skeleton-loader-component
+      [count]="2"
+      [theme]="{ width: '100%', height: '100px' }"
+    ></app-matbia-skeleton-loader-component>
+
+    } @else{ @if (mode==='regular' ) {
+    <button (click)="saveTokenSetting()" class="btn btn-primary">SAVE</button>
+    } @else {
+    <button (click)="saveTokenSetting()" class="btn btn-primary">SAVE</button>
+    } }
+  </div>
+</ng-template>
+
+<ng-template #isNotSetting>
+  <div class="section-token-setting text-center">
+    <div class="small--container mx-auto">
+      <div class="text-center">
+        <h1>Welcome to Matbia Tokens</h1>
+        <p>
+          Tzedakah Tokens are prepaid donations, and can only be used once. They are identified by an 8 digit code that
+          is generated in the portal or by SMS. You can share the token via email, SMS, or you can print it and give it
+          – like a check.
+        </p>
+      </div>
+      <div class="box-token">
+        <h2>A FEW POINTS ABOUT TOKENS</h2>
+        <ul class="d-flex flex-column flex-md-row align-items-center">
+          <li>
+            <i>
+              <svg
+                id="Group_3400"
+                data-name="Group 3400"
+                xmlns="http://www.w3.org/2000/svg"
+                width="29.461"
+                height="29.461"
+                viewBox="0 0 29.461 29.461"
+              >
+                <path
+                  id="Path_37212"
+                  data-name="Path 37212"
+                  d="M144,126h2.1v5.261H144Z"
+                  transform="translate(-120.852 -106.009)"
+                  fill="#5d62e0"
+                />
+                <path
+                  id="Path_37213"
+                  data-name="Path 37213"
+                  d="M120,96h2.1v10.522H120Z"
+                  transform="translate(-101.061 -81.27)"
+                  fill="#5d62e0"
+                />
+                <path
+                  id="Path_37214"
+                  data-name="Path 37214"
+                  d="M41.261,106.522A5.267,5.267,0,0,1,36,101.261h2.1A3.157,3.157,0,1,0,41.261,98.1V96a5.261,5.261,0,1,1,0,10.522Z"
+                  transform="translate(-31.791 -81.27)"
+                  fill="#5d62e0"
+                />
+                <path
+                  id="Path_37215"
+                  data-name="Path 37215"
+                  d="M39.357,12H14.1A2.106,2.106,0,0,0,12,14.1V39.357a2.106,2.106,0,0,0,2.1,2.1H39.357a2.108,2.108,0,0,0,2.1-2.1V14.1A2.106,2.106,0,0,0,39.357,12Zm0,9.47H24.626V14.1H39.357ZM22.522,14.1V21.47H14.1V14.1ZM14.1,39.357V23.574H39.357l0,15.783Z"
+                  transform="translate(-12 -12)"
+                  fill="#f68f0a"
+                />
+              </svg>
+            </i>
+            <h3>Trackable and Secure</h3>
+            <span>Track all tokens from your portal, and cancel them if necessary.</span>
+          </li>
+          <li>
+            <i>
+              <svg
+                id="Group_3401"
+                data-name="Group 3401"
+                xmlns="http://www.w3.org/2000/svg"
+                width="29.432"
+                height="29.432"
+                viewBox="0 0 29.432 29.432"
+              >
+                <g id="Group_3399" data-name="Group 3399" transform="translate(0 0)">
+                  <path
+                    id="Path_37211"
+                    data-name="Path 37211"
+                    d="M26.388,13.522a8.529,8.529,0,0,1,2.593,6.259,8.854,8.854,0,0,1-8.852,8.852A8.361,8.361,0,0,1,13.9,26.005l6.224-6.224V10.929A8.529,8.529,0,0,1,26.388,13.522Z"
+                    transform="translate(-5.448 -5.05)"
+                    fill="#f68f0a"
+                  />
+                  <path
+                    id="Ellipse_591"
+                    data-name="Ellipse 591"
+                    d="M14.716,2.023A12.693,12.693,0,1,0,27.409,14.716,12.707,12.707,0,0,0,14.716,2.023m0-2.023A14.716,14.716,0,1,1,0,14.716,14.716,14.716,0,0,1,14.716,0Z"
+                    fill="#5d62e0"
+                  />
+                </g>
+              </svg>
+            </i>
+            <h3>Expiration Dates</h3>
+            <span>Each token has an expiration date. You can setup what should happens afterwards.</span>
+          </li>
+          <li>
+            <i>
+              <svg
+                id="handshake"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                width="23.859"
+                height="29.461"
+                viewBox="0 0 23.859 29.461"
+              >
+                <defs>
+                  <linearGradient
+                    id="linear-gradient"
+                    x1="0.413"
+                    y1="1"
+                    x2="0.604"
+                    y2="1"
+                    gradientUnits="objectBoundingBox"
+                  >
+                    <stop offset="0" stop-color="#f68f0a" />
+                    <stop offset="1" stop-color="#5d62e0" />
+                  </linearGradient>
+                </defs>
+                <path
+                  id="Path_37216"
+                  data-name="Path 37216"
+                  d="M18.258,27.2a2.127,2.127,0,0,0,1.989,2.2c1.608.068,3.22.027,4.83.027a2.275,2.275,0,0,0,2.161-2.4c-.036-1.5.022-3,.036-4.5l.055-6.123c0-.374.056-.444.411-.54a5.207,5.207,0,0,1,2.471-.082,3.433,3.433,0,0,1,2.776,3.02c.081.761.086,1.533.1,2.3.031,2.013.047,4.026.066,6.041a2.251,2.251,0,0,0,2.311,2.31q2.156.011,4.312.009a2.234,2.234,0,0,0,2.33-2.311q.013-6.207.012-12.414c0-.064,0-.129-.006-.191a1.225,1.225,0,0,0-.593-1.029,3.238,3.238,0,0,0-.853-.357,9.187,9.187,0,0,0-3.544-.151c-.912.139-1.812.36-2.717.543a11.911,11.911,0,0,1-3.6.219,8.888,8.888,0,0,1-4.176-1.694q-.9-.629-1.834-1.208A5.184,5.184,0,0,0,22.3,10.2a9.971,9.971,0,0,0-2.815.136A1.388,1.388,0,0,0,18.3,11.66a4.22,4.22,0,0,0-.026.465m9.007-7.591a4.511,4.511,0,1,0-4.53,4.492,4.511,4.511,0,0,0,4.53-4.492ZM37.51,2.312A4.511,4.511,0,1,0,42,6.834,4.509,4.509,0,0,0,37.51,2.312Z"
+                  transform="translate(-18.256 -0.004)"
+                  fill="url(#linear-gradient)"
+                />
+              </svg>
+            </i>
+            <h3>Versatile</h3>
+            <span>Send it digitally or hand it over physically, the choice is yours.</span>
+          </li>
+        </ul>
+      </div>
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-primary" (click)="continue()">CONTINUE SETTING UP</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

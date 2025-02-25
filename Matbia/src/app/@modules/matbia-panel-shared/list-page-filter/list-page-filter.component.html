@@ -1,0 +1,216 @@
+<div class="table-filters filter-block mt-3" [ngClass]="{ 'table-filters-hide': isFilterDropdownOpen }">
+  <div class="right-filers mt-0 d-flex justify-content-between">
+    <div class="d-flex">
+      <div class="field-search me-3">
+        <app-search-input placeholder="Search" [debounceTime]="500" (changed)="applyFilter($event)"> </app-search-input>
+      </div>
+
+      <div class="filter by-transaction add-transaction">
+        <ng-template
+          [ngTemplateOutlet]="transactionTypeDrpTmp"
+          [ngTemplateOutletContext]="{ items: commonDataService.requestTypeList }"
+        ></ng-template>
+      </div>
+
+      <ng-container *ngIf="false">
+        <div class="filter-btn me-3 position-relative">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton1"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Filters <span class="filter-count">2</span>
+          </button>
+          <div class="filter-dropdown dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <div class="filter-top d-flex">
+              <div class="filter-left">
+                <ul class="list-unstyled mb-0">
+                  <li>Transaction Type</li>
+                  <li>
+                    Amount Range
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                      <g id="Group_2348" data-name="Group 2348" transform="translate(-576 -91)">
+                        <circle
+                          id="Ellipse_566"
+                          data-name="Ellipse 566"
+                          cx="8"
+                          cy="8"
+                          r="8"
+                          transform="translate(576 91)"
+                          fill="#44479d"
+                          opacity="0.08"
+                        />
+                        <path
+                          id="Union_26"
+                          data-name="Union 26"
+                          d="M19697.5,22313.5l-2.5,2.5,2.5-2.5-2.5-2.5,2.5,2.5,2.5-2.5-2.5,2.5,2.5,2.5Z"
+                          transform="translate(-19113.5 -22214.5)"
+                          fill="none"
+                          stroke="#44479d"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="1"
+                          opacity="0.3"
+                        />
+                      </g>
+                    </svg>
+                  </li>
+                </ul>
+              </div>
+              <div class="filter-right">
+                <ul class="list-unstyled mb-0">
+                  <li>
+                    <input type="radio" class="d-none" name="transaction" id="all" />
+                    <label for="all">All Transactions</label>
+                  </li>
+                  <li>
+                    <input type="radio" class="d-none" name="transaction" id="donations" />
+                    <label for="donations">Donations</label>
+                  </li>
+                  <li>
+                    <input type="radio" class="d-none" name="transaction" id="card-change" />
+                    <label for="card-change">Card charges</label>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="filter-bottom d-flex justify-content-between align-items-center">
+              <button class="btn btn-cancel">CLEAR FILTERS</button>
+              <div class="d-flex align-items-center justify-content-end">
+                <button class="btn btn-default me-2">CANCEL</button>
+                <button class="btn btn-primary">SEARCH</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="by-showing filter ms-0" *ngIf="isDatePickerFilter">
+        <app-date-picker-filter
+          (dropdownToggle)="onToggleFilterDropDown($event, true)"
+          (filtered)="filterChange($event)"
+          open="left"
+          [isCustomModal]="true"
+        >
+        </app-date-picker-filter>
+      </div>
+
+      <ng-container *ngIf="isRequest">
+        <div>
+          <div class="filter by-transaction" [class.orgStatus]="statusOpen">
+            <label>Status</label>
+            <ng-select
+              bindLabel="label"
+              (open)="onToggleFilterDropDown(true)"
+              (close)="onToggleFilterDropDown(false)"
+              (click)="openStatus()"
+              bindValue="id"
+              [closeOnSelect]="true"
+              [searchable]="false"
+              [(ngModel)]="selectedStatus"
+              [selectOnTab]="true"
+              [items]="statusArray"
+              (change)="onSelectStatus($event)"
+              ><ng-template ng-label-tmp let-item="item" class="open-badge">
+                <div [ngClass]="statusClass(selectedStatusLabel)">{{ selectedStatusLabel }}</div>
+              </ng-template>
+            </ng-select>
+          </div>
+        </div>
+        <app-date-picker-filter
+          (dropdownToggle)="onToggleFilterDropDown($event, true)"
+          (filtered)="filterChange($event)"
+          [defaultSelected]="'5'"
+          open="left"
+          [isCustomModal]="true"
+        >
+        </app-date-picker-filter>
+      </ng-container>
+    </div>
+    <div class="filter--btn dropdown export">
+      <ng-container *ngIf="!showMenu">
+        <ng-container *ngIf="false">
+          <button class="btn btn-outline-dark">
+            <svg
+              class="me-2"
+              xmlns="http://www.w3.org/2000/svg"
+              width="18.13"
+              height="15.864"
+              viewBox="0 0 18.13 15.864"
+            >
+              <g id="printer" transform="translate(0 -3)">
+                <g id="Group_2896" data-name="Group 2896" transform="translate(0 3)">
+                  <path
+                    id="Path_17889"
+                    data-name="Path 17889"
+                    d="M6.567,22.133A.567.567,0,1,0,6,21.567.567.567,0,0,0,6.567,22.133Z"
+                    transform="translate(-3.734 -14.201)"
+                    fill="#454545"
+                  />
+                  <path
+                    id="Path_17890"
+                    data-name="Path 17890"
+                    d="M5.666,3A2.266,2.266,0,0,0,3.4,5.266V7.532H2.266A2.266,2.266,0,0,0,0,9.8v3.4a2.266,2.266,0,0,0,2.266,2.266H3.4V16.6a2.266,2.266,0,0,0,2.266,2.266h6.8A2.266,2.266,0,0,0,14.73,16.6V15.464h1.133A2.266,2.266,0,0,0,18.13,13.2V9.8a2.266,2.266,0,0,0-2.266-2.266H14.73V5.266A2.266,2.266,0,0,0,12.464,3ZM4.532,5.266A1.133,1.133,0,0,1,5.666,4.133h6.8A1.133,1.133,0,0,1,13.6,5.266V7.532H4.532Zm1.133,5.666A2.266,2.266,0,0,0,3.4,13.2v1.133H2.266A1.133,1.133,0,0,1,1.133,13.2V9.8A1.133,1.133,0,0,1,2.266,8.666h13.6A1.133,1.133,0,0,1,17,9.8v3.4a1.133,1.133,0,0,1-1.133,1.133H14.73V13.2a2.266,2.266,0,0,0-2.266-2.266ZM13.6,13.2v3.4a1.133,1.133,0,0,1-1.133,1.133h-6.8A1.133,1.133,0,0,1,4.532,16.6V13.2a1.133,1.133,0,0,1,1.133-1.133h6.8A1.133,1.133,0,0,1,13.6,13.2Z"
+                    transform="translate(0 -3)"
+                    fill="#454545"
+                  />
+                </g>
+              </g>
+            </svg>
+            Print
+          </button>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="showMenu">
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          id="dropdownMenuButton1"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          Export
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+          <li>
+            <a class="dropdown-item" href="#" (click)="onExport($event)"
+              ><i class="fas fa-file-csv"></i> Download CSV</a
+            >
+          </li>
+        </ul>
+      </ng-container>
+    </div>
+  </div>
+
+  <ng-container *ngIf="batchNum">
+    <div class="filter-selected mt-2">
+      <ul class="list-unstyled mb-0 d-flex align-items-center">
+        <li class="d-flex align-items-center">
+          <label>Batch#:</label>
+          <span>{{ batchNum }}</span>
+          <span class="material-icons" (click)="onRemoveBatch()">close</span>
+        </li>
+      </ul>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #transactionTypeDrpTmp let-items="items">
+  <label>Type</label>
+  <ng-select
+    bindLabel="label"
+    bindValue="id"
+    [closeOnSelect]="true"
+    [searchable]="false"
+    [(ngModel)]="selectedTypes"
+    [selectOnTab]="true"
+    [items]="items"
+    (change)="onSelectTypes($event)"
+    (open)="onToggleFilterDropDown(true)"
+    (close)="onToggleFilterDropDown(false)"
+  >
+  </ng-select>
+</ng-template>

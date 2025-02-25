@@ -1,0 +1,16 @@
+<section class="section-text">
+  <div class="small-container">
+    <form [formGroup]="formGroup" (ngSubmit)="ValidateCard()">
+      <h1>Activate you card</h1>
+
+      <div class="form-group mb-4 pb-md-3">
+        <label class="form-label" for="">ENTER YOUR CARD NUMBER:</label>
+        <input type="text" formControlName="cardNumber" class="form-control" />
+        @if(cardNumber?.touched && cardNumber?.invalid) {
+        <app-input-error [errors]="cardNumber?.errors"></app-input-error>
+        }
+      </div>
+      <button class="btn btn-primary w-100" type="submit">Validate card</button>
+    </form>
+  </div>
+</section>

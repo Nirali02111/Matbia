@@ -1,0 +1,86 @@
+<div class="modal-content batch-close">
+  <div class="modal-header">
+    <h5 class="modal-title">Close Current Batch</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
+  </div>
+
+  <div class="modal-body" [formGroup]="formGroup">
+    <div class="batch-block grey-block d-flex flex-wrap align-items-center">
+      <div class="full-block">
+        <h5 class="batch-head">GROSS AMOUNT:</h5>
+        <p class="large">{{ orgBalance?.availableBalance | currency }}</p>
+      </div>
+
+      <!-- Note: style is temp -->
+      @if (externalFees == 0 || externalFees == null || externalFees == undefined) {
+      <div class="half-block" style="width: 100%">
+        <h5 class="batch-head">MATBIA FEE:</h5>
+        <p>{{ CalculatedFees | currency }}</p>
+      </div>
+      } @else {
+      <div class="half-block">
+        <h5 class="batch-head">MATBIA FEE:</h5>
+        <p>{{ CalculatedFees | currency }}</p>
+      </div>
+      <div class="half-block">
+        <h5 class="batch-head">EXTERNAL FEE:</h5>
+        <p>{{ externalFees | currency }}</p>
+      </div>
+      }
+    </div>
+    <div class="batch-amount d-flex flex-column align-items-center">
+      <h5 class="batch-head">NET AMOUNT TO BATCH:</h5>
+      <h2>{{ NetAmount | currency }}</h2>
+    </div>
+    <ng-container *ngIf="orgBalance.availableBalance < minAmount">
+      <app-input-error
+        [errors]="{
+          greaterThan: { toCompare: minAmount, labelMessage: 'Starting amount is $' + minAmount, inSpan: true }
+        }"
+      ></app-input-error>
+    </ng-container>
+    <div class="transfer-select">
+      <label>Transfer to:</label>
+      <ng-select
+        bindLabel="accountNickName"
+        bindValue="bankAccountId"
+        formControlName="bankAccountId"
+        [items]="linkedAccountList"
+        [loading]="isAccountListLoading"
+        [selectOnTab]="true"
+        [searchable]="false"
+        [clearable]="linkedAccountList && linkedAccountList.length > 1"
+      >
+        <!-- for list of option -->
+        <ng-template ng-option-tmp let-item="item">
+          {{ item.accountNickName }}
+          <ng-container *ngIf="item.isDefault">
+            <i class="ng-option-primary"> Primary </i>
+          </ng-container>
+        </ng-template>
+
+        <!-- for selected -->
+        <ng-template ng-label-tmp let-item="item">
+          {{ item.accountNickName }}
+        </ng-template>
+      </ng-select>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button
+      type="button"
+      class="btn btn-primary w-100 text-uppercase"
+      data-bs-dismiss="modal"
+      (click)="onBatch()"
+      [disabled]="isAccountListLoading || orgBalance.availableBalance < minAmount"
+    >
+      <app-button-loader [loading]="isAccountListLoading" label="BaTch Now"></app-button-loader>
+    </button>
+    <button type="button" class="btn btn-cancel w-100" data-bs-dismiss="modal" (click)="closePopup()">Cancel</button>
+  </div>
+</div>
+
+<div *ngIf="isLoading || isAccountListLoading" class="overlay">
+  <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+</div>

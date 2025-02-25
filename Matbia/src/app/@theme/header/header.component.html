@@ -1,0 +1,572 @@
+<header class="header" [class.header-banner]="isHeaderBannerVisible()">
+  <nav class="navbar navbar-expand-lg fixed-top bg-grey justify-content-between">
+    <div class="left-col">
+      <div class="logo">
+        @if (!isShulKiosk) {
+        <a href="#" [routerLink]="getHome()" class="logo text-center logo-light position-relative">
+          <span class="logo-lg">
+            <img src="assets/dist/img/logo.svg" alt="" height="31" />
+          </span>
+        </a>
+        } @if (isShulKiosk) {
+
+        <a href="#" (click)="$event.preventDefault()" class="logo text-center logo-light position-relative">
+          <span class="logo-lg">
+            <img src="assets/dist/img/logo.svg" alt="" height="31" />
+          </span>
+        </a>
+        }
+      </div>
+
+      <div class="account d-flex align-items-center on-header" app-account-hash [withLabel]="true"></div>
+
+      <div
+        class="app-search dropdown d-none d-lg-block"
+        ngbDropdown
+        #searchFilterDD="ngbDropdown"
+        [class.show-voucher]="false"
+      >
+        <form>
+          <div class="input-group">
+            <ng-container *ngIf="!isSearchBarHide()">
+              <app-search-input
+                class="top-search"
+                placeholder="Search Matbia"
+                [debounceTime]="500"
+                (changed)="applyFilter($event)"
+              >
+              </app-search-input>
+
+              <span class="search-icon" href="#" role="button">
+                <img src="assets/dist/img/icon-feather-search.svg" />
+              </span>
+            </ng-container>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Front-end pages-->
+
+    <!-- @if (isDevEnv) { -->
+    <ng-container *appPersonalAccessControl>
+      <ng-template [ngTemplateOutlet]="orderTokenBookLinkTmp"></ng-template>
+    </ng-container>
+
+    <ng-container *appBusinessDonorAccessControl>
+      <ng-template [ngTemplateOutlet]="orderTokenBookLinkTmp"></ng-template>
+    </ng-container>
+    <!-- } -->
+    <!-- last menu -->
+    <ul class="list-unstyled topbar-menu float-end mb-0">
+      <li>
+        <div class="button-menu-mobile open-left dropdown">
+          <button
+            class="dropdown-toggle"
+            data-bs-toggle="dropdown"
+            href="#"
+            role="button"
+            aria-haspopup="false"
+            aria-expanded="false"
+          >
+            <img src="assets/dist/img/icon-plus.svg" alt="" />
+          </button>
+          <div class="dropdown-menu dropdown-menu-start dropdown-sm">
+            <ul>
+              <ng-container *appBusinessAccessControl>
+                <li>
+                  <a href="#" [routerLink]="getWithdrawFundsRouterLink()" class="nav-sub-link">
+                    <i class="icon-add"></i>
+                    <span>Withdraw Funds</span>
+                  </a>
+                </li>
+              </ng-container>
+
+              <ng-container *appOrganizationAccessControl>
+                <li *ngIf="!isBatchVisible">
+                  <a href="#" [routerLink]="getWithdrawFundsRouterLink()" class="nav-sub-link">
+                    <i class="icon-add"></i>
+                    <span>Withdraw Funds</span>
+                  </a>
+                </li>
+                <li *ngIf="isBatchVisible">
+                  <a href="#" [routerLink]="getBatchClosingOptionsRouterLink()" class="nav-sub-link">
+                    <i class="icon-add"></i>
+                    <span>Batch Closing Options</span>
+                  </a>
+                </li>
+              </ng-container>
+
+              <ng-container *appPersonalAccessControl>
+                <li>
+                  <a href="#" [routerLink]="getDonateRouterLink()" class="nav-sub-link">
+                    <i class="icon-donate"></i>
+                    <span>Donate</span>
+                  </a>
+                </li>
+                <li style="display: none">
+                  <a href="javascript:void(0);" class="nav-sub-link">
+                    <i class="icon-donate-schedule"></i>
+                    <span>Schedule Donation</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" [routerLink]="getAddFundsRouterLink()" class="nav-sub-link">
+                    <i class="icon-add"></i>
+                    <span>Add Funds</span>
+                  </a>
+                </li>
+                <li style="display: none">
+                  <a href="#" [routerLink]="getInternalTransferRouterLink()" class="nav-sub-link">
+                    <i class="icon-transfer"></i>
+                    <span>Internal Transfer</span>
+                  </a>
+                </li>
+              </ng-container>
+
+              <ng-container *appBusinessDonorAccessControl>
+                <li>
+                  <a href="#" [routerLink]="getDonateRouterLink()" class="nav-sub-link">
+                    <i class="icon-donate"></i>
+                    <span>Donate</span>
+                  </a>
+                </li>
+                <li style="display: none">
+                  <a href="javascript:void(0);" class="nav-sub-link">
+                    <i class="icon-donate-schedule"></i>
+                    <span>Schedule Donation</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" [routerLink]="getAddFundsRouterLink()" class="nav-sub-link">
+                    <i class="icon-add"></i>
+                    <span>Add Funds</span>
+                  </a>
+                </li>
+                <li style="display: none">
+                  <a href="#" [routerLink]="getInternalTransferRouterLink()" class="nav-sub-link">
+                    <i class="icon-transfer"></i>
+                    <span>Internal Tranfer</span>
+                  </a>
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+        </div>
+      </li>
+      <ng-container *appBusinessAccessControl>
+        <ng-template [ngTemplateOutlet]="screenConnectTmp"></ng-template>
+      </ng-container>
+
+      <ng-container *appOrganizationAccessControl>
+        <ng-template [ngTemplateOutlet]="screenConnectTmp"></ng-template>
+      </ng-container>
+      <ng-container *ngIf="!isShulKiosk">
+        <li class="help-list">
+          <a
+            class="nav-help tooltip-menu"
+            href="#"
+            [routerLink]="getHelpAndFeedbackRouterLink()"
+            data-hover="Help & Feedback"
+            ><span class="material-icons"> help_outline </span></a
+          >
+        </li>
+      </ng-container>
+
+      <ng-container *appBusinessDonorAccessControl>
+        <li class="dropdown notification-list">
+          <a
+            class="nav-link arrow-none tooltip-menu"
+            href="#"
+            [routerLink]="getNotificationRouterLink()"
+            data-hover="Alert"
+          >
+            <i class="icon-notifications"></i>
+          </a>
+        </li>
+      </ng-container>
+
+      <ng-container *appPersonalAccessControl>
+        <li class="dropdown notification-list" style="display: none">
+          <a
+            class="nav-link arrow-none tooltip-menu"
+            href="#"
+            [routerLink]="getNotificationRouterLink()"
+            data-hover="Alert"
+          >
+            <i class="icon-notifications"></i>
+          </a>
+        </li>
+      </ng-container>
+
+      <li class="setting-list dropdown">
+        <a
+          class="nav-link dropdown-toggle tooltip-menu"
+          data-bs-toggle="dropdown"
+          href="#"
+          role="button"
+          aria-haspopup="false"
+          data-hover="Account Settings"
+          aria-expanded="false"
+        >
+          <i class="icon-settings"></i>
+        </a>
+        <div class="dropdown-menu">
+          <ul>
+            <li>
+              <a href="#" [routerLink]="getProfileRouterLink()" class="nav-sub-link">
+                <i class="mdi mdi-account"></i>
+                <span>Profile</span>
+              </a>
+            </li>
+            <ng-container *appPersonalAccessControl>
+              <li>
+                <a href="#" [routerLink]="getCardsRouterLink()" class="nav-sub-link">
+                  <i class="mdi mdi-cc-card"></i>
+                  <span>Card Setting</span>
+                </a>
+              </li>
+            </ng-container>
+
+            <ng-container *appBusinessDonorAccessControl>
+              <li>
+                <a href="#" [routerLink]="getCardsRouterLink()" class="nav-sub-link">
+                  <i class="mdi mdi-cc-card"></i>
+                  <span>Card Setting</span>
+                </a>
+              </li>
+            </ng-container>
+
+            <ng-container *ngIf="isShulKiosk && isBlockBankManagement; else bankManagementTmp"> </ng-container>
+
+            <ng-template #bankManagementTmp>
+              <li>
+                <a href="#" [routerLink]="getBankAccountsRouterLink()" class="nav-sub-link">
+                  <i class="mdi mdi-bank"></i>
+                  <span>Bank Accounts</span>
+                </a>
+              </li>
+            </ng-template>
+
+            <li *appPersonalAccessControl>
+              <a href="#" [routerLink]="getNotificationRouterLink()" class="nav-sub-link">
+                <i class="icon-notifications"></i>
+                <span>Alert Settings</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+
+      <li class="dropdown profile-list">
+        <a
+          class="nav-link d-flex align-items-center me-0"
+          data-bs-toggle="dropdown"
+          href="#"
+          role="button"
+          aria-haspopup="false"
+          aria-expanded="false"
+        >
+          <span class="dropdown-toggle nav-user arrow-none">
+            <span class="account-user-name">
+              <ng-container *appBusinessAccessControl>
+                {{ displayBusinessName() }}
+              </ng-container>
+
+              <ng-container *appOrganizationAccessControl> {{ displayBusinessName() }} </ng-container>
+
+              <ng-container *appBusinessDonorAccessControl> {{ displayBusinessName() }}</ng-container>
+
+              <ng-container *appPersonalAccessControl> {{ displayName() }}</ng-container>
+
+              <ng-container *appReportAccessControl> {{ displayName() }}</ng-container>
+            </span>
+          </span>
+          <span class="account-user-avatar">
+            <ng-container *ngIf="displayLogo(); else defaultProfileTmp">
+              <img [src]="displayLogo()" alt="user-image" width="40" class="rounded-circle" />
+            </ng-container>
+
+            <ng-template #defaultProfileTmp>
+              <img [src]="profileIcon" alt="user-image" width="40" class="rounded-circle" />
+            </ng-template>
+          </span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown">
+          <div class="dropdown-header noti-title">
+            <h6 class="text-overflow m-0">Welcome !</h6>
+            <span class="account-user-name d-none d-sm-block">
+              <ng-container *appBusinessAccessControl>
+                {{ displayBusinessName() }}
+              </ng-container>
+
+              <ng-container *appOrganizationAccessControl> {{ displayBusinessName() }} </ng-container>
+              <ng-container *appBusinessDonorAccessControl> {{ displayBusinessName() }} </ng-container>
+              <ng-container *appPersonalAccessControl> {{ displayName() }}</ng-container>
+              <ng-container *appReportAccessControl> {{ displayName() }}</ng-container>
+            </span>
+          </div>
+
+          <ng-container *appBusinessDonorAccessControl>
+            <a href="#" [routerLink]="getAccountsRouterLink()" class="dropdown-item notify-item">
+              <i class="mdi mdi-account-circle me-1"></i>
+              <span>My Account</span>
+            </a>
+          </ng-container>
+
+          <a href="javascript:void(0);" class="dropdown-item notify-item" (click)="signOut()">
+            <i class="mdi mdi-logout me-1"></i>
+            <span>Logout</span>
+          </a>
+        </div>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+@if (isReportUser) {
+<div class="notification-bar">
+  <div class="py-2 px-3 d-flex flex-column">
+    <span>CUSTOMER SERVICE SESSION</span>
+    <label>{{ reportUserFullName }}</label>
+  </div>
+  <hr class="m-0 border-white opacity-25" />
+  <div class="notification-bottom px-3 py-2 d-flex justify-content-between align-items-center">
+    <div class="d-flex align-items-center w-75">
+      <i class="fa fa-chevron-right"></i>
+      <div class="text-truncate w-100">{{ userFullName }}</div>
+    </div>
+    <a href="javascript:void(0)" class="fa fa-times m-0" (click)="closePopup()"></a>
+  </div>
+</div>
+}
+
+<!-- Filter Sections -->
+<ng-template #orderTokenBookLinkTmp>
+  @if (isHeaderBannerVisible()) {
+  <a href="#" [routerLink]="getOrderTokenBookRouterLink()" class="card-voucher d-flex align-items-center">
+    <figure>
+      <img src="assets/dist/img/1_Token_2025.png" alt="" width="99" />
+    </figure>
+    <div class="d-flex flex-column">
+      <h6>Order your tokens today!</h6>
+      <small>Order your tokens today, to get in time for purim.</small>
+    </div>
+  </a>
+  }
+</ng-template>
+
+<ng-template #screenConnectTmp>
+  <li class="help-list org-link">
+    <a
+      class="nav-help tooltip-menu"
+      href="https://matbia.screenconnect.com/"
+      target="_blank"
+      data-hover="C.S. Screen Connect"
+      ><img src="assets/dist/img/icon-org.svg" alt="ORG"
+    /></a>
+  </li>
+</ng-template>
+
+<ng-template #account>
+  <div class="custom-control custom-radio">
+    <input
+      type="radio"
+      id="account1"
+      name="customRadio"
+      class="custom-control-input"
+      value="A1"
+      (change)="changeAccountType('A1')"
+      [(ngModel)]="accountType"
+    />
+    <label class="custom-control-label" for="account1">Account 1</label>
+  </div>
+
+  <div class="custom-control custom-radio">
+    <input
+      type="radio"
+      id="account2"
+      name="customRadio"
+      class="custom-control-input"
+      value="A2"
+      (change)="changeAccountType('A2')"
+      [(ngModel)]="accountType"
+    />
+    <label class="custom-control-label" for="account2">Account 2</label>
+  </div>
+</ng-template>
+
+<ng-template #transaction>
+  <div class="custom-control custom-radio">
+    <input
+      type="radio"
+      id="customRadio1"
+      name="customRadio"
+      class="custom-control-input"
+      value="AT"
+      (change)="changeTransactionType('AT')"
+      [(ngModel)]="transactionType"
+    />
+    <label class="custom-control-label" for="customRadio1">All Transactions</label>
+  </div>
+
+  <div class="custom-control custom-radio">
+    <input
+      type="radio"
+      id="customRadio2"
+      name="customRadio"
+      class="custom-control-input"
+      value="ACT"
+      (change)="changeTransactionType('ACT')"
+      [(ngModel)]="transactionType"
+    />
+    <label class="custom-control-label" for="customRadio2">All Credit Transactions</label>
+  </div>
+
+  <div class="custom-control custom-radio">
+    <input
+      type="radio"
+      id="customRadio3"
+      name="customRadio"
+      class="custom-control-input"
+      value="ADT"
+      (change)="changeTransactionType('ADT')"
+      [(ngModel)]="transactionType"
+    />
+    <label class="custom-control-label" for="customRadio3">All Debit Transactions</label>
+  </div>
+
+  <div class="custom-control custom-radio">
+    <input
+      type="radio"
+      id="customRadio4"
+      name="customRadio"
+      class="custom-control-input"
+      value="ITC"
+      (change)="changeTransactionType('ITC')"
+      [(ngModel)]="transactionType"
+    />
+    <label class="custom-control-label" for="customRadio4">Internal Transfers Credit</label>
+  </div>
+
+  <div class="custom-control custom-radio">
+    <input
+      type="radio"
+      id="customRadio5"
+      name="customRadio"
+      class="custom-control-input"
+      value="ITD"
+      (change)="changeTransactionType('ITD')"
+      [(ngModel)]="transactionType"
+    />
+    <label class="custom-control-label" for="customRadio5">Internal Transfers Debit</label>
+  </div>
+
+  <div class="custom-control custom-radio">
+    <input
+      type="radio"
+      id="customRadio6"
+      name="customRadio"
+      class="custom-control-input"
+      value="DT"
+      (change)="changeTransactionType('DT')"
+      [(ngModel)]="transactionType"
+    />
+    <label class="custom-control-label" for="customRadio6">Declined Transactions</label>
+  </div>
+
+  <div class="custom-control custom-radio">
+    <input
+      type="radio"
+      id="customRadio7"
+      name="customRadio"
+      class="custom-control-input"
+      value="CF"
+      (change)="changeTransactionType('CF')"
+      [(ngModel)]="transactionType"
+    />
+    <label class="custom-control-label" for="customRadio7">Credit Fee</label>
+  </div>
+
+  <div class="custom-control custom-radio">
+    <input
+      type="radio"
+      id="customRadio8"
+      name="customRadio"
+      class="custom-control-input"
+      value="SP"
+      (change)="changeTransactionType('SP')"
+      [(ngModel)]="transactionType"
+    />
+    <label class="custom-control-label" for="customRadio8">Scheduled Payments</label>
+  </div>
+
+  <div class="custom-control custom-radio">
+    <input
+      type="radio"
+      id="customRadio9"
+      name="customRadio"
+      class="custom-control-input"
+      value="request"
+      (change)="changeTransactionType('request')"
+      [(ngModel)]="transactionType"
+    />
+    <label class="custom-control-label" for="customRadio9">Requests</label>
+  </div>
+</ng-template>
+
+<ng-template #time>
+  <div class="custom-control custom-radio">
+    <input
+      type="radio"
+      id="time1"
+      name="customRadio"
+      class="custom-control-input"
+      value="T1"
+      (change)="changeTimeType('T1')"
+      [(ngModel)]="timeType"
+    />
+    <label class="custom-control-label" for="time1">Time 1</label>
+  </div>
+
+  <div class="custom-control custom-radio">
+    <input
+      type="radio"
+      id="time2"
+      name="customRadio"
+      class="custom-control-input"
+      value="T2"
+      (change)="changeTimeType('T2')"
+      [(ngModel)]="timeType"
+    />
+    <label class="custom-control-label" for="time2">Time 2</label>
+  </div>
+</ng-template>
+
+<ng-template #amount>
+  <div class="custom-control custom-radio">
+    <input
+      type="radio"
+      id="amount1"
+      name="customRadio"
+      class="custom-control-input"
+      value="A1"
+      (change)="changeAmountType('A1')"
+      [(ngModel)]="amountType"
+    />
+    <label class="custom-control-label" for="amount1">Amount 1</label>
+  </div>
+
+  <div class="custom-control custom-radio">
+    <input
+      type="radio"
+      id="amount2"
+      name="customRadio"
+      class="custom-control-input"
+      value="A2"
+      (change)="changeAmountType('A2')"
+      [(ngModel)]="amountType"
+    />
+    <label class="custom-control-label" for="amount1">Amount 2</label>
+  </div>
+</ng-template>

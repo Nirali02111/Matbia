@@ -1,0 +1,14 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
+  </div>
+  <div class="modal-body">
+    <h3>You are deleting your bank account ending in {{ accountNumber }}</h3>
+    <p>All schedules running from this Bank account will be canceled</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-link" (click)="deleteOthers()">link schedules to other bank</button>
+    <button type="button" class="btn btn-primary" (click)="onConfirmClick()">Delete</button>
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="closePopup()">Cancel</button>
+  </div>
+</div>

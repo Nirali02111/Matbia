@@ -1,0 +1,115 @@
+<div class="setup-businnes-form tab-permission" (keyup.enter)="triggerRegister()" [formGroup]="formGroup">
+  <div class="inside-setup-business-form">
+    <div class="input-form input-one">
+      <div class="inside-input" [@shakeTrigger]="Administrator?.invalid && inAnimation">
+        <div class="lbl-col">
+          <label>ADMINISTRATOR:</label>
+        </div>
+        <div class="input-col">
+          <ng-select
+            bindLabel="member"
+            bindValue="memberHandle"
+            formControlName="admins"
+            [selectOnTab]="true"
+            [multiple]="true"
+            [closeOnSelect]="true"
+            [hideSelected]="true"
+            [items]="availableAdmins"
+            [loading]="isUserLoading || isMembersLoading"
+            (change)="onAdminChange()"
+          >
+            <ng-template ng-option-tmp let-item="item">
+              {{ item.member }}
+            </ng-template>
+          </ng-select>
+        </div>
+      </div>
+    </div>
+    <div class="input-form input-one">
+      <div class="inside-input" [@shakeTrigger]="ControllingOfficer?.invalid && inAnimation">
+        <div class="lbl-col">
+          <label>CONTROLLING OFFICER:</label>
+        </div>
+        <div class="input-col">
+          <ng-select
+            bindLabel="member"
+            bindValue="memberHandle"
+            formControlName="controllingOfficers"
+            [multiple]="true"
+            [closeOnSelect]="true"
+            [hideSelected]="true"
+            [selectOnTab]="true"
+            [items]="availableControllingOfficer"
+            [loading]="isUserLoading || isMembersLoading"
+            (change)="onControllingChange()"
+          >
+            <ng-template ng-option-tmp let-item="item">
+              {{ item.member }}
+            </ng-template>
+          </ng-select>
+        </div>
+      </div>
+    </div>
+    <div class="input-form input-one">
+      <div class="inside-input" [@shakeTrigger]="BeneficialOwnerList?.invalid && inAnimation">
+        <div class="lbl-col">
+          <label>BENEFICIAL OWNER:</label>
+        </div>
+        <div class="input-col">
+          <ng-select
+            bindLabel="member"
+            bindValue="memberHandle"
+            formControlName="beneficial_owner_list"
+            [multiple]="true"
+            [closeOnSelect]="true"
+            [hideSelected]="true"
+            [selectOnTab]="true"
+            [items]="availableBeneficialOwner"
+            [loading]="isUserLoading || isMembersLoading"
+            (change)="onBeneficialChange()"
+            (add)="onAddBeneficial($event)"
+            (remove)="onRemoveBeneficial($event)"
+            (clear)="onRemoveAllBeneficial()"
+          >
+            <ng-template ng-option-tmp let-item="item">
+              {{ item.member }}
+            </ng-template>
+          </ng-select>
+        </div>
+      </div>
+    </div>
+
+    <!-- BenificialOwners stake-->
+    <ng-container *ngIf="canDisplay()">
+      <div *ngFor="let item of BeneficialOwners?.controls; let i = index" formArrayName="benificialOwners">
+        <div class="input-form input-one" [formGroupName]="i">
+          <div class="inside-input">
+            <div class="lbl-col"></div>
+            <div class="input-col">
+              <label>{{ item.get('fullName')?.value }}:</label>
+            </div>
+          </div>
+          <div
+            class="inside-input"
+            [@shakeTrigger]="
+              (item.get('ownershipStake')?.invalid && inAnimation) || (formGroup.hasError('exceedsMax') && inAnimation)
+            "
+          >
+            <div class="lbl-col">
+              <label>OWNERSHIP PERCENTAGE:</label>
+            </div>
+            <div class="input-col owner-field">
+              <input
+                type="tel"
+                placeholder="%"
+                formControlName="ownershipStake"
+                mask="separator.2"
+                separatorLimit="100"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

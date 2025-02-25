@@ -1,0 +1,808 @@
+<div class="donate-content--wrap page-overview">
+  <ng-container *appBusinessAccessControl>
+    <ng-template [ngTemplateOutlet]="businessOverviewTmp"></ng-template>
+    <ng-template [ngTemplateOutlet]="recentActivityPanel"></ng-template>
+  </ng-container>
+
+  <ng-container *appOrganizationAccessControl>
+    <ng-template [ngTemplateOutlet]="organizationOverviewTmp"></ng-template>
+    <ng-template [ngTemplateOutlet]="recentActivityPanel"></ng-template>
+  </ng-container>
+
+  <ng-container *appPersonalAccessControl>
+    <ng-template [ngTemplateOutlet]="personalOverviewTmp"></ng-template>
+    <ng-template [ngTemplateOutlet]="recentActivityPanel"></ng-template>
+    <div class="top-content d-inline-block w-100 d-md-none">
+      <ng-template [ngTemplateOutlet]="editCardSettingsTmp"></ng-template>
+    </div>
+  </ng-container>
+
+  <ng-container *appBusinessDonorAccessControl>
+    <ng-template [ngTemplateOutlet]="personalOverviewTmp"></ng-template>
+    <ng-template [ngTemplateOutlet]="recentActivityPanel"></ng-template>
+    <div class="top-content d-inline-block w-100 d-md-none">
+      <ng-template [ngTemplateOutlet]="editCardSettingsTmp"></ng-template>
+    </div>
+  </ng-container>
+
+  <ng-container *appReportAccessControl>
+    <app-report-list></app-report-list>
+  </ng-container>
+</div>
+
+<ng-template #organizationOverviewTmp>
+  <div class="organizarion-overview-wrap">
+    <div class="row top-content">
+      <div class="organization-left">
+        <div class="inside-organization">
+          <div class="org-available-bal">
+            <h6>{{ availableBalance | currency }}</h6>
+            <p>Available Funds</p>
+          </div>
+          <div class="org-present-bal">
+            <p>
+              Account Funds<sup><a class="present-tooltip" data-hover="Includes Pending Transactions">?</a></sup>
+            </p>
+            <span>{{ presentBalance | currency }}</span>
+          </div>
+
+          <ng-container *ngIf="fundingBalance && fundingBalance > 0">
+            <div class="org-funding-bal">
+              <p>
+                Funding
+                <sup
+                  ><a
+                    href="#"
+                    class="present-tooltip"
+                    data-hover="Donation is being processed. Funds will be available in the donor's account, and can be redeemed, at estimated completion date"
+                    >?</a
+                  ></sup
+                >
+              </p>
+              <span>{{ fundingBalance | currency }}</span>
+            </div>
+          </ng-container>
+
+          <div class="org-reedem">
+            <ng-container *ngIf="isBatchVisible">
+              <button class="btn btn-primary btn-redeem-donation" (click)="goToBatchClosingOption()">
+                Setup batch closing options
+              </button>
+            </ng-container>
+
+            <ng-container *ngIf="!isBatchVisible">
+              <button class="btn btn-primary btn-redeem-donation" (click)="goToWithdrawFunds()">
+                REDEEM DONATIONS
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="info-card organization-right">
+        <div class="inside-organization">
+          <div class="organization-graph">
+            <h6>Organization Graphics</h6>
+
+            <!-- Organization Graph -->
+            <div class="d-flex flex-row align-items-center">
+              <div class="d-md-none">
+                <ng-template [ngTemplateOutlet]="totalDeposit"></ng-template>
+                <ng-template [ngTemplateOutlet]="totalDonation"></ng-template>
+              </div>
+              <div class="chart-graph business-chart" *ngIf="!isLoading">
+                <p class="chart-image">
+                  <canvas
+                    baseChart
+                    [labels]="orgChartLabels"
+                    [datasets]="orgChartData"
+                    [type]="orgChartType"
+                    [legend]="false"
+                    [options]="orgChartOption"
+                  >
+                  </canvas>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="org-donation">
+            <div class="org-donation-inside">
+              <div class="showing-donation">
+                <label>SHOWING:</label>
+                <ng-template [ngTemplateOutlet]="datepickerTmp"></ng-template>
+              </div>
+
+              <!-- this month -->
+              <div class="org-donation-this-mo">
+                <div class="donation-amount">
+                  <h6>{{ totalDonations | currency }}</h6>
+                  <span>{{ donationsGrowthPercentage }}%</span>
+                </div>
+                <div class="total-donation">
+                  <p>
+                    Total Donations - This Month
+                    <a [routerLink]="getTransactionsRouterLink()"
+                      ><img width="15" src="assets/dist/img/right-arrow-grey.svg"
+                    /></a>
+                  </p>
+                </div>
+              </div>
+
+              <!-- last month -->
+              <div class="org-donation-last-mo">
+                <div class="donation-amount">
+                  <h6>{{ pastDonations | currency }}</h6>
+                  <span>{{ donationsGrowthPercentage }}%</span>
+                </div>
+                <div class="total-donation">
+                  <p>
+                    Total Donations - Last Month
+                    <a [routerLink]="getTransactionsRouterLink()"
+                      ><img width="15" src="assets/dist/img/right-arrow-grey.svg"
+                    /></a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #businessOverviewTmp>
+  <div class="organizarion-overview-wrap">
+    <div class="row top-content">
+      <div class="organization-left">
+        <div class="inside-organization">
+          <div class="org-available-bal">
+            <h6>{{ availableBalance | currency }}</h6>
+            <p>Available Funds</p>
+          </div>
+          <div class="org-present-bal">
+            <p>
+              Account Funds<sup><a class="present-tooltip" data-hover="Includes Pending Transactions">?</a></sup>
+            </p>
+            <span>{{ presentBalance | currency }}</span>
+          </div>
+
+          <ng-container *ngIf="fundingBalance && fundingBalance > 0">
+            <div class="org-funding-bal">
+              <p>
+                Funding
+                <sup
+                  ><a
+                    href="#"
+                    class="present-tooltip"
+                    data-hover="Donation is being processed. Funds will be available in the donor's account, and can be redeemed, at estimated completion date"
+                    >?</a
+                  ></sup
+                >
+              </p>
+              <span>{{ fundingBalance | currency }}</span>
+            </div>
+          </ng-container>
+
+          <div class="org-reedem">
+            <ng-container *ngIf="isBatchVisible">
+              <button class="btn btn-primary btn-redeem-donation" (click)="goToBatchClosingOption()">
+                Setup batch closing options
+              </button>
+            </ng-container>
+            <ng-container *ngIf="!isBatchVisible">
+              <button class="btn btn-primary btn-redeem-donation" (click)="goToWithdrawFunds()">
+                REDEEM DONATIONS
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="info-card organization-right">
+        <div class="inside-organization">
+          <div class="organization-graph">
+            <h6>Business Graphics</h6>
+
+            <!-- Organization Graph -->
+
+            <div class="d-flex flex-row align-items-center">
+              <div class="d-md-none">
+                <ng-template [ngTemplateOutlet]="totalDeposit"></ng-template>
+                <ng-template [ngTemplateOutlet]="totalDonation"></ng-template>
+              </div>
+              <div class="chart-graph business-chart" *ngIf="!isLoading">
+                <p class="chart-image">
+                  <canvas
+                    baseChart
+                    [labels]="orgChartLabels"
+                    [datasets]="orgChartData"
+                    [type]="orgChartType"
+                    [legend]="false"
+                    [options]="orgChartOption"
+                  >
+                  </canvas>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="org-donation">
+            <div class="org-donation-inside">
+              <div class="showing-donation">
+                <label>SHOWING:</label>
+
+                <ng-template [ngTemplateOutlet]="datepickerTmp"></ng-template>
+              </div>
+              <div class="org-donation-this-mo">
+                <div class="donation-amount">
+                  <h6>{{ totalDonations | currency }}</h6>
+                  <span>{{ donationsGrowthPercentage }}%</span>
+                </div>
+                <div class="total-donation">
+                  <p>
+                    Total Donations - This Month
+                    <a [routerLink]="getTransactionsRouterLink()"
+                      ><img width="15" src="assets/dist/img/right-arrow-grey.svg"
+                    /></a>
+                  </p>
+                </div>
+              </div>
+              <div class="org-donation-last-mo">
+                <div class="donation-amount">
+                  <h6>{{ pastDonations | currency }}</h6>
+                  <span>{{ donationsGrowthPercentage }}%</span>
+                </div>
+                <div class="total-donation">
+                  <p>
+                    Total Donations - Last Month
+                    <a [routerLink]="getTransactionsRouterLink()"
+                      ><img width="15" src="assets/dist/img/right-arrow-grey.svg"
+                    /></a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #personalOverviewTmp>
+  @if (showTokenExpirySettings) {
+  <div class="bar-token d-flex flex-column flex-md-row align-items-center justify-content-between gap-3 gap-md-4">
+    <div class="flex-fill">
+      <h6>Setup Token Expiration Settings</h6>
+      <span
+        >Purim Tokens about to expire! Set up what should happen with tokens from your account after it expires.</span
+      >
+    </div>
+    <button class="btn me-auto me-md-0" (click)="openTokenSetting()">OPEN TOKEN SETTING</button>
+  </div>
+  } @if(showAdditionalCard){
+  <div class="card-top d-flex flex-column flex-md-row align-items-md-center">
+    <div class="flex-fill">
+      <h6>We recently issued you a new card</h6>
+      <small>Activate your card and get tapping.</small>
+    </div>
+    <button
+      class="btn btn-primary d-flex align-items-center justify-content-between me-auto mt-2 mt-md-0"
+      [routerLink]="getAddAdditionalCardRouterLink()"
+    >
+      <i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="15.359" height="15.359" viewBox="0 0 15.359 15.359">
+          <path
+            id="Icon_material-power-settings-new"
+            data-name="Icon material-power-settings-new"
+            d="M13.033,4.5H11.326v8.533h1.707Zm4.121,1.852L15.942,7.563a5.9,5.9,0,0,1,2.21,4.616A5.973,5.973,0,1,1,8.408,7.555l-1.2-1.2a7.679,7.679,0,1,0,9.949,0Z"
+            transform="translate(-4.5 -4.5)"
+            fill="#fff"
+          />
+        </svg>
+      </i>
+      Activate Card
+    </button>
+  </div>
+  }
+
+  <div class="noti-title d-md-none">
+    <h6 class="text-overflow m-0">
+      Welcome,
+      <ng-container *appBusinessAccessControl>
+        {{ displayBusinessName() }}
+      </ng-container>
+
+      <ng-container *appOrganizationAccessControl> {{ displayBusinessName() }} </ng-container>
+      <ng-container *appBusinessDonorAccessControl> {{ displayBusinessName() }} </ng-container>
+      <ng-container *appPersonalAccessControl> {{ displayName() }}</ng-container>
+      <ng-container *appReportAccessControl> {{ displayName() }}</ng-container>
+    </h6>
+    <div class="account d-flex align-items-center on-header" app-account-hash [attr.withLabel]="true"></div>
+  </div>
+
+  <div class="top-content row">
+    <div class="info-card col-sm-6">
+      <!-- Error Coming From this block Start -->
+      <div class="left-content">
+        @if(isLoading){
+        <app-matbia-skeleton-loader-component
+          [count]="3"
+          [theme]="{ width: '100%', height: '72px' }"
+        ></app-matbia-skeleton-loader-component>
+        }
+        <ng-container *ngIf="!isLoading">
+          <div class="row-content">
+            <span class="icon"><img src="assets/dist/img/dollar-icon.png" alt="" /></span>
+            <span class="content available-present-wrap">
+              <div class="content-left">
+                <h6 class="l-text">{{ availableBalance | currency }}</h6>
+                <p>Available Funds</p>
+              </div>
+              <div class="content-right">
+                <h5>{{ presentBalance | currency }}</h5>
+                <p>Account Funds</p>
+              </div>
+            </span>
+          </div>
+          <div class="row-content">
+            <span class="icon"><img src="assets/dist/img/plus-icon.png" alt="" /></span>
+            <ng-template [ngTemplateOutlet]="totalDeposit"></ng-template>
+          </div>
+          <div class="row-content">
+            <span class="icon"><img src="assets/dist/img/donation-icon.png" alt="" /></span>
+            <ng-template [ngTemplateOutlet]="totalDonation"></ng-template>
+          </div>
+        </ng-container>
+
+        <div class="links-section d-md-none">
+          <ng-template [ngTemplateOutlet]="linkSectionTmp"></ng-template>
+        </div>
+      </div>
+      <div class="chart-data">
+        <div class="d-flex flex-column flex-md-row justify-content-md-end">
+          <app-date-picker-filter
+            [isShowLabel]="true"
+            rootClass="overview-filter"
+            (filtered)="filterChange($event)"
+            [defaultSelected]="'3'"
+            [isCustomModal]="true"
+          ></app-date-picker-filter>
+        </div>
+
+        @if(isLoading){<app-matbia-skeleton-loader-component
+          [count]="1"
+          [theme]="{ width: '200px', height: '200px' }"
+        ></app-matbia-skeleton-loader-component>
+        }
+
+        <div class="d-flex flex-row align-items-center">
+          <div class="d-md-none">
+            <ng-template [ngTemplateOutlet]="totalDeposit"></ng-template>
+            <ng-template [ngTemplateOutlet]="totalDonation"></ng-template>
+          </div>
+          <ng-container *ngIf="!isLoading">
+            <div class="chart-graph">
+              <canvas
+                baseChart
+                [labels]="doughnutChartLabels"
+                [datasets]="doughnutChartData"
+                [type]="doughnutChartType"
+                [legend]="false"
+                [options]="chartOption"
+                [plugins]="chartPlugin"
+              >
+              </canvas>
+
+              <ng-container *ngIf="topOrganizationCount !== 0">
+                <p class="d-none d-md-inline-block w-100" *ngIf="topOrganizationCount === 1">Top organization</p>
+                <p class="d-none d-md-inline-block w-100" *ngIf="topOrganizationCount !== 1">
+                  Top {{ topOrganizationCount }} organizations
+                </p>
+              </ng-container>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <!-- Error Coming From this block End -->
+    </div>
+
+    <ng-template [ngTemplateOutlet]="editCardSettingsTmp"></ng-template>
+    <div class="links-section col-sm-3">
+      <ng-template [ngTemplateOutlet]="linkSectionTmp"></ng-template>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #recentActivityPanel>
+  <!-- Recent Activity panel -->
+  <div class="recent-activity-content">
+    <div class="tabs-section">
+      <div class="left-title">
+        <h4>Recent Activity</h4>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="transaction-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#transaction"
+              type="button"
+              role="tab"
+              aria-controls="home"
+              aria-selected="true"
+            >
+              <i class="icon-transaction"></i>
+              Transaction
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="schedules-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#schedules"
+              type="button"
+              role="tab"
+              aria-controls="profile"
+              aria-selected="false"
+            >
+              <i class="icon-schedule"></i>
+              Schedules
+            </button>
+          </li>
+
+          <ng-container *appPersonalAccessControl>
+            <ng-template [ngTemplateOutlet]="recentRequestsTmp"></ng-template>
+          </ng-container>
+          <ng-container *appBusinessDonorAccessControl>
+            <ng-template [ngTemplateOutlet]="recentRequestsTmp"></ng-template>
+          </ng-container>
+
+          <ng-template #recentRequestsTmp>
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="requests-tab"
+                data-bs-toggle="tab"
+                data-bs-target="#requests"
+                type="button"
+                role="tab"
+                aria-controls="contact"
+                aria-selected="false"
+              >
+                <i class="icon-request"></i>
+                Requests
+              </button>
+            </li>
+          </ng-template>
+        </ul>
+      </div>
+
+      <div class="see-all-link d-none d-md-inline-block" (click)="goToTransactionList()">
+        See All
+        <i class="icon">
+          <img src="assets/dist/img/right-arrow-blue.svg" width="12" alt="" />
+        </i>
+      </div>
+    </div>
+    <div class="tab-content" id="myTabContent">
+      <!-- Transaction -->
+      <div class="tab-pane fade show active" id="transaction" role="tabpanel" aria-labelledby="transaction-tab">
+        <div class="transaction-table transaction-page dashboard-min-height">
+          <div class="table-wrapper">
+            <ng-container *ngIf="isLoading">
+              <app-matbia-skeleton-loader-component [count]="6"></app-matbia-skeleton-loader-component>
+            </ng-container>
+            <ng-container *ngIf="!isLoading">
+              <div class="table" [class.table-organization]="isOrganizationUser && isBatchVisible">
+                <div class="t-head">
+                  <div class="t-row">
+                    <div class="date-div th-div">Date & Time</div>
+                    <div class="desc-div th-div">
+                      <ng-container *appPersonalAccessControl> Description </ng-container>
+                      <ng-container *appBusinessDonorAccessControl> Donor </ng-container>
+                      <ng-container *appOrganizationAccessControl> Donor </ng-container>
+                      <ng-container *appBusinessAccessControl> Donor </ng-container>
+                    </div>
+                    <div class="type-div th-div">Type</div>
+
+                    <ng-template #batchColumnTmp>
+                      <ng-container *ngIf="isBatchVisible">
+                        <div class="transaction-batch-div th-div">Status</div>
+                      </ng-container>
+                    </ng-template>
+
+                    <ng-container *appBusinessDonorAccessControl>
+                      <ng-template [ngTemplateOutlet]="batchColumnTmp"></ng-template>
+                    </ng-container>
+                    <ng-container *appOrganizationAccessControl>
+                      <ng-template [ngTemplateOutlet]="batchColumnTmp"></ng-template>
+                    </ng-container>
+                    <ng-container *appBusinessAccessControl>
+                      <ng-template [ngTemplateOutlet]="batchColumnTmp"></ng-template>
+                    </ng-container>
+
+                    <div class="amount-div th-div">Amount</div>
+
+                    <ng-container *appPersonalAccessControl>
+                      <div class="blnce-div th-div">Funds</div>
+                    </ng-container>
+
+                    <ng-container *appBusinessAccessControl>
+                      <div class="blnce-div th-div"></div>
+                    </ng-container>
+                    <ng-container *appOrganizationAccessControl>
+                      <div class="blnce-div th-div"></div>
+                    </ng-container>
+
+                    <div class="th-div">&nbsp;</div>
+                  </div>
+                </div>
+
+                <div class="t-body">
+                  <ng-container *appBusinessAccessControl>
+                    <ng-container *ngFor="let item of transactionListData | searchPipe : searchSub">
+                      <app-transaction-row-item [item]="item" (refresh)="loadOrganizationDashboardData()">
+                      </app-transaction-row-item>
+                    </ng-container>
+                  </ng-container>
+
+                  <ng-container *appOrganizationAccessControl>
+                    <ng-container *ngFor="let item of transactionListData | searchPipe : searchSub">
+                      <app-transaction-row-item [item]="item" (refresh)="loadOrganizationDashboardData()">
+                      </app-transaction-row-item>
+                    </ng-container>
+                  </ng-container>
+
+                  <ng-container *appPersonalAccessControl>
+                    <ng-container *ngFor="let item of transactionListData | searchPipe : searchSub">
+                      <app-transaction-row-item
+                        [item]="item"
+                        (refresh)="loadDonorDashboardData()"
+                        [HideTokendetails]="true"
+                      >
+                      </app-transaction-row-item>
+                    </ng-container>
+
+                    <ng-container *ngFor="let item of tokensListData">
+                      <app-transaction-row-item
+                        [item]="item"
+                        (refresh)="loadDonorDashboardData()"
+                        [HideTokendetails]="true"
+                      >
+                      </app-transaction-row-item>
+                    </ng-container>
+                  </ng-container>
+
+                  <ng-container *appBusinessDonorAccessControl>
+                    <ng-container *ngFor="let item of transactionListData | searchPipe : searchSub">
+                      <app-transaction-row-item [item]="item" (refresh)="loadDonorDashboardData()">
+                      </app-transaction-row-item>
+                    </ng-container>
+
+                    <ng-container *ngFor="let item of tokensListData">
+                      <app-transaction-row-item [item]="item" (refresh)="loadDonorDashboardData()">
+                      </app-transaction-row-item>
+                    </ng-container>
+                  </ng-container>
+                </div>
+                <ng-container *ngIf="transactionListData.length === 10 && !searchSub">
+                  <div class="show-more-wrap d-flex p-2 justify-content-center">
+                    <div class="see-all-link fs-5" (click)="moreTransactionList()">
+                      <strong>Show more</strong>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <!-- Transaction end -->
+
+      <!-- Schedules -->
+      <div class="tab-pane fade schedules-page" id="schedules" role="tabpanel" aria-labelledby="schedules-tab">
+        <ng-container *ngIf="isLoading">
+          <app-matbia-skeleton-loader-component [count]="6"></app-matbia-skeleton-loader-component>
+        </ng-container>
+
+        <ng-container *ngIf="!isLoading">
+          <div class="transaction-table">
+            <div class="table-wrapper">
+              <div class="table">
+                <div class="t-head">
+                  <div class="t-row">
+                    <div class="desc-div th-div">Description</div>
+                    <div class="schedule-id-div th-div">Schedule ID</div>
+                    <div class="status-div th-div">Status</div>
+                    <div class="total-amount-div th-div text-center">Total Amount</div>
+                    <div class="type-div th-div">Type</div>
+                    <div class="payments-div th-div">Payments Left</div>
+                    <div class="frequency-div text-center th-div">Frequency</div>
+                    <div class="amount-div th-div">Amount</div>
+                    <div class="action-div th-div th-div">&nbsp;</div>
+                  </div>
+                </div>
+
+                <div class="t-body">
+                  <ng-container *appPersonalAccessControl>
+                    <ng-container *ngFor="let item of scheduleListData | searchPipe : searchSub">
+                      <app-schedule-row-item [item]="item" (refresh)="loadDonorDashboardData()"></app-schedule-row-item>
+                    </ng-container>
+                  </ng-container>
+
+                  <ng-container *appBusinessDonorAccessControl>
+                    <ng-container *ngFor="let item of scheduleListData | searchPipe : searchSub">
+                      <app-schedule-row-item [item]="item" (refresh)="loadDonorDashboardData()"></app-schedule-row-item>
+                    </ng-container>
+                  </ng-container>
+
+                  <ng-container *appBusinessAccessControl>
+                    <ng-container *ngFor="let item of scheduleListData | searchPipe : searchSub">
+                      <app-schedule-row-item [item]="item" (refresh)="loadOrganizationDashboardData()">
+                      </app-schedule-row-item>
+                    </ng-container>
+                  </ng-container>
+
+                  <ng-container *appOrganizationAccessControl>
+                    <ng-container *ngFor="let item of scheduleListData | searchPipe : searchSub">
+                      <app-schedule-row-item [item]="item" (refresh)="loadOrganizationDashboardData()">
+                      </app-schedule-row-item>
+                    </ng-container>
+                  </ng-container>
+                </div>
+                <ng-container *ngIf="scheduleListData.length === 10 && !searchSub">
+                  <div class="show-more-wrap d-flex p-2 justify-content-center">
+                    <div class="see-all-link fs-5" (click)="moreScheduleList()">
+                      <strong>Show more</strong>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <!-- Schedules end -->
+
+      <!-- Request -->
+      <div class="tab-pane fade" id="requests" role="tabpanel" aria-labelledby="requests-tab">
+        <ng-container *ngIf="isLoading">
+          <app-matbia-skeleton-loader-component [count]="6"></app-matbia-skeleton-loader-component>
+        </ng-container>
+
+        <ng-container *ngIf="!isLoading">
+          <div class="transaction-table requests-new-page p-0">
+            <div class="table-wrapper accordion-request mt-0">
+              <div class="table">
+                <div class="t-head">
+                  <div class="t-row">
+                    <div class="date-div th-div">From</div>
+                    <div class="desc-div th-div">Status</div>
+                    <div class="type-div th-div">Date & Time Requested</div>
+                    <div class="amount-div th-div">Type</div>
+                    <div class="action-div th-div th-div">&nbsp;</div>
+                  </div>
+                </div>
+
+                <div class="t-body">
+                  <ng-container *ngFor="let item of donationRequestListData | searchPipe : searchSub">
+                    <app-request-row-item [item]="item" (refresh)="loadDonorDashboardData()"></app-request-row-item>
+                  </ng-container>
+                </div>
+                <ng-container *ngIf="donationRequestListData.length === 10 && !searchSub">
+                  <div class="show-more-wrap d-flex p-2 justify-content-center">
+                    <div class="see-all-link fs-5" (click)="moreRequestList()">
+                      <strong>Show more</strong>
+                    </div>
+                  </div>
+                </ng-container>
+              </div>
+
+              <div class="table-mobile d-md-none">
+                <ng-container *ngFor="let item of donationRequestListData | searchPipe : searchSub">
+                  <app-request-row-item
+                    [item]="item"
+                    (refresh)="loadDonorDashboardData()"
+                    [isMobile]="true"
+                  ></app-request-row-item>
+                </ng-container>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <!-- Request end -->
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #datepickerTmp>
+  <app-date-picker-filter
+    [isShowLabel]="false"
+    rootClass="overview-filter"
+    (filtered)="filterChange($event)"
+    [defaultSelected]="'3'"
+    open="left"
+    [isCustomModal]="true"
+  ></app-date-picker-filter>
+</ng-template>
+
+<ng-template #linkSectionTmp>
+  <ng-container *ngIf="!isCardSettingsSaved">
+    <div class="col">
+      <a class="btn btn-primary" [routerLink]="getAddAdditionalCardRouterLink()"
+        ><span class="material-icons">power_settings_new</span> Activate Card</a
+      >
+    </div>
+  </ng-container>
+
+  <div class="col">
+    <a class="btn btn-secondary" [routerLink]="getDonateRouterLink()">
+      <i class="icon-donate"></i>
+      Donate
+    </a>
+  </div>
+
+  <div class="col">
+    <a class="btn btn-secondary" [routerLink]="getAddFundsRouterLink()">
+      <i class="icon-add"></i>
+      Add Funds
+    </a>
+  </div>
+</ng-template>
+
+<ng-template #editCardSettingsTmp>
+  <div class="card-section col-sm-3">
+    <div class="inside-card">
+      <div class="card-image card-image-full position-relative h-auto">
+        <img class="w-100" src="assets/dist/img/image-document.png" alt="" />
+      </div>
+      <div class="links">
+        <ul>
+          <li>
+            <a href="#" [routerLink]="getCardsRouterLink()"
+              >EDIT CARD SETTINGS
+              <i class="icon"><img src="assets/dist/img/right-arrow-blue.svg" width="12" alt="" /></i
+            ></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #totalDeposit>
+  <span class="content">
+    <h6>
+      {{ totalDeposits | currency }} <span class="info-data data-content">{{ depositPercentage }}%</span>
+    </h6>
+    <p>
+      Total Deposits
+      <a
+        [routerLink]="getTransactionsRouterLink()"
+        [state]="{
+          queryFilter: { transType: ['Deposit'], transStatus: ['Success', 'Pending', 'Funding'], method: [] }
+        }"
+      >
+        <img src="assets/dist/img/right-arrow-grey.svg" width="12" alt="" />
+      </a>
+    </p>
+  </span>
+</ng-template>
+
+<ng-template #totalDonation>
+  <span class="content">
+    <h6>
+      {{ totalDonations | currency }} <span class="success-data data-content">{{ donationPercentage }}%</span>
+    </h6>
+    <p>
+      Total Donations
+      <a
+        [routerLink]="getTransactionsRouterLink()"
+        [state]="{ queryFilter: { transType: ['Donation'], transStatus: [], method: [] } }"
+      >
+        <img src="assets/dist/img/right-arrow-grey.svg" width="12" alt="" />
+      </a>
+    </p>
+  </span>
+</ng-template>

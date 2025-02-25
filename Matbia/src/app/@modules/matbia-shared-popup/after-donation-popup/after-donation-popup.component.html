@@ -1,0 +1,111 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" [class.donation-error-title]="isError">
+      <ng-container *ngIf="isError">
+        {{ errorMessage }}
+      </ng-container>
+      <ng-container *ngIf="!isError">
+        <ng-container *ngIf="isRecurring"> Recurring Donation Set! </ng-container>
+        <ng-container *ngIf="!isRecurring"> Donation Sent! </ng-container>
+      </ng-container>
+    </h5>
+
+    <ng-container *ngIf="!isError">
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="modal"
+        aria-label="Close"
+        (click)="goToOverview()"
+      ></button>
+    </ng-container>
+    <ng-container *ngIf="isError">
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="modal"
+        aria-label="Close"
+        (click)="closePopup()"
+      ></button>
+    </ng-container>
+  </div>
+  <div class="modal-body">
+    <!-- icons -->
+    <ng-container *ngIf="!isError"> </ng-container>
+
+    <ng-container *ngIf="isError"> </ng-container>
+
+    <ng-container *ngIf="isError">
+      <ng-template [ngTemplateOutlet]="donationErrorTmp"></ng-template>
+    </ng-container>
+
+    <ng-container *ngIf="!isError">
+      <ng-container *ngIf="isRecurring">
+        <ng-template [ngTemplateOutlet]="recurringDonationTmp"></ng-template>
+      </ng-container>
+
+      <ng-container *ngIf="!isRecurring">
+        <ng-template [ngTemplateOutlet]="donationTmp"></ng-template>
+      </ng-container>
+    </ng-container>
+  </div>
+  <div class="modal-footer">
+    <ng-container *ngIf="!isError">
+      <button type="button" class="btn btn-primary" (click)="goToOverview()">Done</button>
+    </ng-container>
+
+    <ng-container *ngIf="isError">
+      <ng-container *ngIf="!isNoFundsError()">
+        <button type="button" class="btn btn-primary" (click)="goToAddFunds()">Add funds to your account</button>
+      </ng-container>
+      <ng-container *ngIf="isNoFundsError()">
+        <button type="button" class="btn btn-primary" (click)="goToOverview()">OK</button>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #donationErrorTmp>
+  <div class="modal-inner">
+    <img src="assets/dist/img/icon-decline.png" alt="Check" class="icon-checked" />
+    <ng-container *ngIf="isNoFundsError()">
+      <span class="small-head">Your donation amount</span>
+      <h4>{{ amount | currency }}</h4>
+      <span
+        >Was declined because your account has insufficient<br />
+        funds available. Try sending a lower amount or add funds<br />
+        to your account</span
+      >
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #donationTmp>
+  <div class="modal-inner">
+    <img src="assets/dist/img/icon-checked.png" alt="Check" class="icon-checked" />
+    <h4>{{ amount | currency }}</h4>
+    <span
+      >Your donation to {{ organization }} is being <br class="d-none d-md-block" />
+      processed</span
+    >
+  </div>
+</ng-template>
+
+<ng-template #recurringDonationTmp>
+  <div class="modal-inner">
+    <img src="assets/dist/img/icon-checked.png" alt="Check" class="icon-checked" />
+    <h4>{{ amount | currency }}</h4>
+    <p class="transaction-frequency">
+      {{ frequency }},
+      <ng-container *ngIf="count === -1">Always </ng-container>
+      <ng-container *ngIf="count !== -1">{{ count }} times </ng-container>
+      <span class="transaction-estimate">Total:{{ totalAmount | currency }}</span>
+    </p>
+    <span
+      >Your donation will be sent from your Matbia account to "{{ organization }}", {{ frequency }}, starting
+      {{ startDate | date : 'dd/MM/yyyy' }},
+      <ng-container *ngIf="count === -1">Always </ng-container>
+      <ng-container *ngIf="count !== -1"> {{ count }} times, till {{ endDate | date : 'dd/MM/yyyy' }}. </ng-container>
+    </span>
+  </div>
+</ng-template>

@@ -1,0 +1,19 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title">Confirm order</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
+  </div>
+  <div class="modal-body text-center">
+    <small>ORDER TOTAL:</small>
+    <h5>${{ totalAmout }}<sup>.00</sup></h5>
+    <span class="modal-text-small">We will deliver your tokens to:</span>
+    <address>{{ donarInfo }}</address>
+    <a [routerLink]="getProfileRouterLink()" class="link-voucher" (click)="redirectFromVouche()">EDIT ADDRESS</a>
+  </div>
+
+  <div class="modal-footer border-bottom">
+    <button type="button" class="btn btn-primary" (click)="onConfirmClick()">PLACE ORDER</button>
+    <small class="pt-1">This order will be delivered in time for Purim.</small>
+    <div class="alert alert-info small px-3 py-3 w-100">Note: Please ensure the address is not a PO box, as we will hand deliver this order.</div>
+  </div>
+</div>

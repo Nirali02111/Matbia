@@ -1,0 +1,505 @@
+<ng-container *appBusinessDonorAccessControl>
+  <ng-template [ngTemplateOutlet]="requestsDonorTmp"></ng-template>
+</ng-container>
+<ng-container *appPersonalAccessControl>
+  <ng-template [ngTemplateOutlet]="requestsDonorTmp"></ng-template>
+</ng-container>
+
+<ng-container *appBusinessAccessControl>
+  <ng-template [ngTemplateOutlet]="requestsOrgTmp"></ng-template>
+</ng-container>
+<ng-container *appOrganizationAccessControl>
+  <ng-template [ngTemplateOutlet]="requestsOrgTmp"></ng-template>
+</ng-container>
+<ng-template #requestsDonorTmp>
+  <div class="transaction-page requests-page requests-new-page">
+    <h1 class="d-md-none">Requests</h1>
+
+    <ng-container *appPersonalAccessControl>
+      <ul class="top-list">
+        <li>
+          <h4>{{ availableBalance | currency }}</h4>
+          <span>AVAILABLE Funds</span>
+        </li>
+        <li>
+          <h5>{{ deposits | currency }}</h5>
+          <span class="d-none d-md-inline-block">DEPOSITS</span>
+          <span class="d-md-none">DEPOSITS</span>
+        </li>
+        <li>
+          <h5>{{ donations | currency }}</h5>
+          <span class="d-none d-md-inline-block">DONATIONS</span>
+          <span class="d-md-none">DONATIONS</span>
+        </li>
+      </ul>
+    </ng-container>
+    <ng-container *appBusinessDonorAccessControl>
+      <ul class="top-list">
+        <li>
+          <h4>{{ availableBalance | currency }}</h4>
+          <span>AVAILABLE Funds</span>
+        </li>
+        <li>
+          <h5>{{ deposits | currency }}</h5>
+          <span>DEPOSITS</span>
+        </li>
+        <li>
+          <h5>{{ donations | currency }}</h5>
+          <span>DONATIONS</span>
+        </li>
+      </ul>
+    </ng-container>
+
+    <ng-container *appOrganizationAccessControl>
+      <ul class="top-list">
+        <li>
+          <h4>{{ availableBalance | currency }}</h4>
+          <span>AVAILABLE Funds</span>
+        </li>
+        <li>
+          <h5>{{ presentBalance | currency }}</h5>
+          <span>Account Funds</span>
+        </li>
+      </ul>
+    </ng-container>
+
+    <ng-container *appBusinessAccessControl>
+      <ul class="top-list">
+        <li>
+          <h4>{{ availableBalance | currency }}</h4>
+          <span>Available Funds</span>
+        </li>
+        <li>
+          <h5>{{ presentBalance | currency }}</h5>
+          <span>Account Funds</span>
+        </li>
+      </ul>
+    </ng-container>
+
+    <app-list-page-filter [isDatePickerFilter]="false" (filtered)="filterChange($event)" [isRequest]="true"
+      (exportToExcel)="onExportTransactionData()" (selectedstatus)="onStatus($event)"
+      (selectedType)="onSelectTypes($event)" (search)="onSearch($event)"></app-list-page-filter>
+
+    <div class="table-wrapper">
+      <div ngbAccordion class="accordion-request" [closeOthers]="true">
+        <div ngbAccordionItem [collapsed]="isOpenRequestCollapse">
+          <h2 ngbAccordionHeader>
+            <button class="d-flex align-items-center" ngbAccordionButton>
+              <span>Open Requests ({{ (filteredOpenRequests$ | async)?.length || 0 }}) </span>
+              @if((filteredOpenRequests$ | async)?.length){
+              <span (click)="$event.stopPropagation()" class="form-check">
+                <input class="form-check-input" type="checkbox" id="manual-entry-alert-switch"
+                  [(ngModel)]="isBulkDonate" (change)="onToggleBulkDonate()" />
+                <label class="form-check-label" for="manual-entry-alert-switch">Multi donate</label>
+              </span>
+              }
+            </button>
+          </h2>
+          <div ngbAccordionCollapse>
+            <div ngbAccordionBody>
+              <ng-template [ngTemplateOutlet]="requestsDonorTmpBody"
+                [ngTemplateOutletContext]="{ data: filteredOpenRequests$ | async, requestType: 'open' }"></ng-template>
+              @if(isBulkDonate){
+              <div class="accordionFooter">
+                <div class="form-check">
+                  <input type="checkbox" class="form-check-input" (change)="selecteAllRequests($event)" alt=""
+                    id="request-selection" [indeterminate]="
+                      (filteredOpenRequests$ | async)?.length !== selectedRequestsList.length &&
+                      selectedRequestsList.length != 0
+                    " />
+                  <label class="form-check-label" for="request-selection">
+                    {{ selectedRequestsList.length }} Requests selected</label>
+                </div>
+                <button class="btn btn-dismiss btn-light" id="dismiss" (click)="onDismissed()">Dismiss</button>
+                <button class="btn btn-reminder btn-light" id="remind-me-later" (click)="OpenReminder($event)">
+                  <i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12.374" height="14.436" viewBox="0 0 12.374 14.436">
+                      <path id="Icon_material-add-alert" data-name="Icon material-add-alert"
+                        d="M9.319,16.068a1.368,1.368,0,1,0,2.736,0H9.319Zm6.1-2.88v-4a4.725,4.725,0,0,0-3.637-4.6V4.093a1.093,1.093,0,1,0-2.186,0v.495a4.725,4.725,0,0,0-3.637,4.6v4L4.5,14.645v.729H16.874v-.729Z"
+                        transform="translate(-4.5 -3)" fill="#5d62e0" />
+                    </svg>
+                  </i>
+                  Remind Me Later
+                </button>
+
+
+                <button class="ms-auto btn btn-bulk-donate btn-light" id="donate-in-bulk"
+                  (click)="initBulkDonateForm(); openPopup(donateInBulkTmp, 'modal-bulk-donate')">
+                  <i>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18.393" height="16.969" viewBox="0 0 18.393 16.969">
+                      <g id="Group_3498" data-name="Group 3498" transform="translate(-859.765 -343.557)">
+                        <path id="Icon_awesome-donate" data-name="Icon awesome-donate"
+                          d="M6.631,10.776A5.388,5.388,0,1,0,1.243,5.388,5.387,5.387,0,0,0,6.631,10.776ZM6.056,2.523V2.088a.429.429,0,0,1,.43-.43h.288a.429.429,0,0,1,.43.43v.44a2.042,2.042,0,0,1,1.114.4.29.29,0,0,1,.031.443l-.422.4a.292.292,0,0,1-.363.026A.853.853,0,0,0,7.1,3.665H6.095a.451.451,0,0,0-.422.474.468.468,0,0,0,.313.456L7.6,5.08A1.623,1.623,0,0,1,8.732,6.636,1.6,1.6,0,0,1,7.2,8.253v.435a.429.429,0,0,1-.43.43H6.483a.429.429,0,0,1-.43-.43v-.44a2.042,2.042,0,0,1-1.114-.4.29.29,0,0,1-.031-.443L5.331,7a.292.292,0,0,1,.363-.026.853.853,0,0,0,.461.132H7.162a.451.451,0,0,0,.422-.474.468.468,0,0,0-.313-.456L5.657,5.7A1.623,1.623,0,0,1,4.525,4.139,1.6,1.6,0,0,1,6.056,2.523Zm6.377,6.595h-.842A6.278,6.278,0,0,1,9.7,10.776h1.653a.231.231,0,0,1,.249.207V11.4a.231.231,0,0,1-.249.207H1.906a.231.231,0,0,1-.249-.207v-.414a.231.231,0,0,1,.249-.207H3.559A6.309,6.309,0,0,1,1.668,9.118H.829A.828.828,0,0,0,0,9.947v2.487a.828.828,0,0,0,.829.829h11.6a.828.828,0,0,0,.829-.829V9.947A.828.828,0,0,0,12.433,9.118Z"
+                          transform="translate(862.289 347.264)" fill="#5d62e0" />
+                        <path id="Subtraction_77" data-name="Subtraction 77"
+                          d="M1.334,8.818h0A4.079,4.079,0,1,1,6.345,3.751a6.274,6.274,0,0,0-2.681,1.21,1.174,1.174,0,0,0-.5-.306L1.939,4.288A.353.353,0,0,1,1.7,3.943a.341.341,0,0,1,.319-.359h.763a.647.647,0,0,1,.349.1.247.247,0,0,0,.13.038.2.2,0,0,0,.145-.058l.319-.3A.22.22,0,0,0,3.7,3.025a1.544,1.544,0,0,0-.843-.3V2.39a.326.326,0,0,0-.326-.325H2.317a.325.325,0,0,0-.325.325v.329A1.2,1.2,0,0,0,.832,3.943a1.228,1.228,0,0,0,.857,1.178l1.221.366a.3.3,0,0,1,.1.055,6.33,6.33,0,0,0-.552.65h-.4a.641.641,0,0,1-.348-.1.248.248,0,0,0-.131-.038.2.2,0,0,0-.144.057l-.32.3a.217.217,0,0,0-.066.171.223.223,0,0,0,.09.165,1.542,1.542,0,0,0,.783.3,6.205,6.205,0,0,0-.6,1.769Z"
+                          transform="translate(861.416 342.748)" fill="#5d62e0" />
+                        <path id="Subtraction_78" data-name="Subtraction 78"
+                          d="M13.674,8.84h0a6.211,6.211,0,0,0-.579-1.753v-.03a1.2,1.2,0,0,0,1.159-1.223A1.227,1.227,0,0,0,13.4,4.655l-1.221-.367a.353.353,0,0,1-.238-.345.341.341,0,0,1,.319-.359h.763a.641.641,0,0,1,.348.1.247.247,0,0,0,.13.038.2.2,0,0,0,.144-.058l.32-.3a.221.221,0,0,0-.024-.336,1.538,1.538,0,0,0-.842-.3V2.389a.326.326,0,0,0-.326-.325h-.218a.326.326,0,0,0-.326.325v.329a1.2,1.2,0,0,0-1.158,1.224,1.228,1.228,0,0,0,.857,1.178l1.221.366a.354.354,0,0,1,.238.346.341.341,0,0,1-.319.359h-.522a6.251,6.251,0,0,0-3.8-2.426,4.079,4.079,0,1,1,4.933,5.074Z"
+                          transform="translate(861.416 342.748)" fill="#5d62e0" />
+                      </g>
+                    </svg>
+                  </i>
+                  Bulk Donation options
+                </button>
+                <button class=" btn-donate btn btn-primary" id="donate-amount"
+                  (click)="openPopup(bulkDonationConfirmationTmp, 'modal-donate-confirm')">
+                  Donate {{ totalAmount | currency }}
+                </button>
+                <span class="btn-cancel d-md-none" (click)="Cancel()">CANCEL</span>
+              </div>
+              }
+            </div>
+          </div>
+        </div>
+        <div ngbAccordionItem [collapsed]="isSnoozedRequestCollapse">
+          <h2 ngbAccordionHeader>
+            <button ngbAccordionButton>Snoozed ({{ (filteredSnoozedRequests$ | async)?.length || 0 }})</button>
+          </h2>
+          <div ngbAccordionCollapse>
+            <div ngbAccordionBody>
+              <ng-template [ngTemplateOutlet]="requestsDonorTmpBody"
+                [ngTemplateOutletContext]="{ data: filteredSnoozedRequests$ | async, requestType: 'snoozed' }"></ng-template>
+            </div>
+          </div>
+        </div>
+        <div ngbAccordionItem [collapsed]="isClosedRequestCollapse">
+          <h2 ngbAccordionHeader>
+            <button ngbAccordionButton>Closed Requests ({{ closedRequestsCount }})</button>
+          </h2>
+          <div ngbAccordionCollapse>
+            <div ngbAccordionBody>
+              <ng-template [ngTemplateOutlet]="requestsDonorTmpBody"
+                [ngTemplateOutletContext]="{ data: filteredClosedRequests$ | async, requestType: 'closed' }"></ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #requestsOrgTmp>
+  @if (!isProdEnv) {
+  <div class="transaction-page requests-page requests-new-page">
+    <ul class="top-list">
+      <li>
+        <h4>{{ availableBalance | currency }}</h4>
+        <span>AVAILABLE Funds</span>
+      </li>
+      <li>
+        <h5>{{ donations | currency }}</h5>
+        <span class="d-none d-md-inline-block">DONATIONS THIS MONTH</span>
+        <span class="d-md-none">DEPOSITS</span>
+      </li>
+      <li>
+        <h5>{{ batchedThisMonth }}</h5>
+        <span class="d-none d-md-inline-block">BATCHED THIS MONTH</span>
+        <span class="d-md-none">DONATIONS</span>
+      </li>
+    </ul>
+
+    <app-list-page-filter [isDatePickerFilter]="false" (filtered)="filterChange($event)" [isRequest]="true"
+      (exportToExcel)="onExportTransactionData()" (selectedstatus)="onStatus($event)"
+      (search)="onSearch($event)"></app-list-page-filter>
+
+    <div class="table-wrapper">
+      <div class="table">
+        <div class="t-head" [hidden]="isNoRecord">
+          <div class="t-row">
+            <div class="th-div" appSortableHeader sortable="Date Requested" sortName="createdDate"
+              (sort)="onSort($event)">
+              DATE & TIME
+            </div>
+            <div class="th-div" appSortableHeader sortable="Date Requested" sortName="donorName"
+              (sort)="onSort($event)">
+              DONOR NAME
+            </div>
+            <div class="th-div" appSortableHeader sortable="Date Requested" sortName="method" (sort)="onSort($event)">
+              SOURCE
+            </div>
+            <div class="th-div" appSortableHeader sortable="Date Requested" sortName="status" (sort)="onSort($event)">
+              STATUS
+            </div>
+            <div class="th-div" appSortableHeader sortable="Date Requested" sortName="amount" (sort)="onSort($event)">
+              AMOUNT
+            </div>
+          </div>
+        </div>
+        <ng-container *ngIf="isLoading">
+          <app-matbia-skeleton-loader-component [count]="10"></app-matbia-skeleton-loader-component>
+        </ng-container>
+        <ng-container *ngIf="!isLoading">
+          <ng-container *ngIf="!(dataLoading$ | async)">
+            <ng-container *ngIf="rows$ | async as rows">
+              <ng-container *ngIf="rows.length !== 0">
+                <div class="t-body">
+                  <ng-container *ngFor="let item of rows">
+                    <app-request-row-item [orgitem]="item" (refresh)="getRequestData()"
+                      [hideAmountColumn]="IsPendingOrSnoozed" [isRequest]="true"></app-request-row-item>
+                  </ng-container>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="rows.length === 0">
+                <ng-container *ngIf="isNoMatchingRecord">
+                  <ng-template [ngTemplateOutlet]="noMatchingRecordsTmp"></ng-template>
+                </ng-container>
+                <ng-container *ngIf="isNoRecord">
+                  <ng-template [ngTemplateOutlet]="noRecordsTmp"></ng-template>
+                </ng-container>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
+
+      <div class="d-flex justify-content-between p-2 pagination-wrap">
+        <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="gridService.pageSize">
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="50">50</option>
+          <option [ngValue]="100">100</option>
+        </select>
+
+        <ng-container *ngIf="(total$ | async)! && gridService.pageSize && (total$ | async)! > gridService.pageSize">
+          <ngb-pagination [collectionSize]="(total$ | async)!" [(page)]="gridService.page"
+            [pageSize]="gridService.pageSize" [maxSize]="5" [boundaryLinks]="true">
+          </ngb-pagination>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  } @if (isProdEnv) {
+  <div>
+    <ng-template [ngTemplateOutlet]="notDevEnv"></ng-template>
+  </div>
+  }
+</ng-template>
+
+<ng-template #noMatchingRecordsTmp>
+  <div class="no-match text-center">No results found</div>
+</ng-template>
+
+<ng-template #noRecordsTmp>
+  <div class="no-record d-flex align-items-center justify-content-center text-center">
+    <div class="no-record-inner">
+      <h4 class="bg-transparent">You did not get any E-envelopes yet...</h4>
+      <img class="bg-transparent" src="/assets/dist/img/no-record-request.png" alt="" />
+      <p class="bg-transparent">
+        Request envelopes are sent when a organization requests a donation from you, and you want to fulfill the
+        donation later on your portal.
+      </p>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #notDevEnv>
+  <div class="no-record d-flex align-items-center justify-content-center text-center">
+    <div class="no-record-inner">
+      <h4>Coming Soon.Stay Tuned!</h4>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #requestsDonorTmpBody let-data="data" let-requestType="requestType">
+  <!-- Specify data context -->
+  <div class="table-responsive">
+    <div class="table m-0 d-none d-md-inline-block w-100"
+      [ngClass]="{ 'bulk-donate': isBulkDonate && requestType == 'open' }">
+      <div class="t-head" [hidden]="isNoRecord">
+        <div class="t-row">
+          @if(isBulkDonate && requestType == "open"){
+          <div class="th-div th-checkbox" appSortableHeader>&nbsp;</div>
+          }
+          <div class="th-div th-from" appSortableHeader sortable="From" sortName="orgName" (sort)="onSort($event)">
+            FROM
+          </div>
+          <div class="th-div th-status" appSortableHeader sortable="Status" sortName="status" (sort)="onSort($event)">
+            STATUS
+          </div>
+          <div class="th-div th-dt" appSortableHeader sortable="Date And Time" sortName="createdDate"
+            (sort)="onSort($event)">
+            DATE & TIME REQUESTED
+          </div>
+          <div class="th-div th-type" appSortableHeader sortable="Source" sortName="source" (sort)="onSort($event)">
+            TYPE
+          </div>
+          @if(requestType == 'open' && !isBulkDonate){
+
+          <div class="th-div th-type"></div>
+          } @if(!isBulkDonate || requestType != "open"){ @if(requestType == 'closed'){
+          <div class="th-div th-dt" appSortableHeader sortable="transDate" sortName="transDate" (sort)="onSort($event)">
+            Date & Time Fulfilled
+          </div>
+          } } @else {
+          <div class="th-div th-note">ADD NOTE</div>
+          <div class="th-div th-amount text-end">DONATION AMOUNT</div>
+          }
+        </div>
+      </div>
+      <ng-container *ngIf="isLoading">
+        <app-matbia-skeleton-loader-component [count]="10"></app-matbia-skeleton-loader-component>
+      </ng-container>
+      <ng-container *ngIf="!isLoading">
+        <ng-container *ngIf="!(dataLoading$ | async)">
+          <ng-container *ngIf="data">
+            <ng-container *ngIf="data.length !== 0">
+              <div class="t-body">
+                <ng-container *ngFor="let item of data">
+                  <!-- Use data directly -->
+                  <app-request-row-item [selectAll]="requestType == 'open' ? selectAllRequest : false"
+                    [isBulkDonate]="requestType == 'open' ? isBulkDonate : false" [item]="item"
+                    (refresh)="getRequestData()" [hideAmountColumn]="IsPendingOrSnoozed"
+                    (addRequest)="addRequestToBulkDonate($event)"
+                    [selectedRequest]="selectedRequestsList"></app-request-row-item>
+                </ng-container>
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="data.length == 0">
+              <ng-container *ngIf="data.length == 0">
+                <ng-template [ngTemplateOutlet]="noMatchingRecordsTmp"></ng-template>
+              </ng-container>
+              <ng-container *ngIf="isNoRecord">
+                <ng-template [ngTemplateOutlet]="noRecordsTmp"></ng-template>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+    </div>
+  </div>
+  <div class="table-mobile d-md-none">
+    <ng-container *ngFor="let item of data">
+      <app-request-row-item [item]="item" [isBulkDonate]="requestType == 'open' ? isBulkDonate : false"
+        (refresh)="getRequestData()" [hideAmountColumn]="IsPendingOrSnoozed"
+        (addRequest)="addRequestToBulkDonate($event)" [isMobile]="true"
+        [selectedRequest]="selectedRequestsList"></app-request-row-item>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #bulkDonationConfirmationTmp>
+  <div class="modal-header">
+    <h3 class="modal-title">Confirm Donation</h3>
+    <a class="modal-close" href="javascript:void(0)" (click)="closeModal()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13.423" height="13.426" viewBox="0 0 13.423 13.426">
+        <path id="Icon_ionic-ios-close" data-name="Icon ionic-ios-close"
+          d="M8.3,6.711l4.8-4.8A1.124,1.124,0,0,0,11.51.327l-4.8,4.8L1.92.327A1.124,1.124,0,1,0,.33,1.916l4.8,4.8-4.8,4.8A1.124,1.124,0,0,0,1.92,13.1l4.8-4.8,4.8,4.8A1.124,1.124,0,0,0,13.1,11.507Z"
+          transform="translate(0 13.426) rotate(-90)" opacity="0.303" />
+      </svg>
+    </a>
+  </div>
+
+  <div class="modal-body">
+    <div class="text-center modal-head">
+      <span>Your donation amount</span>
+      <h2>{{ totalAmount | currency }}</h2>
+      <p>Your donation will be sent to {{ selectedRequestsList.length }} organizations.</p>
+    </div>
+    @for (org of selectedRequestsList; track $index) {
+    <div class="item-donation d-flex align-items-center justify-content-between">
+      <figure class="rounded-circle">
+        <img [src]="org.orgLogo || profileIcon" width="34" alt="" />
+      </figure>
+      <div class="d-flex flex-column flex-fill">
+        <h6>{{ org.orgName }}</h6>
+        <span>{{ org.orgName }}</span>
+      </div>
+      <small>{{ org.donationAmount }}</small>
+    </div>
+    }
+  </div>
+
+  <div class="modal-footer border-0 pt-0 d-flex flex-column gap-4">
+    <small class="d-inline-block text-center w-100">By submitting you agree to our <a href="/terms"
+        target="_blank">Terms & Conditions</a></small>
+    <button type="button" class="btn btn-primary w-100" (click)="bulkDonate()">Confirm</button>
+    <button type="button" class="btn btn-default mx-auto p-0 border-0" (click)="closeModal()">Cancel</button>
+  </div>
+</ng-template>
+
+<ng-template #donateInBulkTmp>
+  <div class="modal-header">
+    <h3 class="modal-title">Donate in bulk</h3>
+    <a class="modal-close" href="javascript:void(0)" (click)="closeModal()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13.423" height="13.426" viewBox="0 0 13.423 13.426">
+        <path id="Icon_ionic-ios-close" data-name="Icon ionic-ios-close"
+          d="M8.3,6.711l4.8-4.8A1.124,1.124,0,0,0,11.51.327l-4.8,4.8L1.92.327A1.124,1.124,0,1,0,.33,1.916l4.8,4.8-4.8,4.8A1.124,1.124,0,0,0,1.92,13.1l4.8-4.8,4.8,4.8A1.124,1.124,0,0,0,13.1,11.507Z"
+          transform="translate(0 13.426) rotate(-90)" opacity="0.303" />
+      </svg>
+    </a>
+  </div>
+  <div class="modal-body" [formGroup]="bulkDonateForm">
+    <div class="form-group form-amount">
+      <label for="amount">Amount:</label>
+      <div class="input--group">
+        <!-- <i class="fas fa-dollar-sign dollar--icon"></i> -->
+        <input appAmountKeypad mask="separator.2" thousandSeparator="," formControlName="bulkDonateAmount"
+          class="form-control" placeholder="$0.00" />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="" class="form-label">Choose how to distribute this amount:</label>
+
+      <div class="d-flex flex-column ps-3 ps-md-0 gap-2 gap-md-3">
+        <div class="form-check">
+          <input type="radio" class="form-check-input" id="sendEach" name="distributionType"
+            formControlName="distributionType" value="sendEach" />
+          <label for="sendEach" class="form-check-label">Send {{ bulkDonateAmount?.value | currency }} each</label>
+        </div>
+        <div class="form-check">
+          <input type="radio" class="form-check-input" id="sendEqually" name="distributionType"
+            formControlName="distributionType" value="divideEqually" />
+          <label for="sendEqually" class="form-check-label">Divide equally</label>
+        </div>
+        <div class="form-check d-none">
+          <input type="radio" class="form-check-input" id="divideRandomly" name="distributionType"
+            formControlName="distributionType" value="divideRandomly" />
+          <label for="divideRandomly" class="form-check-label d-flex flex-column">
+            <span>Divide randomly</span>
+
+            @if(distributionType?.value === 'divideRandomly'){
+            <div class="form-group d-flex min-max-group">
+              <div class="min-max">
+                <label>MINIMUM:</label>
+                <div class="input--group">
+                  <input
+                    appAmountKeypad
+                    mask="separator.2"
+                    thousandSeparator=","
+                    formControlName="minDonationAmount"
+                    class="form-control"
+                  />
+                </div>
+              </div>
+              <span class="range-separator"></span>
+              <div class="min-max">
+                <label>MAXIMUM:</label>
+                <div class="input--group">
+                  <input
+                    appAmountKeypad
+                    mask="separator.2"
+                    thousandSeparator=","
+                    formControlName="maxDonationAmount"
+                    class="form-control"
+                  />
+                </div>
+              </div>
+            </div>
+            }
+          </label>
+        </div>
+        @if(showMinValueError){
+        <div class="val-error">
+          <small>Each amount should be more than $0.25</small>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer gap-md-0 gap-3 border-0 pt-0">
+    <button class="btn btn-primary w-100" (click)="applyAmountToOrgs()">Apply</button>
+    <button type="button" class="btn btn-default w-100 m-0 d-md-none" (click)="closeModal()">Cancel</button>
+  </div>
+</ng-template>

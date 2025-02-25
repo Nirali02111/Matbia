@@ -1,0 +1,378 @@
+<div class="signup-card mb-4">
+  <div class="row" [formGroup]="formGroup" [@shakeTrigger]="formGroup?.invalid && IsAnimate">
+    <div class="col-md-12">
+      <div class="upload-profile d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <div class="upload-img">
+            <img [src]="orgIcon" alt="image" />
+          </div>
+          <label class="form-label mb-0">PROFILE:</label>
+        </div>
+        <div class="field-input-item">
+          <button class="btn btn-primary btn-upload">UPLOAD LOGO</button>
+          <input type="file" class="file-input" (change)="onFileChange($event)" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group" [class.is-invalid-er]="OrgLegalName?.touched && OrgLegalName?.invalid && isSubmitted">
+        <label class="form-label">ORG. LEGAL NAME:</label>
+        <input type="text" class="form-control" placeholder="Legal Name" formControlName="orgLegalName" />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group" [class.is-invalid-er]="DbaName?.touched && DbaName?.invalid && isSubmitted">
+        <label class="form-label">DBA NAME:</label>
+        <input type="text" class="form-control" placeholder="Doing business as..." formControlName="dba" />
+      </div>
+    </div>
+    <div class="col-md-5">
+      <div class="form-group" [class.is-invalid-er]="TaxId?.touched && TaxId?.invalid && isSubmitted">
+        <label class="form-label">EIN:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Enter EIN"
+          [mask]="employerIdMask"
+          formControlName="taxId"
+        />
+      </div>
+    </div>
+    <div class="col-md-7"></div>
+
+    <div class="col-md-12">
+      <div class="form-group" [class.is-invalid-er]="LegalAddress?.touched && LegalAddress?.invalid && isSubmitted">
+        <label class="form-label">LEGAL ADDRESS:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Street"
+          appAddressAutocomplete
+          (onAddressChange)="onLegalAddressChange($event)"
+          formControlName="data_input_field_2"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group" [class.is-invalid-er]="LegalCity?.touched && LegalCity?.invalid && isSubmitted">
+        <label class="form-label">CITY:</label>
+        <input type="text" class="form-control" placeholder="Enter city" formControlName="legalCity" />
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="form-group" [class.is-invalid-er]="LegalState?.touched && LegalState?.invalid && isSubmitted">
+        <label class="form-label">STATE:</label>
+
+        <ng-select
+          bindLabel="item_id"
+          bindValue="item_id"
+          [addTag]="true"
+          [searchable]="true"
+          [searchFn]="commonDataService.customSearchFn"
+          [items]="commonDataService.stateList"
+          formControlName="legalState"
+        >
+          <ng-template ng-option-tmp let-item="item">
+            {{ item.item_id }}
+          </ng-template>
+        </ng-select>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="form-group" [class.is-invalid-er]="LegalZip?.touched && LegalZip?.invalid && isSubmitted">
+        <label class="form-label">ZIP:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Zip code"
+          [validation]="legalZipCodeValidation"
+          [mask]="legalZipCodeMask"
+          formControlName="legalZip"
+        />
+      </div>
+    </div>
+    <div class="col-md-12">
+      <hr />
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <label class="form-label">MAILING ADDRESS:</label>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group">
+        <input type="checkbox" class="form-check" id="is-mail-address" formControlName="isMailingAddress" />
+        <label for="is-mail-address" class="form-label">Same as legal address</label>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group" [class.is-invalid-er]="Address?.touched && Address?.invalid && isSubmitted">
+        <label class="form-label">ADDRESS:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Street"
+          appAddressAutocomplete
+          (onAddressChange)="onAddressChange($event)"
+          formControlName="data_input_field_1"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group" [class.is-invalid-er]="City?.touched && City?.invalid && isSubmitted">
+        <label class="form-label">CITY:</label>
+        <input type="text" class="form-control" placeholder="Enter city" formControlName="city" />
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group" [class.is-invalid-er]="State?.touched && State?.invalid && isSubmitted">
+        <label class="form-label">STATE:</label>
+        <ng-select
+          bindLabel="item_id"
+          bindValue="item_id"
+          [addTag]="true"
+          [searchable]="true"
+          [searchFn]="commonDataService.customSearchFn"
+          [items]="commonDataService.stateList"
+          formControlName="state"
+        >
+          <ng-template ng-option-tmp let-item="item">
+            {{ item.item_id }}
+          </ng-template>
+        </ng-select>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="form-group" [class.is-invalid-er]="Zip?.touched && Zip?.invalid && isSubmitted">
+        <label class="form-label">ZIP:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Zip code"
+          [validation]="zipCodeValidation"
+          [mask]="zipCodeMask"
+          formControlName="zip"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group" [class.is-invalid-er]="Email?.touched && Email?.invalid && isSubmitted">
+        <label class="form-label">EMAIL ADDRESS:</label>
+        <input type="text" class="form-control" placeholder="Enter email address" formControlName="email" />
+      </div>
+    </div>
+    <div class="col-md-12">
+      <hr />
+    </div>
+    <div class="col-md-6" formGroupName="ownerIdAttachment">
+      <div
+        class="form-group"
+        [class.is-invalid-er]="OwnerIdAttachmentBase64?.touched && OwnerIdAttachmentBase64?.invalid && isSubmitted"
+      >
+        <label class="form-label"
+          >ATTACH OWNERS PHOTO ID: <ng-template [ngTemplateOutlet]="fileUploadInfoIcon"></ng-template
+        ></label>
+
+        <ng-container *ngIf="!OwnerIdAttachmentFileName?.value">
+          <button class="btn btn-attchment">
+            <span class="material-icons">attach_file</span>
+            UPLOAD DOCUMENT
+            <input
+              type="file"
+              class="file-input"
+              (change)="onOwnerPhotoIdChange($event)"
+              accept=".jpg, jpeg, .png, .pdf"
+            />
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="OwnerIdAttachmentFileName?.value">
+          <div class="attached-photo position-relative">
+            <input
+              readonly
+              type="text"
+              class="form-control"
+              placeholder="Attach Owners Photo Id"
+              formControlName="ownerIdAttachmentFileName"
+            />
+            <span class="material-icons" (click)="removeOwnerDocuments()"> close</span>
+          </div>
+        </ng-container>
+
+        <ng-container
+          *ngIf="
+            OwnerIdAttachmentBase64?.touched && OwnerIdAttachmentBase64?.invalid && isSubmitted;
+            else ownerIdAttachmentDocTypeErrorCheck
+          "
+        >
+          <app-input-error [errors]="OwnerIdAttachmentBase64?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+    <div class="col-md-6" formGroupName="orgIdAttachment">
+      <div
+        class="form-group"
+        [class.is-invalid-er]="OrgIdAttachmentBase64?.touched && OrgIdAttachmentBase64?.invalid && isSubmitted"
+      >
+        <label class="form-label"
+          >ATTACH TAX DOCUMENT: <ng-template [ngTemplateOutlet]="fileUploadInfoIcon"></ng-template>
+        </label>
+        <ng-container *ngIf="!OrgIdAttachmentFileName?.value">
+          <button class="btn btn-attchment">
+            <span class="material-icons">attach_file</span>
+            UPLOAD DOCUMENT
+            <input
+              type="file"
+              class="file-input"
+              (change)="onOrgIdAttachmentChange($event)"
+              accept=".jpg, jpeg, .png, .pdf"
+            />
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="OrgIdAttachmentFileName?.value">
+          <div class="attached-photo position-relative">
+            <input
+              readonly
+              type="text"
+              class="form-control"
+              placeholder="Attach Owners Photo Id"
+              formControlName="orgIdAttachmentFileName"
+            />
+            <span class="material-icons" (click)="removeOrgIdDocuments()"> close</span>
+          </div>
+        </ng-container>
+
+        <ng-container
+          *ngIf="
+            OrgIdAttachmentBase64?.touched && OrgIdAttachmentBase64?.invalid && isSubmitted;
+            else orgIdAttachmentDocTypeErrorCheck
+          "
+        >
+          <app-input-error [errors]="OrgIdAttachmentBase64?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h4 class="signup-subheading">Display info</h4>
+<p>This will be the name displayed for donors when they search and donate to your organization</p>
+
+<div class="signup-card mt-3" [formGroup]="formGroup" [@shakeTrigger]="formGroup?.invalid && IsAnimate">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="form-group" [class.is-invalid-er]="DisplayName?.touched && DisplayName?.invalid && isSubmitted">
+        <label class="form-label">DISPLAY NAME: <ng-template [ngTemplateOutlet]="displayNameIcon"></ng-template></label>
+        <input type="text" class="form-control" placeholder="Display Name" formControlName="displayName" />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div
+        class="form-group"
+        [class.is-invalid-er]="YiddishDisplayName?.touched && YiddishDisplayName?.invalid && isSubmitted"
+      >
+        <label class="form-label" style="font-weight: 600; font-size: 17px"
+          >שם/נאמען: <ng-template [ngTemplateOutlet]="displayNameIcon"></ng-template
+        ></label>
+        <input type="text" class="form-control" placeholder="אידישע נאמען" formControlName="yiddishDisplayName" />
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="form-group" [class.is-invalid-er]="Phone?.touched && Phone?.invalid && isSubmitted">
+        <label class="form-label"
+          >DISPLAY PHONE NUMBER: <ng-template [ngTemplateOutlet]="displayPhoneIcon"></ng-template
+        ></label>
+        <app-phone-input [isSubmit]="false" formControlName="phone"></app-phone-input>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h4 class="signup-subheading">Owners info</h4>
+
+<div class="signup-card mt-3" [formGroup]="formGroup" [@shakeTrigger]="formGroup?.invalid && IsAnimate">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group" [class.is-invalid-er]="OwnerName?.touched && OwnerName?.invalid && isSubmitted">
+        <label class="form-label">OWNERS NAME:</label>
+        <input type="text" class="form-control" placeholder="Name" formControlName="ownerName" />
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div
+        class="form-group"
+        [class.is-invalid-er]="OwnerPhoneNumber?.touched && OwnerPhoneNumber?.invalid && isSubmitted"
+      >
+        <label class="form-label">PHONE NUMBER:</label>
+        <app-phone-input [isSubmit]="false" placeholder="( ) - -" formControlName="ownerPhoneNumber"></app-phone-input>
+      </div>
+    </div>
+
+    <div class="col-md-2">
+      <div class="form-group" [class.is-invalid-er]="OwnerPhoneExt?.touched && OwnerPhoneExt?.invalid && isSubmitted">
+        <label class="form-label">EXT:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="EXT"
+          [mask]="phoneEXTMask"
+          formControlName="ownerPhoneExt"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group" [class.is-invalid-er]="OwnerEmail?.touched && OwnerEmail?.invalid && isSubmitted">
+        <label class="form-label">EMAIL ADDRESS:</label>
+        <input type="email" class="form-control" placeholder="Enter email address" formControlName="ownerEmail" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #mimeMessage>
+  <div class="row text-danger error-container first-err-only">
+    <div class="val-error">Please upload valid document Supported Formats are .png, .jpg, .pdf</div>
+  </div>
+</ng-template>
+
+<ng-template #ownerIdAttachmentDocTypeErrorCheck>
+  <ng-container *ngIf="OwnerIdAttachmentFileName?.touched && OwnerIdAttachmentFileName?.invalid && isSubmitted">
+    <ng-template [ngTemplateOutlet]="mimeMessage"></ng-template>
+  </ng-container>
+</ng-template>
+
+<ng-template #orgIdAttachmentDocTypeErrorCheck>
+  <ng-container *ngIf="OrgIdAttachmentFileName?.touched && OrgIdAttachmentFileName?.invalid && isSubmitted">
+    <ng-template [ngTemplateOutlet]="mimeMessage"></ng-template>
+  </ng-container>
+</ng-template>
+
+<ng-template #fileUploadInfoIcon>
+  <a class="funding-tooltip-link" [ngbTooltip]="fundingTipContent"> <i class="fas fa-question-circle"></i></a>
+</ng-template>
+
+<ng-template #fundingTipContent> PNG, JPG, JPEG, PDF, Format </ng-template>
+
+<ng-template #displayNameIcon>
+  <a class="funding-tooltip-link" [ngbTooltip]="displayNameIconContent"> <i class="fas fa-question-circle"></i></a>
+</ng-template>
+
+<ng-template #displayNameIconContent>
+  This will be the name displayed for donors when they search and donate to your organization</ng-template
+>
+
+<ng-template #displayPhoneIcon>
+  <a class="funding-tooltip-link" [ngbTooltip]="displayPhoneIconContent"> <i class="fas fa-question-circle"></i></a>
+</ng-template>
+
+<ng-template #displayPhoneIconContent>
+  This will be the number displayed for donors when they search and donate to your organization
+</ng-template>

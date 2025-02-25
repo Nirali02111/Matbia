@@ -1,0 +1,95 @@
+<div class="donate-wrap m-auto position-relative donate-organization">
+  <div class="top-head--section mb-md-0 mb-4 pb-md-0 pb-2">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="title--bar mb-0">
+        <a
+          href="javascriptvoid(0);"
+          [routerLink]="getDonateRouterLink()"
+          (click)="onBackClick()"
+          class="d-flex align-items-center"
+        >
+          <svg
+            class="d-none d-md-inline-block"
+            id="Component_51_11"
+            data-name="Component 51 – 11"
+            xmlns="http://www.w3.org/2000/svg"
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+          >
+            <rect id="Rectangle_4499" data-name="Rectangle 4499" width="40" height="40" rx="10" opacity="0.08" />
+            <path
+              id="Path_445"
+              data-name="Path 445"
+              d="M2272.064,287.648l6.376,6.376,6.376-6.376"
+              transform="translate(310.275 -2258.439) rotate(90)"
+              fill="none"
+              stroke="#454545"
+              stroke-linecap="round"
+              stroke-width="1.5"
+              opacity="0.55"
+            />
+          </svg>
+
+          <svg
+            class="d-md-none"
+            xmlns="http://www.w3.org/2000/svg"
+            width="8.497"
+            height="14.873"
+            viewBox="0 0 8.497 14.873"
+          >
+            <path
+              id="Path_445"
+              data-name="Path 445"
+              d="M2272.064,287.648l6.376,6.376,6.376-6.376"
+              transform="translate(295.084 -2271.003) rotate(90)"
+              fill="none"
+              stroke="#454545"
+              stroke-linecap="round"
+              stroke-width="1.5"
+            />
+          </svg>
+          <span class="ms-3"> DONATE TO:</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <span class="view-history d-flex align-items-center" (click)="openDonationHistoryPopup()">
+    <span class="d-flex flex-column me-2">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </span>
+    VIEW HISTORY
+  </span>
+
+  <div class="send-money--panel">
+    <app-add-funds-from-bank
+      [formGroup]="matbiaAddFundForm"
+      [orgId]="orgId"
+      (orgSuggestionClicked)="onOrgSuggestionClicked($event)"
+      [campaignName]="campaignName"
+      [organization]="organization"
+    ></app-add-funds-from-bank>
+    <div
+      class="action--buttons justify-content-center btn-for-setup-card align-items-center mt-5 d-flex w-100 flex-column"
+    >
+      <button
+        class="btn btn-primary w-100 mw-100"
+        (click)="onDonateFunds()"
+        [disabled]="this.matbiaAddFundForm.get('amount')?.invalid"
+      >
+        continue
+      </button>
+      <button
+        class="btn btn-default w-100 mw-100 mt-2 mt-md-4"
+        [routerLink]="getDonateRouterLink()"
+        (click)="onBackClick()"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</div>

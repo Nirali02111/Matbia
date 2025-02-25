@@ -1,0 +1,15 @@
+@if (isLoading) {
+<div class="account-content--wrap small--container w-75 m-auto pt-5">
+  <div class="start-funding-wrap">
+    <app-matbia-skeleton-loader-component></app-matbia-skeleton-loader-component>
+  </div>
+</div>
+} @else { @if (displayDepositMethods()) {
+<app-choose-deposite-method></app-choose-deposite-method>
+} @if (!displayDepositMethods()) {
+<app-deposit-funds-via-bank-account
+  [formGroup]="matbiaAddFundForm"
+  (autoDepositsContinueClicked)="onAddFunds()"
+  (chooseOtherOptions)="onChooseOtherOptions()"
+></app-deposit-funds-via-bank-account>
+} }

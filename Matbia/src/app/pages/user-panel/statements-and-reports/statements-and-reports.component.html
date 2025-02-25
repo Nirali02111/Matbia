@@ -1,0 +1,304 @@
+<section class="section-statement">
+  <div class="container">
+    <!-- Search bar and custom date range button -->
+    <div class="d-flex justify-content-sm-between flex-column gap-2 flex-sm-row align-items-sm-center mb-4">
+      <input
+        type="text"
+        class="form-control"
+        [formControl]="searchValue"
+        placeholder="Search statements"
+        aria-label="Search statements"
+      />
+      <button class="btn btn-primary justify-content-center" (click)="openCustomReportFilter(customDateFilterTmp)">
+        <i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="15.722" height="17.5" viewBox="0 0 15.722 17.5">
+            <g id="calendar_duotone" transform="translate(-31.25 -23.25)">
+              <path
+                id="Path_37470"
+                data-name="Path 37470"
+                d="M32,38.222A1.778,1.778,0,0,0,33.778,40H44.444a1.778,1.778,0,0,0,1.778-1.778V31.111M32,38.222V31.111H46.222M32,38.222V27.556a1.778,1.778,0,0,1,1.778-1.778H44.444a1.778,1.778,0,0,1,1.778,1.778v3.556M41.778,24v3.556M36.444,24v3.556"
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+              />
+            </g>
+          </svg>
+        </i>
+        Custom Date Range
+      </button>
+    </div>
+
+    <!-- Yearly Reports Accordion -->
+    @for (yearData of rows$ | async; track $index) {
+
+    <div class="card">
+      <div class="card-header">
+        <h5>Year-to-date {{ yearData.year }}</h5>
+        <ng-template
+          [ngTemplateOutlet]="generateReportIcons"
+          [ngTemplateOutletContext]="{ year: yearData.year, month: null }"
+        ></ng-template>
+      </div>
+
+      <div class="accordion" [attr.id]="'accordion' + yearData.year">
+        <div class="accordion-item">
+          <h2 class="accordion-header" [attr.id]="'headingReports' + yearData.year">
+            <button
+              class="accordion-button collapsed"
+              type="button"
+              data-bs-toggle="collapse"
+              [attr.data-bs-target]="'#collapseReports' + yearData.year"
+              aria-expanded="false"
+              [attr.aria-controls]="'collapseReports' + yearData.year"
+            >
+              Monthly reports
+            </button>
+          </h2>
+          <div
+            [id]="'collapseReports' + yearData.year"
+            class="accordion-collapse collapse"
+            [attr.aria-labelledby]="'headingReports' + yearData.year"
+            [attr.data-bs-parent]="'#accordion' + yearData.year"
+          >
+            <div class="accordion-body">
+              <!-- List of months for each year -->
+              <div
+                *ngFor="let month of yearData.months"
+                class="item-report d-flex justify-content-between align-items-center"
+              >
+                <h5>{{ month }} {{ yearData.year }}</h5>
+                <ng-template
+                  [ngTemplateOutlet]="generateReportIcons"
+                  [ngTemplateOutletContext]="{ month: month, year: yearData.year }"
+                ></ng-template>
+                <hr />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    } @empty { @if(!isLoading){
+    <div>no records found</div>
+    } } @if(isLoading){
+    <app-matbia-skeleton-loader-component [count]="6"></app-matbia-skeleton-loader-component>
+    }
+  </div>
+</section>
+
+<ng-template #customDateFilterTmp>
+  <div class="modal-header">
+    <h3 class="modal-title">Create custom report</h3>
+    <a class="modal-close" href="javascript:void(0)" (click)="closeModal()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13.423" height="13.426" viewBox="0 0 13.423 13.426">
+        <path
+          id="Icon_ionic-ios-close"
+          data-name="Icon ionic-ios-close"
+          d="M8.3,6.711l4.8-4.8A1.124,1.124,0,0,0,11.51.327l-4.8,4.8L1.92.327A1.124,1.124,0,1,0,.33,1.916l4.8,4.8-4.8,4.8A1.124,1.124,0,0,0,1.92,13.1l4.8-4.8,4.8,4.8A1.124,1.124,0,0,0,13.1,11.507Z"
+          transform="translate(0 13.426) rotate(-90)"
+          opacity="0.303"
+        /></svg
+      >`
+    </a>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="reportForm">
+      <div class="form-group d-flex">
+        <div class="w-100">
+          <label class="form-label" for="fromDate">From Date:</label>
+          <input
+            type="text"
+            ngxDaterangepickerMd
+            formControlName="fromDate"
+            class="form-control"
+            [singleDatePicker]="true"
+            [closeOnAutoApply]="true"
+            [autoApply]="true"
+          />
+        </div>
+
+        <hr />
+
+        <div class="w-100">
+          <label class="form-label" for="toDate">To Date:</label>
+          <input
+            type="text"
+            ngxDaterangepickerMd
+            formControlName="toDate"
+            class="form-control"
+            [singleDatePicker]="true"
+            [closeOnAutoApply]="true"
+            [autoApply]="true"
+          />
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="form-check">
+          <input type="checkbox" id="receiptOfDeposits" formControlName="receiptOfDeposits" class="form-check-input" />
+          <label class="form-check-label" for="receiptOfDeposits">Receipt of Deposits</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="statement" formControlName="statement" class="form-check-input" />
+          <label class="form-check-label" for="statement">Statement</label>
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="downloadCSV" formControlName="downloadCSV" class="form-check-input" />
+          <label class="form-check-label" for="downloadCSV">Download CSV</label>
+        </div>
+      </div>
+    </form>
+    <div class="d-flex flex-column gap-4">
+      <button type="button" class="btn btn-primary m-0 w-100" (click)="generateReport('', 0, '')">
+        Generate Report
+      </button>
+      <button type="button" class="btn btn-default m-0 w-100 border-0 p-0" (click)="closeModal()">Cancel</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #successPopupTmp>
+  <div class="modal-header">
+    <h3 class="modal-title">Success!</h3>
+    <a class="modal-close" href="javascript:void(0)" (click)="closeModal('success')">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13.423" height="13.426" viewBox="0 0 13.423 13.426">
+        <path
+          id="Icon_ionic-ios-close"
+          data-name="Icon ionic-ios-close"
+          d="M8.3,6.711l4.8-4.8A1.124,1.124,0,0,0,11.51.327l-4.8,4.8L1.92.327A1.124,1.124,0,1,0,.33,1.916l4.8,4.8-4.8,4.8A1.124,1.124,0,0,0,1.92,13.1l4.8-4.8,4.8,4.8A1.124,1.124,0,0,0,13.1,11.507Z"
+          transform="translate(0 13.426) rotate(-90)"
+          opacity="0.303"
+        /></svg
+      >`
+    </a>
+  </div>
+  <div class="modal-body">
+    <div class="d-flex flex-column gap-3">
+      <div class="w-100 d-flex gap-1">
+        <span>Open your</span>
+        <a [href]="receiptUrl" target="_blank">Receipts</a>
+      </div>
+      <div class="w-100 d-flex gap-1">
+        <span>Open your</span>
+        <a [href]="statementUrl" target="_blank">Statements</a>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer pt-0 border-0 d-flex flex-column gap-4">
+    <button type="button" class="btn btn-primary m-0 w-100" (click)="closeModal('success')">Close</button>
+  </div>
+</ng-template>
+
+<ng-template #generateReportIcons let-year="year" let-month="month">
+  <div class="d-flex">
+    <div class="item-action d-flex align-items-center">
+      <label>Statement:</label>
+      <div class="d-flex">
+        <span
+          class="button"
+          role="button"
+          ngbTooltip="Open PDF"
+          placement="top"
+          tooltipClass="statement-report-tooltip"
+          (click)="generateReport('statement', year, month)"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="14.578" height="18.5" viewBox="0 0 14.578 18.5">
+            <g
+              id="Icon_ion-document-text-outline"
+              data-name="Icon ion-document-text-outline"
+              transform="translate(0.75 0.75)"
+            >
+              <path
+                id="Path_37424"
+                data-name="Path 37424"
+                d="M19.828,10.455v7.959a1.962,1.962,0,0,1-1.962,1.962H8.712A1.962,1.962,0,0,1,6.75,18.414V5.337A1.962,1.962,0,0,1,8.712,3.375h4.036a1.308,1.308,0,0,1,.924.383l5.773,5.773A1.308,1.308,0,0,1,19.828,10.455Z"
+                transform="translate(-6.75 -3.375)"
+                fill="none"
+                stroke="currentCOlor"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+              />
+              <path
+                id="Path_37425"
+                data-name="Path 37425"
+                d="M15.644,3.938v4.9a1.308,1.308,0,0,0,1.308,1.308h4.9m-9.481,3.269h6.539m-6.539,3.269h6.539"
+                transform="translate(-9.106 -3.611)"
+                fill="none"
+                stroke="currentCOlor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+              />
+            </g>
+          </svg>
+        </span>
+        <span
+          class="button"
+          role="button"
+          ngbTooltip="Download Excel"
+          placement="top"
+          tooltipClass="statement-report-tooltip"
+          (click)="generateReport('csv', year, month)"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="19.429" height="17" viewBox="0 0 19.429 17">
+            <path
+              id="Icon_simple-microsoftexcel"
+              data-name="Icon simple-microsoftexcel"
+              d="M18.62,2.25a.759.759,0,0,1,.567.243.759.759,0,0,1,.243.567V18.441a.83.83,0,0,1-.81.81H5.667a.83.83,0,0,1-.81-.81V15.608H.81a.759.759,0,0,1-.567-.243A.759.759,0,0,1,0,14.8V6.7a.759.759,0,0,1,.243-.567A.743.743,0,0,1,.81,5.893H4.857V3.06A.759.759,0,0,1,5.1,2.493a.759.759,0,0,1,.567-.243ZM4.857,11.786l1.15,2.153H7.739L5.813,10.807,7.707,7.731H6.039L4.987,9.674l-.04.065-.032.073L4.4,8.775,3.862,7.731H2.1l1.838,3.092L1.927,13.94H3.675Zm6.679,6.25V15.608H6.072v2.429Zm0-3.643V11.357H9.715v3.036Zm0-4.25V7.107H9.715v3.036Zm0-4.25V3.464H6.072V5.893Zm6.679,12.143V15.608H12.75v2.429Zm0-3.643V11.357H12.75v3.036Zm0-4.25V7.107H12.75v3.036Zm0-4.25V3.464H12.75V5.893Z"
+              transform="translate(0 -2.25)"
+              fill="currentCOlor"
+            />
+          </svg>
+        </span>
+      </div>
+    </div>
+    <div class="item-action d-flex align-items-center">
+      <label>Receipt of Deposits:</label>
+      <span
+        class="button"
+        ngbTooltip="Open PDF"
+        placement="top"
+        tooltipClass="statement-report-tooltip"
+        role="button"
+        (click)="generateReport('receipt', year, month)"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="14.578" height="18.5" viewBox="0 0 14.578 18.5">
+          <g
+            id="Icon_ion-document-text-outline"
+            data-name="Icon ion-document-text-outline"
+            transform="translate(0.75 0.75)"
+          >
+            <path
+              id="Path_37424"
+              data-name="Path 37424"
+              d="M19.828,10.455v7.959a1.962,1.962,0,0,1-1.962,1.962H8.712A1.962,1.962,0,0,1,6.75,18.414V5.337A1.962,1.962,0,0,1,8.712,3.375h4.036a1.308,1.308,0,0,1,.924.383l5.773,5.773A1.308,1.308,0,0,1,19.828,10.455Z"
+              transform="translate(-6.75 -3.375)"
+              fill="none"
+              stroke="currentCOlor"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+            />
+            <path
+              id="Path_37425"
+              data-name="Path 37425"
+              d="M15.644,3.938v4.9a1.308,1.308,0,0,0,1.308,1.308h4.9m-9.481,3.269h6.539m-6.539,3.269h6.539"
+              transform="translate(-9.106 -3.611)"
+              fill="none"
+              stroke="currentCOlor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.5"
+            />
+          </g>
+        </svg>
+      </span>
+    </div>
+  </div>
+</ng-template>
+
+@if(isReportsLoading){
+<div class="overlay">
+  <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+</div>
+}

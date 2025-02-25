@@ -1,0 +1,470 @@
+<div class="middle-content donor-account">
+  <div class="container mt-5">
+    <ng-template *ngIf="successfullyRegister; then successMessage; else openTemplate"></ng-template>
+
+    <form *ngIf="!registration" class="row g-3" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="col-md-6 field">
+        <p>Please fill out the fields below</p>
+      </div>
+      <div class="col-md-6">* Required field</div>
+
+      <div class="col-md-6">
+        <label for="firstName" class="form-label">First Name*</label>
+        <input
+          required
+          autofocus
+          type="text"
+          id="firstName"
+          class="form-control"
+          placeholder="First Name"
+          formControlName="firstName"
+          [class.is-invalid]="form.controls.firstName.touched && !form.controls.firstName.valid"
+        />
+        <div *ngIf="form.controls.firstName.touched && !form.controls.firstName.valid" class="invalid-feedback">
+          First Name is required
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label for="lastName" class="form-label">Last Name*</label>
+        <input
+          type="text"
+          class="form-control"
+          id="lastName"
+          placeholder="Last Name"
+          formControlName="lastName"
+          [class.is-invalid]="form.controls.lastName.touched && !form.controls.lastName.valid"
+        />
+        <div *ngIf="form.controls.lastName.touched && !form.controls.lastName.valid" class="invalid-feedback">
+          Last Name is required
+        </div>
+      </div>
+      <div class="col-12">
+        <label for="inputAddress" class="form-label">Address*</label>
+        <input
+          type="text"
+          class="form-control"
+          id="inputAddress"
+          placeholder="Address"
+          formControlName="address"
+          [class.is-invalid]="form.controls.address.touched && !form.controls.address.valid"
+        />
+        <div *ngIf="form.controls.address.touched && !form.controls.address.valid" class="invalid-feedback">
+          address is required
+        </div>
+      </div>
+
+      <div class="col-12">
+        <label for="inputAddress2" class="form-label">Address 2</label>
+        <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor" />
+      </div>
+
+      <div class="col-md-6">
+        <label for="inputCity" class="form-label">City*</label>
+        <input
+          type="text"
+          class="form-control"
+          id="inputCity"
+          formControlName="city"
+          placeholder="City"
+          [class.is-invalid]="form.controls.city.touched && !form.controls.city.valid"
+        />
+        <div *ngIf="form.controls.city.touched && !form.controls.city.valid" class="invalid-feedback">
+          City is required
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label for="inputState" class="form-label">State*</label>
+        <select
+          id="inputState"
+          class="form-select"
+          formControlName="state"
+          placeholder="State"
+          [class.is-invalid]="form.controls.state.touched && !form.controls.state.valid"
+        >
+          <option
+            *ngFor="let x of commonDataService.stateList"
+            [value]="x.item_id"
+            [selected]="x.item_id === form.controls.state.value"
+          >
+            {{ x.item_text }}
+          </option>
+        </select>
+        <div *ngIf="form.controls.state.touched && !form.controls.state.valid" class="invalid-feedback">
+          Please select State
+        </div>
+      </div>
+      <div class="col-md-2">
+        <label for="inputZip" class="form-label">Zip*</label>
+        <input
+          type="text"
+          class="form-control"
+          id="inputZip"
+          formControlName="zip"
+          [class.is-invalid]="form.controls.zip.touched && !form.controls.zip.valid"
+        />
+
+        <div *ngIf="form.controls.zip.touched && form.controls.zip.errors?.required" class="invalid-feedback">
+          Zip code is required
+        </div>
+
+        <div *ngIf="form.controls.zip.touched && form.controls.zip.errors?.minlength" class="invalid-feedback">
+          Zip code should be more then 5 characters
+        </div>
+
+        <div *ngIf="form.controls.zip.touched && form.controls.zip.errors?.maxlength" class="invalid-feedback">
+          Zip code should be no more than 10 characters
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="dob" class="form-label">Date of Birth*</label>
+        <input
+          type="date"
+          class="form-control"
+          id="dob"
+          placeholder="Date of Birth"
+          formControlName="birthDate"
+          min="minDate"
+          [class.is-invalid]="form.controls.birthDate.touched && !form.controls.birthDate.valid"
+        />
+        <div
+          *ngIf="
+            form.controls.birthDate.touched &&
+            !form.controls.birthDate.valid &&
+            !form.controls.birthDate.errors?.invalidAge
+          "
+          class="invalid-feedback"
+        >
+          Please add Date of Birth
+        </div>
+
+        <div
+          *ngIf="
+            form.controls.birthDate.touched &&
+            !form.controls.birthDate.valid &&
+            form.controls.birthDate.errors?.invalidAge
+          "
+          class="invalid-feedback"
+        >
+          Registered user must be 18 years old plus one day and maximum allowed 125 years old
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="inputPhoneNumber" class="form-label">Phone Number*</label>
+        <input
+          type="tel"
+          class="form-control"
+          id="inputPhoneNumber"
+          placeholder="Phone Number"
+          formControlName="phone"
+          [class.is-invalid]="form.controls.phone.touched && !form.controls.phone.valid"
+        />
+        <div *ngIf="form.controls.phone.touched && !form.controls.phone.valid" class="invalid-feedback">
+          Phone Number is required and valid number
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="inputEmail4" class="form-label">Email*</label>
+        <input
+          type="email"
+          class="form-control"
+          id="inputEmail4"
+          placeholder="Email"
+          formControlName="email"
+          [class.is-invalid]="form.controls.email.touched && !form.controls.email.valid"
+        />
+        <div *ngIf="form.controls.email.touched && !form.controls.email.valid" class="invalid-feedback">
+          Please enter valid Email address
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="username4" class="form-label">Username*</label>
+        <input
+          type="text"
+          class="form-control"
+          id="username4"
+          placeholder="Username"
+          formControlName="userName"
+          [class.is-invalid]="form.controls.userName.touched && !form.controls.userName.valid"
+        />
+        <div *ngIf="form.controls.userName.touched && !form.controls.userName.valid" class="invalid-feedback">
+          Please enter valid Username (xyz.yxc, xyz_yzc, Xyc)
+        </div>
+      </div>
+
+      <div class="col-12">
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="gridCheck"
+            formControlName="isAggree"
+            [class.is-invalid]="form.controls.isAggree.touched && !form.controls.isAggree.valid"
+          />
+          <label class="form-check-label" for="gridCheck"> I agree to the &nbsp;</label
+          ><a href="#" (click)="openTerms($event)">Terms of Service</a>
+
+          <div *ngIf="form.controls.isAggree.touched && !form.controls.isAggree.valid" class="invalid-feedback">
+            You have to accept
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="hasError" class="alert alert-danger" role="alert">{{ hasError }}</div>
+
+      <div class="col-12">
+        <button type="submit" [disabled]="isloading || !form.valid" class="btn btn-primary">Register</button>
+      </div>
+    </form>
+
+    <form *ngIf="needDocumentUpload" class="row g-3" [formGroup]="docForm" (ngSubmit)="onUpload()">
+      <div class="col-md-12" class="alert alert-danger" role="alert">
+        <h3 class="alert-heading">Document Requirements:</h3>
+        <hr />
+        <ol class="mb-0">
+          <li>Clear photos and PDFs are fine; we cannot accept screenshots or scans.</li>
+          <li>
+            All documents must be current. IDs cannot be expired, and monthly bills or statements should have been
+            issued within the past 60 days.
+          </li>
+          <li>
+            We need to see all four corners of the document, and the information we need to verify must be clearly
+            visible.
+          </li>
+          <li>If you're using a photo ID, please send us images of both the front and the back.</li>
+          <li>
+            If the document has a signature requirement, then it must be hand-signed. We cannot accept electronic
+            signatures (with the exception of leases, where electronic signatures are acceptable).
+          </li>
+          <li>
+            Government-issued documents (such as a state-issued ID or passports) must be in color. We can accept
+            black-and-white photos or PDFs of other documents, such as utility bills.
+          </li>
+        </ol>
+      </div>
+
+      <ng-container [ngSwitch]="requiredDocumentTemplate">
+        <div class="col-md-12">
+          <ng-container *ngSwitchCase="'name'" [ngTemplateOutlet]="nameDocumentTemplate"></ng-container>
+          <ng-container *ngSwitchCase="'dob'" [ngTemplateOutlet]="dobDocumentTemplate"></ng-container>
+          <ng-container *ngSwitchCase="'address'" [ngTemplateOutlet]="addressDocumentTemplate"></ng-container>
+          <ng-container *ngSwitchCase="'ssn'" [ngTemplateOutlet]="ssnDocumentTemplate"></ng-container>
+          <ng-container *ngSwitchCase="'general'" [ngTemplateOutlet]="generalDocumentTemplate"></ng-container>
+        </div>
+      </ng-container>
+
+      <div class="col-md-6">
+        <label for="document" class="form-label">Please upload document*</label>
+        <input
+          required
+          autofocus
+          type="file"
+          id="document"
+          class="form-control"
+          placeholder="First Name"
+          formControlName="document"
+          (change)="onFileChange($event)"
+          [class.is-invalid]="docForm.controls.document.touched && !docForm.controls.document.valid"
+          multiple
+        />
+        <div
+          *ngIf="docForm.controls.document.touched && !docForm.controls.document.errors?.required"
+          class="invalid-feedback"
+        >
+          Please upload valid document Supported Formats are .png, .jpg, .pdf
+        </div>
+
+        <div
+          *ngIf="docForm.controls.document.touched && !docForm.controls.document.errors?.notSupportedFileType"
+          class="invalid-feedback"
+        >
+          Please upload valid document Supported Formats are .png, .jpg, .pdf
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <label for="inputState" class="form-label">documentType*</label>
+        <select
+          id="inputState"
+          class="form-select"
+          formControlName="documentType"
+          placeholder="State"
+          (change)="onSelectDocumentType()"
+          [class.is-invalid]="docForm.controls.documentType.touched && !docForm.controls.documentType.valid"
+        >
+          <option
+            *ngFor="let x of listOfDocumentTypes"
+            [value]="x.name"
+            [selected]="x.name === docForm.controls.documentType.value"
+          >
+            {{ x.label }}
+          </option>
+        </select>
+        <div
+          *ngIf="docForm.controls.documentType.touched && !docForm.controls.documentType.valid"
+          class="invalid-feedback"
+        >
+          Please select State
+        </div>
+      </div>
+
+      <div *ngIf="hasUploadError" class="alert alert-danger" role="alert">{{ hasUploadError }}</div>
+
+      <div class="col-12">
+        <button type="submit" [disabled]="isloading || !docForm.valid" class="btn btn-primary">Submit Document</button>
+      </div>
+    </form>
+
+    <div
+      *ngIf="
+        (registration && finalMessage && !needDocumentUpload) || (registration && needDocumentUpload && finalMessage)
+      "
+      class="alert alert-success"
+      role="alert"
+    >
+      {{ finalMessage }}
+    </div>
+
+    <div *ngIf="isloading" class="overlay">
+      <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+    </div>
+  </div>
+</div>
+
+<ng-template #openTemplate>
+  <h3>Open a Donor Account</h3>
+  <h5 class="mt-1">For security purpose we need a few more details to prove that you're a real person</h5>
+  <p class="text-muted mt-1">
+    To help the government fight terrorism funding and money laundering, all financial institutions are required by
+    federal law to obtain, verify, and record information about you, including your name, address, and date of birth. We
+    may also ask to see your driver's license or other identifying documents
+  </p>
+</ng-template>
+
+<ng-template #successMessage>
+  <h3>Congratulations</h3>
+</ng-template>
+
+<ng-template #nameDocumentTemplate>
+  <p>A clear photo of one of the following documents:</p>
+  <ul class="mb-0">
+    <li>A current driver's license (front and back)</li>
+    <li>A current driver's permit with a photo (front and back)</li>
+    <li>A current state photo ID card (front and back)</li>
+  </ul>
+</ng-template>
+<ng-template #dobDocumentTemplate>
+  <p>A clear photo of one of the following documents:</p>
+  <ul class="mb-0">
+    <li>State Driver's License (front and back, not expired, with photo, and not temporary)</li>
+    <li>Driver's Permit (front and back, not expired, with photo)</li>
+    <li>State ID Card (front and back, not expired, with photo)</li>
+  </ul>
+  <p class="mt-1">Please note: we're not able to accept temporary IDs</p>
+  <ul class="mb-0">
+    <li>US Passport (first and second page, not expired, photo page, signature visible)</li>
+    <li>US Passport Card (front and back, not expired)</li>
+    <li>Birth Certificate</li>
+  </ul>
+</ng-template>
+<ng-template #addressDocumentTemplate>
+  <p>The front and back of a current photo ID, such as a</p>
+  <ul class="mb-0">
+    <li>State-issued driver's license</li>
+    <li>Driver's permit</li>
+    <li>State ID card</li>
+    <li>Military ID</li>
+  </ul>
+
+  <p class="mt-1">
+    <b> Please note: we're not able to accept temporary IDs, and P.O. Boxes. </b>
+    <br />
+    Or any of the following documents, as long as they're current:
+  </p>
+
+  <ul class="mb-0">
+    <li>
+      Utility bill dated within the past 60 days (<strong
+        >please note: we cannot accept mobile phone bills, but we can accept internet or landline bills</strong
+      >)
+    </li>
+    <li>
+      Lease agreement (Negotiated within the past year; month-to-month leases must be negotiated within the past 6
+      months. Leases must include the terms and be signed by both the lessor and lessee.)
+    </li>
+    <li>Signed mortgage agreement (signed, and dated within the last 60 days)</li>
+    <li>NYC ID card</li>
+    <li>
+      Tuition statement (for college or university students only; must include your dorm address, the date, and the
+      school contact information)
+    </li>
+  </ul>
+</ng-template>
+<ng-template #ssnDocumentTemplate>
+  <h6>Provide 1 document from each of the following 2 lists:</h6>
+
+  <p class="mt-1">LIST 1, A clear photo of one of the following documents:</p>
+
+  <ul class="mb-0">
+    <li>State Driver's License (front and back, not expired, with photo, and not temporary)</li>
+    <li>Driver's Permit (front and back, not expired, with photo)</li>
+    <li>
+      State ID Card (front and back, not expired, with photo)<br />
+      Please note: we're not able to accept temporary IDs
+    </li>
+    <li>US Passport (first and second page, not expired, photo page, signature visible)</li>
+    <li>US Passport Card (front and back, not expired)</li>
+    <li>Birth Certificate</li>
+  </ul>
+
+  <p class="mt-1">List 2, A clear photo of one of the following documents</p>
+
+  <ul class="mb-0">
+    <li>Social Security Card (front and back)</li>
+    <li>1040 Tax Return, federal or state versions acceptable (must be the most recent calendar year)</li>
+    <li>
+      W2 and/or 1099s, includes 1099 MISC, 1099G, 1099R, 1099SSA, 1099DIV, 1099S, 1099INT (must be the most recent
+      calendar year)
+    </li>
+    <li>W4 Withholding Allowance Certificate, federal or state versions acceptable.</li>
+    <li>1095, includes: 1095A, 1095B, 1095C (must be the most recent calendar year)</li>
+    <li>Pay stub documentation (must be the most recent month)</li>
+    <li>Social Security Administration documentation (includes 4029)</li>
+    <li>
+      Military records:
+      <ul>
+        <li>U.S. Military ID card (front and back)</li>
+        <li>Military dependent’s ID card (front and back)</li>
+      </ul>
+    </li>
+    <li>Unemployment Benefits (Unemployment Benefits Letter)</li>
+    <li>
+      Court Order Granting a Name Change, that must have your original first and last name, new first and last name, and
+      SSN
+    </li>
+    <li>Divorce decree</li>
+  </ul>
+</ng-template>
+<ng-template #generalDocumentTemplate>
+  <p class="mt-1">The front and back of a current photo ID, such as a:</p>
+  <ul class="mb-0">
+    <li>State-issued driver's license</li>
+    <li>Driver's permit</li>
+    <li>State ID card</li>
+    <li>Military ID</li>
+    <li>Passport (both pages)</li>
+  </ul>
+
+  <p>
+    Obtain a clear selfie from your. The Selfie should include a clear photo of their face and the document of their
+    choice. In other words, the user should hold up their document near their face such that a selfie clearly captures
+    both their face and the document
+  </p>
+
+  <p>
+    <strong>Please note: we're not able to accept temporary IDs.</strong>
+  </p>
+</ng-template>

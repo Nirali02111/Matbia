@@ -1,0 +1,502 @@
+<div
+  class="account-content--wrap small--container w-75 m-auto pt-5 deposit-page"
+  [ngClass]="{ 'show-footer': isLowBalance?.touched || isThresholdEdited }"
+>
+  <div class="d-none d-md-block">
+    @if(!isMobile){
+    <ng-template [ngTemplateOutlet]="lowFundsPreventionTmp"></ng-template>
+    }
+    <ng-template [ngTemplateOutlet]="automaticTransferTmp"></ng-template>
+  </div>
+  <div class="d-md-none">
+    <h6 class="page-title">Auto-Deposits</h6>
+    <ng-template [ngTemplateOutlet]="mobileAutoDepositTmp"></ng-template>
+  </div>
+</div>
+
+<ng-template #lowFundsPreventionTmp>
+  <ng-container>
+    <div class="balance-prevention">
+      <h4 class="title--bar mb-2 d-flex justify-content-between d-none d-md-flex">
+        <span>Low Funds prevention</span>
+      </h4>
+
+      <ul class="transfer-list m-0 list-unstyled">
+        <li
+          class="flex-column p-0"
+          [class.selected]="isLowBalance?.value && !isDeclinedDonation?.value"
+          [class.selected-error]="isNotAvailable"
+        >
+          @if (isNotAvailable) {
+          <div class="not-available">
+            This feature is no longer available to you due to an issue with your bank.<br />
+            Please contact customer service (877) 762-8242
+          </div>
+          }
+
+          <div class="transfer-list-radio p-0 position-relative">
+            <div class="" [formGroup]="thresholdFormGroup">
+              <label class="form-check-label w-100 position-relative" for="refill-switch">
+                @if (!isNotAvailable) {
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="refill-switch"
+                  formControlName="isActive"
+                  (change)="isLowBalance?.markAsTouched()"
+                />
+                }
+                <span></span>
+                <h4>Low funds refill</h4>
+                <p>Auto-replenish your account when it drops below a set amount. Never get to zero.</p>
+              </label>
+            </div>
+          </div>
+
+          <div class="transfer-bottom w-100 pb-5">
+            @if (isThresholdLoading || isThresholdBankLoading) {
+            <app-matbia-skeleton-loader-component
+              [count]="1"
+              [theme]="{ width: '100%', height: '100px' }"
+            ></app-matbia-skeleton-loader-component>
+            } @if (!isThresholdLoading && !isThresholdBankLoading && !isNotAvailable) {
+            <div
+              class="transfer-row d-flex flex-wrap flex-md-nowrap justify-content-between"
+              [formGroup]="thresholdFormGroup"
+            >
+              <div class="form-group alert--wrap position-relative form-amt">
+                <span class="fas fa-dollar-sign dollar--icon"></span>
+                <label class="transfer-label">REPLENISH AMOUNT:</label>
+                <app-amount-input formControlName="amount" [separatorLimit]="AmountDigit"></app-amount-input>
+              </div>
+              <div class="form-group alert--wrap position-relative form-balance">
+                <span class="fas fa-dollar-sign dollar--icon"></span>
+                <label class="transfer-label">WHEN FUNDS REACH:</label>
+
+                <app-amount-input formControlName="triggerAmount" [separatorLimit]="AmountDigit"></app-amount-input>
+              </div>
+              <div class="form-group form-transfer">
+                <label class="transfer-label">TRANSFER FROM:</label>
+                <ng-select
+                  bindLabel="accountNickName"
+                  formControlName="bankAccountId"
+                  bindValue="bankAccountId"
+                  [items]="linkedAccountList"
+                  [loading]="isAccountListLoading"
+                  [selectOnTab]="true"
+                  [searchable]="false"
+                  [clearable]="linkedAccountList && linkedAccountList.length > 1"
+                >
+                  <!-- for list of option -->
+                  <ng-template ng-option-tmp let-item="item">
+                    {{ item.accountNickName }}
+                    <ng-container *ngIf="item.isDefault">
+                      <i class="ng-option-primary"> Primary </i>
+                    </ng-container>
+                  </ng-template>
+
+                  <!-- for selected -->
+                  <ng-template ng-label-tmp let-item="item">
+                    {{ item.accountNickName }}
+                  </ng-template>
+                </ng-select>
+              </div>
+            </div>
+            }
+          </div>
+        </li>
+        <li
+          class="flex-column p-0"
+          [class.selected-error]="isNotAvailable"
+          [class.selected]="isDeclinedDonation?.value && !isLowBalance?.value"
+        >
+          <form action="" [formGroup]="formGroup">
+            <div class="transfer-list-radio p-0 position-relative">
+              @if (isNotAvailable) {
+              <div class="not-available">
+                This feature is no longer available to you due to an issue with your bank.<br />
+                Please contact customer service (877) 762-8242
+              </div>
+              }
+
+              <div class="learn-more">
+                <span (click)="toggleContent(1)">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    version="1.1"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    width="512"
+                    height="512"
+                    x="0"
+                    y="0"
+                    viewBox="0 0 512 512"
+                    style="enable-background: new 0 0 512 512"
+                    xml:space="preserve"
+                    class=""
+                  >
+                    <g>
+                      <path
+                        d="M256 0C114.509 0 0 114.496 0 256c0 141.489 114.496 256 256 256 141.491 0 256-114.496 256-256C512 114.509 397.504 0 256 0zm0 476.279c-121.462 0-220.279-98.816-220.279-220.279S134.538 35.721 256 35.721c121.463 0 220.279 98.816 220.279 220.279S377.463 476.279 256 476.279z"
+                        fill="#44479d"
+                        opacity="1"
+                        data-original="#000000"
+                      ></path>
+                      <path
+                        d="M248.425 323.924c-14.153 0-25.61 11.794-25.61 25.946 0 13.817 11.12 25.948 25.61 25.948s25.946-12.131 25.946-25.948c0-14.152-11.794-25.946-25.946-25.946zM252.805 127.469c-45.492 0-66.384 26.959-66.384 45.155 0 13.142 11.12 19.208 20.218 19.208 18.197 0 10.784-25.948 45.155-25.948 16.848 0 30.328 7.414 30.328 22.915 0 18.196-18.871 28.642-29.991 38.077-9.773 8.423-22.577 22.24-22.577 51.22 0 17.522 4.718 22.577 18.533 22.577 16.511 0 19.881-7.413 19.881-13.817 0-17.522.337-27.631 18.871-42.121 9.098-7.076 37.74-29.991 37.74-61.666s-28.642-55.6-71.774-55.6z"
+                        fill="#44479d"
+                        opacity="1"
+                        data-original="#000000"
+                      ></path>
+                    </g>
+                  </svg>
+                  Learn more
+                </span>
+                <span class="overlay" (click)="toggleContent(1)" *ngIf="checkToggleStatus(1)"></span>
+                <div class="donate-popup" *ngIf="checkToggleStatus(1)">
+                  <h4 class="mb-4 d-flex align-items-center justify-content-between">
+                    Cover declined donations <span class="material-icons" (click)="toggleContent(1)">close</span>
+                  </h4>
+                  <p>Auto-replenish your account when it drops to zero. Avoid declines, always.</p>
+                  <p>
+                    If you donate more than what’s in your Matbia account, decline prevention is triggered. The
+                    shortfall will be transferred automatically, so your donation goes through without a hitch.
+                  </p>
+                  <p>
+                    Plus, you can set an additional amount to refill, so your account is ready for the next donation.
+                  </p>
+                  <button (click)="toggleContent(1)" class="btn btn-secondary w-100 ms-0 text-center mt-4">
+                    Close
+                  </button>
+                </div>
+              </div>
+
+              <div class="">
+                <label class="form-check-label w-100 position-relative" for="decline-switch">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="decline-switch"
+                    formControlName="isActive"
+                    (change)="isDeclinedDonation?.markAsTouched()"
+                    *ngIf="!isNotAvailable"
+                  />
+                  <span></span>
+                  <h4>Cover declined donations</h4>
+                  <p>Auto-replenish your account when it drops to zero. Avoid declines, always.</p>
+                </label>
+              </div>
+            </div>
+
+            @if (isLoading) {
+            <app-matbia-skeleton-loader-component
+              [count]="3"
+              [theme]="{ width: '100%', height: '100px' }"
+            ></app-matbia-skeleton-loader-component>
+            } @if (!isLoading && isDeclinedDonation?.value) {
+            <div class="transfer-bottom w-100">
+              <div class="row">
+                <div class="col-md-5">
+                  <div class="transfer-row d-flex flex-wrap flex-md-nowrap justify-content-between">
+                    <div class="form-group alert--wrap position-relative form-amt w-100 m-0">
+                      <label class="transfer-label">TRANSFER FROM:</label>
+                      <div class="flex-fill">
+                        <ng-select
+                          class="w-100"
+                          bindLabel="accountNickName"
+                          bindValue="bankAccountId"
+                          formControlName="bankAccountId"
+                          [items]="linkedAccountList"
+                          [loading]="isAccountListLoading"
+                          [selectOnTab]="true"
+                          [searchable]="false"
+                          [clearable]="linkedAccountList && linkedAccountList.length > 1"
+                        >
+                          <!-- for list of option -->
+                          <ng-template ng-option-tmp let-item="item">
+                            {{ item.accountNickName }}
+                            <ng-container *ngIf="item.isDefault">
+                              <i class="ng-option-primary"> Primary </i>
+                            </ng-container>
+                          </ng-template>
+
+                          <!-- for selected -->
+                          <ng-template ng-label-tmp let-item="item">
+                            {{ item.accountNickName }}
+                          </ng-template>
+                        </ng-select>
+
+                        @if (BankAccountId?.touched && BankAccountId?.invalid) {
+                        <app-input-error [errors]="BankAccountId?.errors"></app-input-error>
+                        }
+                      </div>
+                    </div>
+                  </div>
+                  <small class="d-none d-md-block" style="font-size: 12px; margin-top: 20px"
+                    >*Please select a bank account to save the setting.
+                  </small>
+
+                  <br class="d-none d-md-block" />
+
+                  <small class="note" style="font-size: 12px; margin-top: 20px">*Minimum cover transfer $50.00</small>
+                </div>
+                <div class="col-md-7">
+                  <div class="donation-row">
+                    <div class="donation-block position-relative">
+                      <div class="toogle--btn">
+                        <input
+                          class="form-check-input d-none"
+                          type="checkbox"
+                          id="toggle_1"
+                          formControlName="isReplenishChecked"
+                        />
+                        <label for="toggle_1" class="form-check-label"></label>
+                      </div>
+                      <h5 class="transfer-label mb-1">REPLENISH:</h5>
+                      <p>
+                        This amount will be transferred from your bank account, in addition to the amount necessary for
+                        decline prevention. The total will be transferred on the same bank transfer.
+                      </p>
+                      <div class="learn-more position-relative d-inline">
+                        <span (click)="toggleContent(2)">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            version="1.1"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                            width="512"
+                            height="512"
+                            x="0"
+                            y="0"
+                            viewBox="0 0 512 512"
+                            style="enable-background: new 0 0 512 512"
+                            xml:space="preserve"
+                            class=""
+                          >
+                            <g>
+                              <path
+                                d="M256 0C114.509 0 0 114.496 0 256c0 141.489 114.496 256 256 256 141.491 0 256-114.496 256-256C512 114.509 397.504 0 256 0zm0 476.279c-121.462 0-220.279-98.816-220.279-220.279S134.538 35.721 256 35.721c121.463 0 220.279 98.816 220.279 220.279S377.463 476.279 256 476.279z"
+                                fill="#44479d"
+                                opacity="1"
+                                data-original="#000000"
+                              ></path>
+                              <path
+                                d="M248.425 323.924c-14.153 0-25.61 11.794-25.61 25.946 0 13.817 11.12 25.948 25.61 25.948s25.946-12.131 25.946-25.948c0-14.152-11.794-25.946-25.946-25.946zM252.805 127.469c-45.492 0-66.384 26.959-66.384 45.155 0 13.142 11.12 19.208 20.218 19.208 18.197 0 10.784-25.948 45.155-25.948 16.848 0 30.328 7.414 30.328 22.915 0 18.196-18.871 28.642-29.991 38.077-9.773 8.423-22.577 22.24-22.577 51.22 0 17.522 4.718 22.577 18.533 22.577 16.511 0 19.881-7.413 19.881-13.817 0-17.522.337-27.631 18.871-42.121 9.098-7.076 37.74-29.991 37.74-61.666s-28.642-55.6-71.774-55.6z"
+                                fill="#44479d"
+                                opacity="1"
+                                data-original="#000000"
+                              ></path>
+                            </g>
+                          </svg>
+                          Learn more
+                        </span>
+                        <span class="overlay" (click)="toggleContent(2)" *ngIf="checkToggleStatus(2)"></span>
+
+                        <div class="donate-popup" *ngIf="checkToggleStatus(2)">
+                          <h4 class="mb-4 d-flex align-items-center justify-content-between">
+                            Replenish <span class="material-icons" (click)="toggleContent(2)">close</span>
+                          </h4>
+                          <p>
+                            This amount will be transferred from your bank account, in addition to the amount necessary
+                            for decline prevention. The total will be transferred on the same bank transfer.
+                          </p>
+                          <p>
+                            For example: Your account has a Funds of $50, and you donate $100. Decline prevention is
+                            triggered.
+                          </p>
+                          <ul>
+                            <li>
+                              If replenish is set to “off,” a $50 transfer will be started from your bank account.
+                            </li>
+                            <li>
+                              If replenish is set to “on,” and the amount is set to “$25,” a $75 transfer will be
+                              started from your bank account, $50 for decline prevention, and $25 for replenish.
+                            </li>
+                          </ul>
+                          <button (click)="toggleContent(2)" class="btn btn-secondary w-100 ms-0 text-center mt-4">
+                            Close
+                          </button>
+                        </div>
+                      </div>
+                      <div class="d-flex align-items-center mt-2">
+                        <div class="input--group alert--wrap position-relative">
+                          <i class="fas fa-dollar-sign dollar--icon"></i>
+
+                          <app-amount-input
+                            formControlName="replenishAmount"
+                            [separatorLimit]="AmountDigit"
+                          ></app-amount-input>
+
+                          <small style="font-size: 12px; margin-top: 20px">*Minimum $50.00</small>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="donation-block position-relative">
+                      <div class="toogle--btn">
+                        <input
+                          class="form-check-input d-none"
+                          type="checkbox"
+                          id="toggle_2"
+                          formControlName="isMaxAmountChecked"
+                        />
+                        <label for="toggle_2" class="form-check-label"></label>
+                      </div>
+                      <h5 class="transfer-label mb-1">MAX. TO COVER:</h5>
+                      <p>Set the maximum amount that can be transferred when decline prevention is triggered.</p>
+                      <div class="learn-more d-inline position-relative">
+                        <span (click)="toggleContent(3)">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            version="1.1"
+                            xmlns:xlink="http://www.w3.org/1999/xlink"
+                            width="512"
+                            height="512"
+                            x="0"
+                            y="0"
+                            viewBox="0 0 512 512"
+                            style="enable-background: new 0 0 512 512"
+                            xml:space="preserve"
+                            class=""
+                          >
+                            <g>
+                              <path
+                                d="M256 0C114.509 0 0 114.496 0 256c0 141.489 114.496 256 256 256 141.491 0 256-114.496 256-256C512 114.509 397.504 0 256 0zm0 476.279c-121.462 0-220.279-98.816-220.279-220.279S134.538 35.721 256 35.721c121.463 0 220.279 98.816 220.279 220.279S377.463 476.279 256 476.279z"
+                                fill="#44479d"
+                                opacity="1"
+                                data-original="#000000"
+                              ></path>
+                              <path
+                                d="M248.425 323.924c-14.153 0-25.61 11.794-25.61 25.946 0 13.817 11.12 25.948 25.61 25.948s25.946-12.131 25.946-25.948c0-14.152-11.794-25.946-25.946-25.946zM252.805 127.469c-45.492 0-66.384 26.959-66.384 45.155 0 13.142 11.12 19.208 20.218 19.208 18.197 0 10.784-25.948 45.155-25.948 16.848 0 30.328 7.414 30.328 22.915 0 18.196-18.871 28.642-29.991 38.077-9.773 8.423-22.577 22.24-22.577 51.22 0 17.522 4.718 22.577 18.533 22.577 16.511 0 19.881-7.413 19.881-13.817 0-17.522.337-27.631 18.871-42.121 9.098-7.076 37.74-29.991 37.74-61.666s-28.642-55.6-71.774-55.6z"
+                                fill="#44479d"
+                                opacity="1"
+                                data-original="#000000"
+                              ></path>
+                            </g>
+                          </svg>
+                          Learn more
+                        </span>
+                        <span class="overlay" (click)="toggleContent(3)" *ngIf="checkToggleStatus(3)"></span>
+                        <div class="donate-popup" *ngIf="checkToggleStatus(3)">
+                          <h4 class="mb-4 d-flex align-items-center justify-content-between">
+                            Max. to cover <span class="material-icons" (click)="toggleContent(3)">close</span>
+                          </h4>
+                          <p>Set the maximum amount that can be transferred when decline prevention is triggered.</p>
+                          <p>
+                            For example: Max transfer is set to “$200.” If your account needs $250 to cover a decline
+                            prevention + replenish, only “$200” will be transferred.
+                          </p>
+                          <button (click)="toggleContent(3)" class="btn btn-secondary w-100 ms-0 text-center mt-4">
+                            Close
+                          </button>
+                        </div>
+                      </div>
+                      <div class="d-flex align-items-center mt-2">
+                        <div class="input--group alert--wrap position-relative">
+                          <i class="fas fa-dollar-sign dollar--icon"></i>
+
+                          <app-amount-input
+                            formControlName="maxAmount"
+                            [separatorLimit]="AmountDigit"
+                          ></app-amount-input>
+
+                          <small style="font-size: 12px; margin-top: 20px">*Minimum $50.00</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            }
+          </form>
+        </li>
+      </ul>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #automaticTransferTmp>
+  <div class="top-head--section d-none d-md-block">
+    <div class="d-flex justify-content-between align-items-center link-new-account-row">
+      <h4 class="title--bar">Automatic Transfers</h4>
+    </div>
+  </div>
+  <div class="account-list--panel">
+    <div class="account-list">
+      <div class="list-head d-flex justify-content-between align-items-center">
+        <div class="w-100">
+          <h5 class="d-none d-md-block">Recurring Deposits</h5>
+          <p>Set up recurring deposits to your account on a set basis.</p>
+        </div>
+        <!-- create button -->
+
+        <ng-container *ngIf="rows$ | async as rows">
+          <ng-container *ngIf="rows.length !== 0">
+            <button class="btn btn-secondary d-flex align-items-center" (click)="onCreateNew()">
+              <span class="material-icons me-2">add</span>Create New
+            </button>
+          </ng-container>
+        </ng-container>
+      </div>
+
+      @if (isLoading) {
+      <app-matbia-skeleton-loader-component
+        [count]="3"
+        [theme]="{ width: '100%', height: '100px' }"
+      ></app-matbia-skeleton-loader-component>
+      } @if (!isLoading) {
+      <div class="transfer-list">
+        <ul>
+          <!-- List -->
+          <ng-container *ngIf="rows$ | async as rows">
+            <ng-container *ngIf="rows.length !== 0">
+              <ng-container *ngFor="let item of rows$ | async">
+                <app-list-item
+                  [item]="item"
+                  (refresh)="refreshPageData()"
+                  (editSchedule)="onEdit($event)"
+                  (doCancelSchedule)="onCancelSchedule($event)"
+                ></app-list-item>
+              </ng-container>
+            </ng-container>
+
+            @if (rows.length === 0) {
+            <li class="empty-list">
+              <a (click)="onCreateNew()"><span class="material-icons me-2">add</span> CREATE RECURRING DEPOSITS</a>
+            </li>
+            }
+          </ng-container>
+        </ul>
+      </div>
+      }
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #mobileAutoDepositTmp>
+  <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+    <li [ngbNavItem]="1">
+      <a href="javascript:void(0)" ngbNavLink> Low Funds prevention </a>
+      <ng-template ngbNavContent>
+        <ng-template [ngTemplateOutlet]="lowFundsPreventionTmp"></ng-template>
+      </ng-template>
+    </li>
+    <li [ngbNavItem]="2">
+      <a href="javascript:void(0)" ngbNavLink> Recurring Deposits </a>
+      <ng-template ngbNavContent>
+        <ng-template [ngTemplateOutlet]="automaticTransferTmp"></ng-template>
+      </ng-template>
+    </li>
+  </ul>
+  <div [ngbNavOutlet]="nav"></div>
+</ng-template>
+
+@if (showReplenishFooter() && (((isLowBalance?.touched || isDeclinedDonation?.touched) || isThresholdEdited) )) {
+<div class="footer-actions d-flex align-items-center justify-content-end bg-white position-fixed">
+  <button class="btn btn-deault" (click)="clearValue()">Cancel</button>
+  <button class="btn btn-primary text-uppercase" (click)="saveDeclineReplenish()">Save Changes</button>
+</div>
+} @if (!showReplenishFooter() && (((isLowBalance?.touched || isDeclinedDonation?.touched) || isThresholdEdited) )) {
+<div class="footer-actions d-flex align-items-center justify-content-end bg-white position-fixed">
+  <button class="btn btn-deault" (click)="cancelThreshold()">Cancel</button>
+  <button class="btn btn-primary text-uppercase" (click)="onSaveThreshold()">Save Changes</button>
+</div>
+}

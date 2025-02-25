@@ -1,0 +1,30 @@
+<div class="page-wrapper bg-light">
+  <div class="pincode-form m-auto vh-100 d-flex align-items-center">
+    <div class="card--custom m-auto w-100">
+      <div class="logo justify-content-center d-flex mb-4 mt-2">
+        <a href="#" class="logo text-center logo-light">
+          <span class="logo-lg">
+            <img src="assets/dist/img/logo.svg" alt="" height="31" />
+          </span>
+        </a>
+      </div>
+
+      <form [formGroup]="cardLoginForm" (keyup.enter)="onSubmit()" (ngSubmit)="cardLoginForm.valid && onSubmit()">
+        <div class="text-center">
+          <div class="form-group">
+            <label class="form-label">Enter your pin</label>
+            <ng-otp-input [config]="pinConfig" (onInputChange)="onOtpChange($event)"></ng-otp-input>
+          </div>
+
+          <button type="submit" [disabled]="isLoading || cardLoginForm.invalid" class="btn w-50 btn-primary mt-3">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="overlay">
+    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+  </div>
+</div>

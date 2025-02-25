@@ -1,0 +1,56 @@
+.stickyheader {
+  position: fixed;
+  width: 100%;
+  z-index: 11;
+  animation-name: fadeInUp;
+  -webkit-animation-name: fadeInUp;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+  -webkit-animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  box-shadow: #525252 0px 1px 14px -10px;
+  top: 0;
+}
+
+
+@keyframes fadeInUp {
+  from {
+    transform: translate3d(0, -80px, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 10;
+  }
+}
+
+@-webkit-keyframes fadeInUp {
+  from {
+    transform: translate3d(0, 40px, 0);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+    opacity: 1;
+  }
+}
+
+.app-header {
+  .nav-section {
+    order: 1;
+    width: auto;
+    flex: 0 0 auto;
+
+    .navbar-nav {
+      margin: 0 !important;
+    }
+  }
+
+  .navbar-brand {
+    order: 2;
+  }
+
+  .sign-link {
+    order: 3;
+  }
+}

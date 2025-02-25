@@ -1,0 +1,48 @@
+<div class="t-row" style="cursor: pointer" (click)="openScheduleDetails()">
+  <div class="desc-div td-div" appAllowCopyData [toCopy]="item.description">
+    <img [src]="profileIcon" width="32" class="me-2" alt="" /> {{ item.description }}
+  </div>
+
+  <div class="schedule-id-div td-div" appAllowCopyData [toCopy]="item.scheduleNum">
+    {{ item.scheduleNum }}
+  </div>
+
+  <div class="status-div td-div" appAllowCopyData [toCopy]="item.transType">
+    {{ item.transType }}
+  </div>
+
+  <div class="status-div td-div" appAllowCopyData [toCopy]="item.status">
+    {{ item.status }}
+  </div>
+
+  <div class="total-amount-div td-div text-center" appAllowCopyData [toCopy]="item.totalAmount">
+    <strong>{{ item.totalAmount | currency }}</strong>
+  </div>
+
+  <ng-container *ngIf="item.repeatTimes === -1">
+    <div class="payments-div td-div" appAllowCopyData [toCopy]="'Always'">Always</div>
+  </ng-container>
+
+  <ng-container *ngIf="item.repeatTimes !== -1">
+    <div class="payments-div td-div" appAllowCopyData [toCopy]="getToCopy()">
+      {{ item.remaining }} / {{ item.repeatTimes }}
+    </div>
+  </ng-container>
+
+  <div class="frequency-div text-center td-div" appAllowCopyData [toCopy]="item.frequency">{{ item.frequency }}</div>
+  <div class="amount-div td-div" appAllowCopyData [toCopy]="item.scheduleAmount">
+    {{ item.scheduleAmount | currency }}
+  </div>
+  <div class="action-div td-div" width="34">
+    <button class="btn-arrow fa fa-angle-right f-size"></button>
+  </div>
+</div>
+
+<ng-template #transTypeTmp>
+  <ng-container *ngIf="isDonation">
+    <img [src]="Assets.CREDIT_IMAGE" width="17" alt="" /> {{ item.transType }}
+  </ng-container>
+  <ng-container *ngIf="!isDonation">
+    <img [src]="Assets.DEBIT_IMAGE" width="17" alt="" /> {{ item.transType }}
+  </ng-container>
+</ng-template>

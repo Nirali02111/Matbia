@@ -1,0 +1,36 @@
+<div class="modal-header">
+  <h5 class="modal-title">Integrating with Account Number</h5>
+  <button type="button" class="close" aria-label="Close" (click)="closePopup()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="text-wrap">
+    <ng-container *ngIf="haveError">
+      <ng-template [ngTemplateOutlet]="warningTemp"></ng-template>
+    </ng-container>
+
+    <ng-container *ngIf="!haveError">
+      <p>Your account #{{ merchantId }} is registered with:</p>
+      <div class="text-center mb-4">
+        <ng-container *ngIf="merchantObj && merchantObj.merchantIcon">
+          <img [src]="merchantObj.merchantIcon" [alt]="merchantObj.name" />
+        </ng-container>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <ng-container *ngIf="!haveError">
+    <button class="btn btn-primary" (click)="onIntegrate()">CORRECT, INTEGRATE</button>
+  </ng-container>
+  <button class="btn btn-default btn-back" (click)="goToBack()">Go Back</button>
+</div>
+
+<ng-template #warningTemp>
+  <p>No match for the entered account number</p>
+  <div class="text-center mb-4">
+    <img src="assets/dist/img/icon-warning.png" />
+  </div>
+</ng-template>

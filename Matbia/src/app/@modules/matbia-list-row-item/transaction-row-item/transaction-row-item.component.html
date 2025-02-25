@@ -1,0 +1,715 @@
+<div class="t-row">
+  <div class="date-div td-div">
+    <ng-container *ngIf="isSuccess; else transactionStatusTmp">
+      <p appAllowCopyData [toCopy]="item.transDate | date : 'MM/dd/yyyy hh:mm a'">
+        {{ item.transDate | date : 'MM/dd/yyyy hh:mm a' }}
+        @if (item.note) {
+        <ng-template [ngTemplateOutlet]="noteIconsTmp"></ng-template>
+        }
+      </p>
+    </ng-container>
+  </div>
+
+  <div class="desc-div td-div">
+    <ng-container *appPersonalAccessControl>
+      <div
+        class="desc-div-for-donor align-items-center"
+        [class.without-note]="!item.note"
+        appAllowCopyData
+        [toCopy]="item.organization"
+      >
+        <div class="image" (click)="openDonationHistoryPopup()">
+          @if (item.orgLogo && item.bookNumber == null) {
+          <img [src]="item.orgLogo" width="32" class="me-2" alt="" />
+          <div class="hover-img">
+            <img [src]="item.orgLogo" />
+          </div>
+          } @else {
+          <img [src]="Assets.PROFILE_IMAGE" width="32" class="me-2" alt="" />
+          <div class="hover-img">
+            <img [src]="Assets.PROFILE_IMAGE" />
+          </div>
+          }
+        </div>
+
+        <p class="org-transition-desktop mt-0 cursor-pointer" (click)="openDonationHistoryPopup()">
+          {{ item.organization }}
+        </p>
+        @if (isGenerated || (item.bookNumber && isVoided)) { @if (((item?.tokenBookDetails?.tokenBookList ||
+        []).length!== 1) && !HideTokendetails()) {<span class="link-token"
+          >|<a title="All Token" (click)="openTokenBookPopup($event)"
+            >See All Tokens <i class="fa fa-chevron-right"></i></a></span
+        >} }
+        <div class="org-tansition">
+          <p>{{ item.organization }}</p>
+          <span class="status" [class.status-failed]="isFailed || isVoided" [class.status-success]="isSuccess">{{
+            item.transStatus
+          }}</span>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *appBusinessDonorAccessControl>
+      <div class="desc-div-source" appAllowCopyData [toCopy]="item.source">{{ item.source }}</div>
+    </ng-container>
+    <ng-container *appOrganizationAccessControl>
+      <div class="desc-div-source" appAllowCopyData [toCopy]="item.source">{{ item.source }}</div>
+    </ng-container>
+    <ng-container *appBusinessAccessControl>
+      <div class="desc-div-source" appAllowCopyData [toCopy]="item.source">{{ item.source }}</div>
+    </ng-container>
+  </div>
+
+  <div class="type-div td-div" appAllowCopyData [toCopy]="item.transType">
+    <ng-container *appPersonalAccessControl>
+      <ng-container *ngIf="isDonation">
+        <img [src]="Assets.DEBIT_IMAGE" width="17" alt="" /> {{ item.transType }}
+      </ng-container>
+
+      <ng-container *ngIf="isDeposit">
+        <img [src]="Assets.CREDIT_IMAGE" width="17" alt="" /> {{ item.transType }}
+      </ng-container>
+
+      <ng-container *ngIf="isRefund">
+        <img [src]="Assets.CREDIT_IMAGE" width="17" alt="" /> {{ item.transType }}
+      </ng-container>
+      <ng-container *ngIf="isFailedDeposit">
+        <img [src]="Assets.DEBIT_IMAGE" width="17" alt="" /> {{ item.transType }}
+      </ng-container>
+    </ng-container>
+
+    <ng-container *appBusinessDonorAccessControl>
+      <ng-template [ngTemplateOutlet]="transTypeTmp"></ng-template>
+    </ng-container>
+    <ng-container *appOrganizationAccessControl>
+      <ng-template [ngTemplateOutlet]="transTypeTmp"></ng-template>
+    </ng-container>
+    <ng-container *appBusinessAccessControl>
+      <ng-template [ngTemplateOutlet]="transTypeTmp"></ng-template>
+    </ng-container>
+
+    @if (isDonation && isDeclined) {
+    <span class="text-declined">DECLINED</span>
+    }
+  </div>
+
+  <ng-container *appBusinessDonorAccessControl>
+    <ng-template [ngTemplateOutlet]="batchTmp"></ng-template>
+  </ng-container>
+  <ng-container *appOrganizationAccessControl>
+    <ng-template [ngTemplateOutlet]="batchTmp"></ng-template>
+  </ng-container>
+  <ng-container *appBusinessAccessControl>
+    <ng-template [ngTemplateOutlet]="batchTmp"></ng-template>
+  </ng-container>
+
+  <div
+    class="amount-div td-div"
+    [class.text-declined]="isDonation && (isDeclined || isFailed)"
+    [class.text-success]="isDeposit"
+    appAllowCopyData
+    [toCopy]="item.amount"
+  >
+    <strong> {{ item.amount | currency }}</strong>
+  </div>
+
+  <ng-container *appPersonalAccessControl>
+    @if (isDonation && (isDeclined || isFailed)) {
+
+    <button class="btn btn-primary btn-sm btn-donate" (click)="reDonate()">Re-Donate</button>
+
+    } @else {
+    <ng-container *ngIf="!isGenerated">
+      <div class="blnce-div td-div" appAllowCopyData [toCopy]="item.balance">
+        <p>{{ item.balance | currency }}</p>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isGenerated">
+      <div class="blnce-div td-div" appAllowCopyData [toCopy]="item.tokenBookDetails?.balance">
+        <p>{{ item.tokenBookDetails?.balance | currency }}</p>
+      </div>
+    </ng-container>
+    }
+  </ng-container>
+  <div class="action-th td-div" width="34">
+    <button
+      class="btn-arrow fas fa-chevron-down"
+      type="button"
+      data-bs-toggle="collapse"
+      aria-expanded="false"
+      [attr.data-bs-target]="'#' + CollapseUniqId"
+      [attr.aria-controls]="CollapseUniqId"
+    ></button>
+  </div>
+
+  <div class="collapse w-100 collapse-content" [attr.id]="CollapseUniqId">
+    <div class="card-body">
+      <div class="row">
+        <div class="transaction-header-mobile">
+          <button
+            class="btn-arrow fas fa-chevron-left"
+            type="button"
+            data-bs-toggle="collapse"
+            aria-expanded="false"
+            [attr.data-bs-target]="'#' + CollapseUniqId"
+            [attr.aria-controls]="CollapseUniqId"
+          ></button>
+          <h2>Transaction Details</h2>
+        </div>
+
+        <div class="colm col-md-2 desc-div hide-desktop">
+          <ng-container *appPersonalAccessControl>
+            <ng-container *ngIf="item.organization">
+              <figure>
+                <img [src]="item.orgLogo" alt="" />
+              </figure>
+              <div class="row-org flex-column text-center">
+                <div class="lbl--text" appAllowCopyData [toCopy]="item.organization">{{ item.organization }}</div>
+                <div class="lbl--value" appAllowCopyData [toCopy]="item.amount">{{ item.amount | currency }}</div>
+              </div>
+              <span>{{ item.transStatus }}</span>
+
+              @if (item.transStatus == 'Declined') {
+              <button (click)="reDonate()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="10.882" height="14.344" viewBox="0 0 10.882 14.344">
+                  <g id="retry-failed" transform="translate(22.882 -6) rotate(90)">
+                    <path
+                      id="Path_37366"
+                      data-name="Path 37366"
+                      d="M14.409,12a5.953,5.953,0,0,0-5.935,5.935V21L6.692,19.222,6,19.914l2.968,2.968,2.968-2.968-.692-.692L9.462,21V17.935a4.946,4.946,0,0,1,9.892,0v1.484h.989V17.935A5.953,5.953,0,0,0,14.409,12Z"
+                      fill="#5d62e0"
+                    />
+                  </g>
+                </svg>
+                Retry
+              </button>
+              }
+            </ng-container>
+          </ng-container>
+          <ng-container *appBusinessDonorAccessControl>
+            <ng-template [ngTemplateOutlet]="sourceMobileTmp"></ng-template>
+          </ng-container>
+          <ng-container *appOrganizationAccessControl>
+            <ng-template [ngTemplateOutlet]="sourceMobileTmp"></ng-template>
+          </ng-container>
+          <ng-container *appBusinessAccessControl>
+            <ng-template [ngTemplateOutlet]="sourceMobileTmp"></ng-template>
+          </ng-container>
+        </div>
+
+        <ng-container *appPersonalAccessControl>
+          @if(isDeposit && (isPending || isFunding) && isCancelable){
+          <div class="d-md-none text-center data-deposit">
+            <button (click)="cancelDeposit()">CANCEL DEPOSIT</button>
+            <small>Deposit estimated to complete in 5 business days</small>
+          </div>
+          }
+        </ng-container>
+
+        <ng-container *appBusinessDonorAccessControl>
+          @if(isDeposit && isPending && isCancelable){
+          <div class="d-md-none text-center data-deposit">
+            <button (click)="cancelDeposit()">CANCEL DEPOSIT</button>
+            <small>Deposit estimated to complete in 5 business days</small>
+          </div>
+          }
+        </ng-container>
+
+        <ng-container *ngIf="item.transDate && item.completedDate; else singleDate">
+          <ng-container *ngIf="item.transDate">
+            <div class="colm date-div">
+              <div class="lbl--text">Created On:</div>
+              <div class="lbl--value" appAllowCopyData [toCopy]="item.transDate | date : 'MM/dd/yyyy hh:mm a'">
+                {{ item.transDate | date : 'MM/dd/yyyy hh:mm a' }}
+              </div>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="item.completedDate">
+            <div class="colm date-div">
+              <div class="lbl--text">Completed On:</div>
+              <div class="lbl--value" appAllowCopyData [toCopy]="item.completedDate | date : 'MM/dd/yyyy hh:mm a'">
+                {{ item.completedDate | date : 'MM/dd/yyyy hh:mm a' }}
+              </div>
+            </div>
+          </ng-container>
+
+          @if (item.campaignName && (this.isBusiness || this.isOrganization)) {
+          <ng-container>
+            <div class="colm date-div">
+              <div class="lbl--text">Campaign Name:</div>
+              <div class="lbl--value" appAllowCopyData [toCopy]="item.campaignName">{{ item.campaignName }}</div>
+            </div>
+          </ng-container>
+          }
+        </ng-container>
+
+        <ng-template #singleDate>
+          <div class="colm date-div">
+            <ng-container *ngIf="!(isFunding && item.depositAvailable) && item.transDate">
+              <ng-template [ngTemplateOutlet]="createdOnLblVal"></ng-template>
+            </ng-container>
+
+            <ng-container *ngIf="isFunding && item.depositAvailable">
+              <ng-container *ngIf="item.transDate">
+                <div class="tnx-row-date">
+                  <ng-template [ngTemplateOutlet]="createdOnLblVal"></ng-template>
+                </div>
+              </ng-container>
+
+              <ng-container *ngIf="isFunding && item.depositAvailable">
+                <div class="tnx-row-date">
+                  @if (this.item.method?.includes('PayPal')) {
+                  <div class="lbl--text">{{ estimatedPayMsg }}:</div>
+                  } @else {
+                  <div class="lbl--text">{{ estimatedMsg }}:</div>
+                  }
+                  <div class="lbl--value"></div>
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+          @if (item.campaignName && (this.isBusiness || this.isOrganization)) {
+          <ng-container>
+            <div class="colm date-div">
+              <div class="lbl--text">Campaign Name:</div>
+              <div class="lbl--value" appAllowCopyData [toCopy]="item.campaignName">{{ item.campaignName }}</div>
+            </div>
+          </ng-container>
+          }
+        </ng-template>
+
+        <ng-container *ngIf="!isSuccess">
+          <div class="colm-status-estimated hide-desktop">
+            <div class="row-org">
+              <div class="colm">
+                <ng-container *ngIf="item.transStatus">
+                  <div class="lbl--text">Status:</div>
+                  <div
+                    class="lbl--value status"
+                    appAllowCopyData
+                    [toCopy]="item.transStatus"
+                    [class.status-failed]="isFailed || isVoided"
+                    [class.status-success]="isSuccess"
+                  >
+                    {{ item.transStatus }}
+                  </div>
+                </ng-container>
+              </div>
+              @if (isPending && item.depositAvailable) {
+              <div class="colm">
+                @if (this.item.method && this.item.method?.includes('PayPal')) {
+                <div class="lbl--text">{{ estimatedPayMsg }}:</div>
+                } @else {
+                <div class="lbl--text">{{ estimatedMsg }}:</div>
+                }
+              </div>
+              }
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *appPersonalAccessControl>
+          @if (item.note) {
+          <div class="colm-status-estimated hide-desktop">
+            <div class="row-org">
+              <div class="colm">
+                @if (item.note) {
+                <div class="lbl--text">Note:</div>
+                <div class="lbl--value" appAllowCopyData [toCopy]="item.note">{{ item.note }}</div>
+                }
+              </div>
+            </div>
+          </div>
+          }
+        </ng-container>
+
+        <div
+          class="colm col-md-2 desc-div organization-row-mobile hide-mobile"
+          [class.org-colle-value]="item.collector && item.organization"
+          [class.note-field-align]="!isDonor && item.note && !item.phoneNum"
+          [class.org-colle-note]="isDonor"
+          [class.org-colle-note]="item.phoneNum && !isDonor"
+        >
+          <div class="row-org hide-mobile">
+            <ng-container *appPersonalAccessControl>
+              <ng-template [ngTemplateOutlet]="orgAndCollectorTmp"></ng-template>
+            </ng-container>
+            <ng-container *appBusinessDonorAccessControl>
+              <ng-template [ngTemplateOutlet]="donorPhoneTmp"></ng-template>
+            </ng-container>
+            <ng-container *appOrganizationAccessControl>
+              <ng-template [ngTemplateOutlet]="donorPhoneTmp"></ng-template>
+            </ng-container>
+            <ng-container *appBusinessAccessControl>
+              <ng-template [ngTemplateOutlet]="donorPhoneTmp"></ng-template>
+            </ng-container>
+          </div>
+        </div>
+
+        <ng-container *ngIf="item.user">
+          <div class="colm col">
+            <div class="lbl--text">User:</div>
+            <div class="lbl--value" appAllowCopyData [toCopy]="item.user">{{ item.user }}</div>
+          </div>
+        </ng-container>
+
+        <div class="colm type-div item-method">
+          <ng-container *ngIf="item.cardNum">
+            <div class="tnx-row-date">
+              <div class="lbl--text">card ending in:</div>
+              <div class="lbl--value" appAllowCopyData [toCopy]="item.cardNum">{{ item.cardNum }}</div>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="item.method">
+            <div class="tnx-row-date method-row">
+              <div class="lbl--text">Method:</div>
+              <div class="lbl--value" appAllowCopyData [toCopy]="item.method">{{ item.method }}</div>
+            </div>
+
+            <ng-container *ngIf="isGenerated && (this.item?.tokenBookDetails?.tokenBookList || []).length > 1">
+              <div class="tnx-row-date method-row">
+                <div *ngIf="item.tokenBookDetails?.remainingCount" class="lbl--text">Remaining count:</div>
+                <div *ngIf="item.tokenBookDetails?.remainingCount" class="lbl--value">
+                  <ng-container *ngIf="item.tokenBookDetails?.remainingCount">
+                    <b>{{ item.tokenBookDetails?.remainingCount }}</b> /
+                    {{ item.tokenBookDetails?.totalCount }}
+                  </ng-container>
+                </div>
+              </div>
+            </ng-container>
+          </ng-container>
+        </div>
+
+        <ng-container *appBusinessDonorAccessControl>
+          <ng-template [ngTemplateOutlet]="notForMobile"></ng-template>
+        </ng-container>
+        <ng-container *appOrganizationAccessControl>
+          <ng-template [ngTemplateOutlet]="notForMobile"></ng-template>
+        </ng-container>
+        <ng-container *appBusinessAccessControl>
+          <ng-template [ngTemplateOutlet]="notForMobile"></ng-template>
+        </ng-container>
+
+        <ng-container *ngIf="item.collector">
+          <div class="colm amount-div item-source hide-desktop">
+            <div class="lbl--text">Collector:</div>
+            <div class="lbl--value" appIsHebrew [content]="item.collector" appAllowCopyData [toCopy]="item.collector">
+              {{ item.collector }}
+            </div>
+          </div>
+        </ng-container>
+
+        <ng-container *appPersonalAccessControl>
+          <div class="colm amount-div item-source">
+            <ng-container *ngIf="item.source">
+              <div class="lbl--text">Source:</div>
+              <div class="lbl--value" appAllowCopyData [toCopy]="item.source">{{ item.source }}</div>
+            </ng-container>
+          </div>
+        </ng-container>
+
+        <ng-container *appBusinessDonorAccessControl>
+          <ng-template [ngTemplateOutlet]="batchColTmp"></ng-template>
+        </ng-container>
+        <ng-container *appOrganizationAccessControl>
+          <ng-template [ngTemplateOutlet]="batchColTmp"></ng-template>
+        </ng-container>
+        <ng-container *appBusinessAccessControl>
+          <ng-template [ngTemplateOutlet]="batchColTmp"></ng-template>
+        </ng-container>
+
+        <ng-container *ngIf="item.scheduleNum">
+          <div class="colm blnce-div item-transaction">
+            <div class="lbl--text">Schedule #:</div>
+            <div class="lbl--value" appAllowCopyData [toCopy]="item.scheduleNum">#{{ item.scheduleNum }}</div>
+          </div>
+          <ng-container *ngIf="item.transactionId">
+            <div class="colm blnce-div item-transaction">
+              <div class="lbl--text">Transaction ID:</div>
+              <div class="lbl--value" appAllowCopyData [toCopy]="item.refNum">#{{ item.refNum }}</div>
+            </div>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="!item.scheduleNum">
+          <ng-container *ngIf="item.refNum">
+            <div class="colm blnce-div item-transaction">
+              <div class="lbl--text">Transaction ID:</div>
+              <div class="lbl--value" appAllowCopyData [toCopy]="item.refNum">#{{ item.refNum }}</div>
+            </div>
+          </ng-container>
+        </ng-container>
+
+        @if(item.transType){
+        <div class="colm blnce-div item-transaction d-md-none">
+          <div class="lbl--text">Type:</div>
+          <div class="lbl--value">
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10">
+              <path
+                id="Icon_metro-arrow-down-right"
+                data-name="Icon metro-arrow-down-right"
+                d="M16.183,14.362,9.272,7.451H12.26a.833.833,0,0,0,0-1.667h-5a.832.832,0,0,0-.833.833h0v5a.833.833,0,0,0,1.667,0V8.629L15,15.54a.833.833,0,1,0,1.178-1.178Z"
+                transform="translate(-6.427 -5.784)"
+                fill="#686df5"
+              />
+            </svg>
+            {{ item.transType }}
+          </div>
+        </div>
+        }
+
+        <div class="transaction-list-action-btn">
+          <ng-container *appBusinessAccessControl>
+            <ng-container *ngIf="isPending || (isFunding && !isRedeemed)">
+              <ng-template [ngTemplateOutlet]="forVoidDivTmp"></ng-template>
+            </ng-container>
+            <ng-container *ngIf="isSuccess">
+              <ng-template [ngTemplateOutlet]="forRefundDivTmp"></ng-template>
+            </ng-container>
+          </ng-container>
+
+          <ng-container *appOrganizationAccessControl>
+            <ng-container *ngIf="isPending || (isFunding && !isRedeemed)">
+              <ng-template [ngTemplateOutlet]="forVoidDivTmp"></ng-template>
+            </ng-container>
+            <ng-container *ngIf="isSuccess">
+              <ng-template [ngTemplateOutlet]="forRefundDivTmp"></ng-template>
+            </ng-container>
+          </ng-container>
+
+          <ng-container *appPersonalAccessControl>
+            <ng-container *ngIf="isDeposit && isPending && isCancelable">
+              <ng-template [ngTemplateOutlet]="cancelActionDiv"></ng-template>
+            </ng-container>
+
+            <ng-container *ngIf="isDeposit && isFunding && isCancelable">
+              <ng-template [ngTemplateOutlet]="cancelActionDiv"></ng-template>
+            </ng-container>
+          </ng-container>
+
+          <ng-container *appBusinessDonorAccessControl>
+            <ng-container *ngIf="isDeposit && isPending && isCancelable">
+              <ng-template [ngTemplateOutlet]="cancelActionDiv"></ng-template>
+            </ng-container>
+
+            <ng-template [ngTemplateOutlet]="forRefundDivTmp"></ng-template>
+          </ng-container>
+          @if (isSuccess) {
+          <ng-container *ngIf="isDeposit && !isCancelled">
+            <ng-container *ngIf="!isFailed">
+              <div class="icon-cancel-payment icon-print" (click)="depositReceipt()">
+                <button class="btn print-icon"><span class="material-icons">print</span>Print</button>
+              </div>
+            </ng-container>
+          </ng-container>
+          }
+        </div>
+      </div>
+
+      <ng-container *ngIf="item.note">
+        <div class="transaction-note d-flex hide-mobile">
+          <img src="assets/dist/img/icon-note.svg" alt="note" />
+          <p class="mb-0" appAllowCopyData [toCopy]="item.note">{{ item.note }}</p>
+          <span class="material-icons material-edit" (click)="onEditNote($event)">edit</span>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<!-- Templates -->
+<ng-template #transactionStatusTmp>
+  <ng-container *ngIf="!isGenerated">
+    <p appAllowCopyData [toCopy]="item.transStatus">
+      {{ item.transStatus }}
+      <ng-container *ngIf="isPending && item.depositAvailable">
+        <br />
+        @if (this.item.method?.includes('PayPal')) {
+        {{ estimatedPayMsg }}
+        } @else { {{ estimatedMsg }}
+        }
+      </ng-container>
+
+      <ng-container *ngIf="item.note">
+        <ng-template [ngTemplateOutlet]="noteIconsTmp"></ng-template>
+      </ng-container>
+    </p>
+  </ng-container>
+
+  <ng-container *ngIf="isGenerated">
+    <p appAllowCopyData [toCopy]="item.transDate | date : 'MM/dd/yyyy hh:mm a'">
+      {{ item.transDate | date : 'MM/dd/yyyy hh:mm a' }}
+      <ng-container *ngIf="item.note">
+        <ng-template [ngTemplateOutlet]="noteIconsTmp"></ng-template>
+      </ng-container>
+    </p>
+  </ng-container>
+</ng-template>
+
+<div *ngIf="isLoading" class="overlay">
+  <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+</div>
+
+<ng-template #transTypeTmp>
+  <div *ngIf="isDonation || (isDonationTransfer && item.amount > 0); then orgCreditBlock; else orgDebitBlock"></div>
+  <ng-template #orgCreditBlock>
+    <img [src]="Assets.CREDIT_IMAGE" width="17" alt="" />
+  </ng-template>
+  <ng-template #orgDebitBlock>
+    <img [src]="Assets.DEBIT_IMAGE" width="17" alt="" />
+  </ng-template>
+  {{ item.transType }}
+</ng-template>
+
+<ng-template #orgAndCollectorTmp>
+  <ng-container *ngIf="isGenerated && (this.item?.tokenBookDetails?.tokenBookList || []).length !== 1">
+    <div class="donor-org-colle">
+      <div class="lbl--text">Token Group Id:</div>
+      <div class="lbl--value" appAllowCopyData [toCopy]="item.bookNumber">{{ item.bookNumber }}</div>
+
+      <div *ngIf="item.tokenBookDetails?.remainingAmount" class="lbl--text">Remaining value:</div>
+      <div *ngIf="item.tokenBookDetails?.remainingAmount" class="lbl--value">
+        <ng-container *ngIf="item.tokenBookDetails?.remainingAmount">
+          <b>{{ item.tokenBookDetails?.remainingAmount | currency }}</b> /
+          {{ item.tokenBookDetails?.totalAmount | currency }}
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!isGenerated">
+    <div class="donor-org-colle">
+      <ng-container *ngIf="item.organization">
+        <div class="lbl--text">Organization:</div>
+        <div class="lbl--value" appAllowCopyData [toCopy]="item.organization">{{ item.organization }}</div>
+      </ng-container>
+      <ng-container *ngIf="item.collector">
+        <div class="lbl--text">Collector:</div>
+        <div class="lbl--value" appIsHebrew [content]="item.collector" appAllowCopyData [toCopy]="item.collector">
+          {{ item.collector }}
+        </div>
+      </ng-container>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #notForMobile>
+  <div class="colm type-div item-method hide-desktop" *ngIf="item.note">
+    <ng-container>
+      <div class="tnx-row-date">
+        <div class="lbl--text">NOTE:</div>
+        <div class="lbl--value" appAllowCopyData [toCopy]="item.note">{{ item.note }}</div>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #forVoidDivTmp>
+  <ng-container *ngIf="!isMatbiaFee">
+    <ng-template [ngTemplateOutlet]="voidActionDiv"></ng-template>
+  </ng-container>
+</ng-template>
+
+<ng-template #forRefundDivTmp>
+  <ng-container *ngIf="isDonation">
+    <ng-template [ngTemplateOutlet]="refundActionDiv"></ng-template>
+  </ng-container>
+
+  <ng-container *ngIf="isDeposit && isFunding">
+    <ng-template [ngTemplateOutlet]="voidActionDiv"></ng-template>
+  </ng-container>
+</ng-template>
+
+<ng-template #voidActionDiv>
+  <div class="icon-cancel-payment" (click)="voidClick()">
+    <button class="btn btn-cancel"><span class="material-icons">block</span> void</button>
+  </div>
+</ng-template>
+
+<ng-template #refundActionDiv>
+  <div class="icon-cancel-payment" (click)="refundClick()">
+    <button class="btn btn-cancel"><span class="material-icons">block</span> Refund</button>
+  </div>
+</ng-template>
+
+<ng-template #cancelActionDiv>
+  <div class="icon-cancel-payment" (click)="cancelDeposit()">
+    <button class="btn btn-cancel"><span class="material-icons">block</span> cancel</button>
+  </div>
+</ng-template>
+
+<ng-template #createdOnLblVal>
+  <div class="lbl--text">Created On:</div>
+  <div
+    class="lbl--value"
+    [class.estimated-msg-lbl-val]="isFunding && item.depositAvailable"
+    appAllowCopyData
+    [toCopy]="item.transDate | date : 'MM/dd/yyyy hh:mm a'"
+  >
+    {{ item.transDate | date : 'MM/dd/yyyy hh:mm a' }}
+  </div>
+</ng-template>
+
+<!-- Organization user -->
+<ng-template #donorPhoneTmp>
+  <div class="donor-org-colle">
+    <ng-container *ngIf="item.aliasExternalID">
+      <div class="lbl--text">MID:</div>
+      <div class="lbl--value" appAllowCopyData [toCopy]="item.aliasExternalID">{{ item.aliasExternalID }}</div>
+    </ng-container>
+    <ng-container *ngIf="item.phoneNum">
+      <div class="lbl--text">phone:</div>
+      <div class="lbl--value" appAllowCopyData [toCopy]="item.phoneNum">{{ item.phoneNum }}</div>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #noteIconsTmp>
+  <span class="note-inner">
+    <img src="assets/dist/img/icon-note-grey.svg" alt="note" class="note note-active" />
+    <img src="assets/dist/img/icon-note-hover.svg" alt="note" class="note note-hover" />
+  </span>
+</ng-template>
+
+<ng-template #sourceMobileTmp>
+  <ng-container *ngIf="item.source">
+    <div class="row-org">
+      <div class="lbl--text" appAllowCopyData [toCopy]="item.source">{{ item.source }}</div>
+      <div class="lbl--value" appAllowCopyData [toCopy]="item.amount">{{ item.amount | currency }}</div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #batchTmp>
+  <ng-container *ngIf="isBatchVisible">
+    <div
+      class="transaction-batch-div td-div"
+      [class.transaction-batched]="(!isRedeemed && item.batchNum) || (isRedeemed && !isPending && item.batchNum)"
+      [class.transaction-unbatched]="(!isRedeemed && !item.batchNum) || (isRedeemed && !isPending && !item.batchNum)"
+    >
+      <ng-container *ngIf="isRedeemed">
+        <ng-container *ngIf="isPending"> Pending batch </ng-container>
+        <ng-container *ngIf="!isPending">
+          {{ item.batchNum ? 'Batched' : 'Unbatched' }}
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="!isRedeemed">
+        {{ item.batchNum ? 'Batched' : 'Unbatched' }}
+      </ng-container>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #batchColTmp>
+  <div class="colm transaction-batch-div item-transaction">
+    <ng-container *ngIf="item.batchNum">
+      <div class="lbl--text">In Batch:</div>
+      <div style="cursor: pointer" class="lbl--value d-flex align-items-center" (click)="viewBatch()">
+        {{ item.batchNum }} <span class="material-icons">keyboard_arrow_right</span>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>

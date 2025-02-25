@@ -1,0 +1,123 @@
+<div class="batch-page p-4">
+  <div class="table-wrapper">
+    <div class="top-header--content">
+      <div class="balance-card p-0 border-0">
+        <div class="colm available-blnce">
+          <h5 class="amount-text large-amount">{{ availableBalance | currency }}</h5>
+          <p class="lbl--text text-uppercase">Available Funds</p>
+        </div>
+        <div class="colm deposit-blnce border-0 p-0">
+          <h5 class="amount-text small-amount">{{ pastDonations | currency }}</h5>
+          <p class="lbl--text text-uppercase">Donation this Month</p>
+        </div>
+        <div class="colm donation-blnce">
+          <h5 class="amount-text small-amount">{{ totalDonations | currency }}</h5>
+          <p class="lbl--text text-uppercase">Batch this month</p>
+        </div>
+      </div>
+    </div>
+
+    <app-list-page-filter
+      [isDatePickerFilter]="false"
+      (filtered)="filterChange($event)"
+      (exportToExcel)="onExportTransactionData()"
+      (search)="onSearch($event)"
+    ></app-list-page-filter>
+
+    <div class="table-responsive">
+      <div class="table w-auto table-batch">
+        <div class="t-head">
+          <div class="t-row">
+            <div class="th-div date-div">Date & Time</div>
+            <div class="th-div batch-div">Batch Id#</div>
+            <div class="th-div types-div">Type</div>
+            <div class="th-div status-div">Status</div>
+            <div class="th-div from-div">To/From</div>
+            <div class="th-div donation-div">Donation</div>
+            <div class="th-div matbia-fee-div">Matbia FEES</div>
+            <div class="th-div total-div">Total</div>
+            <div class="th-div"></div>
+          </div>
+        </div>
+        <ng-container *ngIf="isLoading">
+          <app-matbia-skeleton-loader-component></app-matbia-skeleton-loader-component>
+        </ng-container>
+
+        <ng-container *ngIf="!isLoading">
+          <div class="t-body">
+            <ng-container *ngFor="let item of rows$ | async">
+              <app-batch-row-item [item]="item"> </app-batch-row-item>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between p-2 pagination-wrap">
+      <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="gridService.pageSize">
+        <option [ngValue]="10">10</option>
+        <option [ngValue]="50">50</option>
+        <option [ngValue]="100">100</option>
+      </select>
+
+      <ng-container *ngIf="(total$ | async)! && gridService.pageSize && (total$ | async)! > gridService.pageSize">
+        <ngb-pagination
+          [collectionSize]="(total$ | async)!"
+          [(page)]="gridService.page"
+          [pageSize]="gridService.pageSize"
+          [maxSize]="5"
+          [boundaryLinks]="true"
+        >
+        </ngb-pagination>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #oldFilter>
+  <div class="table-filters batch-filter" style="display: none">
+    <div class="right-filers mt-0 d-flex justify-content-between">
+      <div class="d-flex">
+        <div class="field-search">
+          <input type="text" class="form-control" placeholder="Search batches" />
+        </div>
+        <div class="by-showing filter">
+          <app-date-picker-filter (filtered)="filterChange($event)" open="left" [isCustomModal]="true">
+          </app-date-picker-filter>
+        </div>
+      </div>
+      <div class="filter--btn dropdown export">
+        <button
+          class="btn btn-secondary dropdown-toggle"
+          type="button"
+          id="dropdownMenuButton1"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          Export
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+          <li>
+            <a class="dropdown-item" href="#"><i class="mdi mdi-print f-size"></i> Statements</a>
+            <ul class="dropdown-menu dropdown-submenu">
+              <li>
+                <a href="" class="dropdown-item">Summary</a>
+              </li>
+              <li>
+                <a href="" class="dropdown-item">All</a>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a class="dropdown-item" href="#"><i class="fas fa-receipt"></i> Download Receipts</a>
+          </li>
+          <li>
+            <a class="dropdown-item" href="#" (click)="onExportTransactionData()"
+              ><i class="fas fa-file-csv"></i> Download CSV</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</ng-template>

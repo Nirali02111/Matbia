@@ -1,0 +1,228 @@
+<div class="account-content--wrap small--container batch-container w-75 m-auto pt-5">
+  <div class="top-head--section d-flex align-items-center justify-content-between mb-3">
+    <h2 class="title--bar mb-0">Batch closing options</h2>
+    <a href="" (click)="onOpenManuallyBatch($event)" class="btn btn-card text-uppercase"
+      ><span class="material-icons">add</span>Batch Manually</a
+    >
+  </div>
+  <div class="">
+    <ng-container *ngIf="isLoading()">
+      <app-matbia-skeleton-loader-component></app-matbia-skeleton-loader-component>
+    </ng-container>
+
+    <ng-container *ngIf="!isLoading()">
+      <div class="card border-0" [formGroup]="formGroup">
+        <div class="card-heading d-flex align-items-center justify-content-between">
+          <h6>Frequency of automatic batches.</h6>
+          <div class="card-right d-flex align-items-center notification-list--panel justify-content-end">
+            <p class="batch-refresh">
+              <span><img src="assets/dist/img/icon-refersh.svg" alt="refersh" /></span> Next batch scheduled for:
+              <ng-container *ngIf="orgBalance">
+                {{ orgBalance.scheduleDateTime | date : 'MM/dd/yyyy' }}
+              </ng-container>
+            </p>
+            <div class="form-check toogle--btn mb-0" formGroupName="recurringPayment">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="manual-entry-alert-switch"
+                formControlName="isPaused"
+              />
+              <label class="form-check-label" for="manual-entry-alert-switch"></label>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="automatic-transfer-content batch-transfer"
+          [class.disbaled-div]="!isPaused"
+          formGroupName="recurringPayment"
+        >
+          <ul>
+            <li class="transfer-col btn-threshold" [class.active-frequency]="isThreshold">
+              <div class="radio-btn flex-fill">
+                <input type="radio" id="threshold" formControlName="frequency" value="7" />
+                <label for="threshold">Threshold</label>
+                <ng-container *ngIf="isThreshold">
+                  <p>Your full funds will automatically be transferred when your account Funds reaches</p>
+                </ng-container>
+              </div>
+              <ng-container *ngIf="isThreshold">
+                <div class="transfer-type">
+                  <p>When funds reaches AMOUNT:</p>
+                  <app-amount-input formControlName="amount"></app-amount-input>
+                </div>
+              </ng-container>
+            </li>
+
+            <li class="transfer-col" [class.active-frequency]="isDaily">
+              <div class="radio-btn flex-fill">
+                <input type="radio" id="daily" formControlName="frequency" value="1" />
+                <label for="daily">Daily</label>
+              </div>
+
+              <ng-container *ngIf="isDaily">
+                <ng-template [ngTemplateOutlet]="dailyWeeklyTmp"></ng-template>
+              </ng-container>
+            </li>
+            <li class="transfer-col" [class.active-frequency]="isWeekly">
+              <div class="radio-btn flex-fill">
+                <input type="radio" id="weekly" formControlName="frequency" value="2" />
+                <label for="weekly">Weekly</label>
+
+                <ng-container *ngIf="isWeekly">
+                  <p>Your full funds will automatically be transferred on every selected day</p>
+                </ng-container>
+              </div>
+
+              <ng-container *ngIf="isWeekly">
+                <ng-template [ngTemplateOutlet]="dailyWeeklyTmp"></ng-template>
+              </ng-container>
+            </li>
+            <li class="transfer-col" [class.active-frequency]="isMonthly">
+              <div class="radio-btn flex-fill">
+                <input type="radio" id="monthly" formControlName="frequency" value="4" />
+                <label for="monthly">Monthly</label>
+              </div>
+
+              <ng-container *ngIf="isMonthly">
+                <ng-template [ngTemplateOutlet]="dailyWeeklyTmp"></ng-template>
+              </ng-container>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="card border-0" [formGroup]="formGroup">
+      <div class="card-heading d-flex align-items-center justify-content-between" [class.disbaled-div]="!isPaused">
+        <!--disbaled-div add this class for disabled div-->
+        <h6>Transfer to:</h6>
+        <div class="card-right">
+          <ng-select
+            class="form-select-batch"
+            bindLabel="accountNickName"
+            bindValue="bankAccountId"
+            formControlName="bankAccountId"
+            [items]="linkedAccountList"
+            [loading]="isAccountListLoading"
+            [selectOnTab]="true"
+            [searchable]="false"
+            [clearable]="linkedAccountList && linkedAccountList.length > 1"
+          >
+            <ng-template ng-option-tmp let-item="item">
+              {{ item.accountNickName }}
+              <ng-container *ngIf="item.isDefault">
+                <i class="ng-option-primary"> Primary </i>
+              </ng-container>
+            </ng-template>
+            <ng-template ng-label-tmp let-item="item">
+              {{ item.accountNickName }}
+            </ng-template>
+          </ng-select>
+        </div>
+      </div>
+    </div>
+    <div class="action--buttons justify-content-end mt-4 d-flex">
+      <button class="btn btn-cancel me-4">Cancel</button>
+      <button class="btn btn-primary" (click)="onSave()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<ng-template #dailyWeeklyTmp>
+  <div class="transfer-type" [formGroup]="formGroup">
+    <div class="d-flex" formGroupName="recurringPayment">
+      <ng-container *ngIf="isWeekly">
+        <div class="transfer-block transfer-send" [@shakeTrigger]="inAnimation">
+          <p>SEND ON EVERY:</p>
+          <ng-select
+            bindLabel="value"
+            bindValue="id"
+            formControlName="selectedDay"
+            [items]="daysList"
+            [selectOnTab]="true"
+            [searchable]="false"
+            [clearable]="false"
+          >
+          </ng-select>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="isMonthly || isDaily">
+        <div class="transfer-block transfer-send" [@shakeTrigger]="inAnimation">
+          <p>SEND ON:</p>
+          <input
+            type="text"
+            readonly
+            ngxDaterangepickerMd
+            formControlName="scheduleDate"
+            class="form-control"
+            [singleDatePicker]="true"
+            [closeOnAutoApply]="true"
+            [autoApply]="true"
+            [maxDate]="maxDate"
+            [isInvalidDate]="isInvalidDate"
+            [minDate]="minDate"
+          />
+        </div>
+      </ng-container>
+
+      <div class="transfer-block transfer-count" [@shakeTrigger]="inAnimation" [class.hide-count]="isAlwaysRecurring">
+        <p>Count:</p>
+        <input type="text" class="form-control" formControlName="count" mask="separator.0" separatorLimit="100" />
+
+        <ng-container *ngIf="RecurringCount?.touched && RecurringCount?.invalid">
+          <app-input-error [errors]="RecurringCount?.errors"></app-input-error>
+        </ng-container>
+      </div>
+      <div class="transfer-block align-self-center">
+        <div class="form-group position-relative transfer-always">
+          <input [checked]="isAlwaysRecurring" type="checkbox" id="always" formControlName="alwaysRecurring" />
+          <label for="always" class="text-uppercase">Always</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #manuallyBatchContentModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">
+      <ng-container *ngIf="!isLoading()">Important Notice!</ng-container>
+    </h5>
+    <button type="button" class="close" aria-label="Close" (click)="modal.close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <ng-container *ngIf="isLoading()">
+      <app-matbia-skeleton-loader-component></app-matbia-skeleton-loader-component>
+    </ng-container>
+
+    <ng-container *ngIf="!isLoading()">
+      <div class="text-wrap">
+        <p>This is your final "redeem" before we transition to the new "batching" system.</p>
+        <p>
+          All the funds that you haven't redeemed yet will be processed in this final redeem, resetting your balance to
+          zero in preparation for your first batch payment.
+        </p>
+        <p>
+          This redeem includes {{ orgBalance?.availTransCount }} transactions, including transaction of previous
+          redeems.
+        </p>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="modal-footer">
+    <ng-container *ngIf="isLoading()">
+      <app-matbia-skeleton-loader-component></app-matbia-skeleton-loader-component>
+    </ng-container>
+
+    <ng-container *ngIf="!isLoading()">
+      <button class="btn btn-primary" (click)="modal.close(); openCloseCurrentBatchPopup()">continue</button>
+      <button class="btn btn-default" (click)="modal.close()">Cancel</button>
+    </ng-container>
+  </div>
+</ng-template>

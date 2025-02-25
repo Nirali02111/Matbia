@@ -1,0 +1,37 @@
+<div class="donate-content--wrap small--container w-75 m-auto pt-5">
+  <div class="top-head--section">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="title--bar">Choose Recipient</div>
+      <div class="nav-link right-end">
+        <a href="#" [routerLink]="getDonateRouterLink()">
+          <i class="icon-donate"></i>
+          Donate To Organization
+        </a>
+      </div>
+    </div>
+    <div class="serach-panel">
+      <div class="app-search">
+        <form>
+          <div class="input-group">
+            <input type="text" class="form-control" placeholder="Choose Recipient" />
+            <span class="mdi mdi-magnify search-icon"></span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="search-result--panel mt-4">
+    <ng-container *ngFor="let item of data">
+      <div class="item-collapse-panel mt-2 d-flex align-items-center position-relative">
+        <img [src]="profileIcon" class="me-3 rounded-circle" width="40" alt="" />
+        <div class="w-100 overflow-hidden">
+          <div class="name--title pe-3 w-50 float-start">{{ item.name }}</div>
+          <div class="email--text pe-5 w-50 float-end">{{ item.email }}</div>
+          <div class="arrow--icon position-absolute end-0 top-50 translate-middle-y pe-3">
+            <i class="mdi mdi-arrow-r fs-5" (click)="sendMoneyTo()"></i>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

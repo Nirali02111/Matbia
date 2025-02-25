@@ -1,0 +1,252 @@
+<div class="donate-organization-list">
+  <h1>Choose Organization</h1>
+
+  <form>
+    <div class="inline-radio d-flex flex-column flex-sm-row gap-2">
+      <label for="Search by:">Search by:</label>
+      <div class="d-flex flex-wrap gap-2">
+        <input type="radio" value="Name" [formControl]="searchBy" checked id="radioName" />
+        <label for="radioName">Name</label>
+        <input type="radio" value="Address" [formControl]="searchBy" id="radioAddress" />
+        <label for="radioAddress">Address</label>
+        <input type="radio" value="EIN/Tax ID" [formControl]="searchBy" id="radioEIN" />
+        <label for="radioEIN">EIN/Tax ID</label>
+        <input type="radio" value="Phone Number" [formControl]="searchBy" id="radioPhone" />
+        <label for="radioPhone">Phone Number</label>
+      </div>
+    </div>
+
+    <div class="search-box">
+      <app-search-input
+        [isSearchByValidation]="true"
+        [placeholder]="'Search ' + searchBy.value"
+        [debounceTime]="500"
+        [searchBy]="searchBy.value"
+        [searchByChanged]="searchBy.value"
+        (changed)="applyFilter($event)"
+        (showTootlip)="toggleTooltip($event)"
+      >
+      </app-search-input>
+
+      <ng-container *ngIf="searchSub && searchSub.length !== 0">
+        <span class="mdi mdi-close-circle-outline" (click)="onClearClick()">x</span>
+      </ng-container>
+      @if(showTooltip){
+      <small class="text-note">You entered text, do want to search using a different method?</small>
+      }
+    </div>
+
+    <ng-container *ngIf="advancedSearchToggleDropdown">
+      <ng-template [ngTemplateOutlet]="advancedSearchBoxTmp"></ng-template>
+    </ng-container>
+  </form>
+
+  @if(!isSearching){
+  <ng-container *ngIf="isFavoriteLoading; else favoriteOrgListTmp">
+    <h2>
+      <app-matbia-skeleton-loader-component
+        [count]="1"
+        [theme]="{ width: '70px', height: '17px', margin: '0' }"
+      ></app-matbia-skeleton-loader-component>
+    </h2>
+
+    <ul class="d-flex flex-wrap">
+      <li>
+        <app-matbia-skeleton-loader-component
+          [count]="1"
+          [theme]="{ width: '100%', height: '82px', margin: '0' }"
+        ></app-matbia-skeleton-loader-component>
+      </li>
+      <li>
+        <app-matbia-skeleton-loader-component
+          [count]="1"
+          [theme]="{ width: '100%', height: '82px', margin: '0' }"
+        ></app-matbia-skeleton-loader-component>
+      </li>
+      <li>
+        <app-matbia-skeleton-loader-component
+          [count]="1"
+          [theme]="{ width: '100%', height: '82px', margin: '0' }"
+        ></app-matbia-skeleton-loader-component>
+      </li>
+    </ul>
+  </ng-container>
+  }
+
+  <ng-container *ngIf="isLoading; else orgList">
+    <h2>
+      <app-matbia-skeleton-loader-component
+        [count]="1"
+        [theme]="{ width: '70px', height: '17px', margin: '0' }"
+      ></app-matbia-skeleton-loader-component>
+    </h2>
+
+    <app-matbia-skeleton-loader-component
+      [count]="3"
+      [theme]="{ width: '100%', height: '86px', margin: '0' }"
+    ></app-matbia-skeleton-loader-component>
+  </ng-container>
+</div>
+
+<ng-template #favoriteOrgListTmp>
+  <h2>Favorites</h2>
+  <ng-container *ngIf="favoriteListData.length !== 0">
+    <ul class="d-flex flex-wrap">
+      <ng-container *ngFor="let item of favoriteListData">
+        <li (click)="sendMoneyToOrganization(item.encryptedOrgId, item)">
+          <div class="item-favorite d-flex align-items-center gap-2">
+            <figure>
+              <img alt="" [src]="item?.orgLogo || 'assets/dist/img/profile-icon.svg'" appDefaultImgOnMissing />
+            </figure>
+            <div class="item-favorite-data flex-fill d-flex flex-column">
+              <h4>{{ item?.orgName }}</h4>
+              <span appIsHebrew [content]="item.orgJewishName ? item.orgJewishName : ''">
+                {{ item.orgJewishName }}
+              </span>
+              <span class="icon" (click)="removeFavorite($event, item)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="11.486" viewBox="0 0 12 11.486">
+                  <path
+                    id="Icon_awesome-star"
+                    data-name="Icon awesome-star"
+                    d="M6.8.4,5.333,3.368l-3.277.478a.718.718,0,0,0-.4,1.225L4.03,7.381l-.561,3.264A.717.717,0,0,0,4.51,11.4L7.441,9.86,10.373,11.4a.718.718,0,0,0,1.041-.756l-.561-3.264,2.371-2.31a.718.718,0,0,0-.4-1.225L9.55,3.368,8.085.4A.718.718,0,0,0,6.8.4Z"
+                    transform="translate(-1.441 0.001)"
+                    fill="#efa228"
+                  />
+                </svg>
+              </span>
+            </div>
+          </div>
+        </li>
+      </ng-container>
+    </ul>
+  </ng-container>
+</ng-template>
+
+<ng-template #orgList>
+  @if(!isSearching){
+  <h2>SUGGESTED</h2>
+  }
+  <ng-container *ngFor="let item of listData">
+    <div class="item-suggest d-flex align-items-center" (click)="sendMoneyToOrganization(item.encryptedOrgId, item)">
+      <div class="flex-fill flex-column flex-sm-row d-flex align-items-sm-center gap-3">
+        <figure>
+          <img [src]="item?.orgLogo || 'assets/dist/img/profile-icon.svg'" appDefaultImgOnMissing width="40" alt="" />
+        </figure>
+        <div class="w-100 d-flex flex-column">
+          <span class="legal-name">Legal Name: {{ item.businessName }} </span>
+          <h5>{{ item.doingBusinessAs }}</h5>
+          <h6>{{ item.orgJewishName }}</h6>
+        </div>
+        <div class="w-100 d-flex flex-column">
+          <span class="org-tax">EIN: {{ item.taxId }}</span>
+          <span class="org-address">{{ item.address }}</span>
+          <div class="org-infowrap position-relative">
+            <span class="org-info">{{ 'More Info' | uppercase }}</span>
+            <ul>
+              <li>
+                <label>Location:</label>
+                <span>{{ getLocation(item.mailing) }}</span>
+              </li>
+              <li>
+                <label>Legal address:</label>
+                <span>{{ getlegalAddress(item.legalAddress) }}</span>
+              </li>
+              <li>
+                <label>Phone number:</label>
+                <span>{{ item?.phone }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <span
+        class="icon"
+        triggers="click"
+        [class.favorite-icon]="item.isFavourite"
+        placement="top"
+        ngbTooltip="Mark as Favorite"
+        tooltipClass="donate-add-to-favorite-tooltip-class"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="11.486" viewBox="0 0 12 11.486">
+          <path
+            id="Icon_awesome-star"
+            data-name="Icon awesome-star"
+            d="M6.8.4,5.333,3.368l-3.277.478a.718.718,0,0,0-.4,1.225L4.03,7.381l-.561,3.264A.717.717,0,0,0,4.51,11.4L7.441,9.86,10.373,11.4a.718.718,0,0,0,1.041-.756l-.561-3.264,2.371-2.31a.718.718,0,0,0-.4-1.225L9.55,3.368,8.085.4A.718.718,0,0,0,6.8.4Z"
+            transform="translate(-1.441 0.001)"
+            fill="currentColor"
+            opacity="1"
+          />
+        </svg>
+      </span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="7.662" height="13.203" viewBox="0 0 7.662 13.203">
+        <path
+          id="Path_29"
+          data-name="Path 29"
+          d="M0,5.541,5.541,0l5.541,5.541"
+          transform="translate(6.602 1.061) rotate(90)"
+          fill="none"
+          stroke="#454545"
+          stroke-linecap="round"
+          stroke-width="1.5"
+          opacity="0.25"
+        />
+      </svg>
+    </div>
+  </ng-container>
+
+  @if(isSearching){
+  <small class="note-search">
+    Didn't find what you're looking for?<br />
+    Try refining your search by using the EIN or Name of the organization.
+  </small>
+  }
+
+  <ng-template [ngTemplateOutlet]="missingOrgBtnTmp"></ng-template>
+</ng-template>
+
+<ng-template #missingOrgBtnTmp>
+  <button class="btn btn-primary btn-report" (click)="onMissingOrganization()">Report missing organization</button>
+</ng-template>
+
+<ng-template #advancedSearchBoxTmp>
+  <div class="advanced-search">
+    <div class="enable-search position-relative">
+      <input type="checkbox" id="enable-search" />
+      <label class="form-check-label" for="enable-search">Enable misspelled search</label>
+    </div>
+    <hr />
+    <div class="">
+      <h4>Search by fields</h4>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label">ORG. LEGAL NAME:</label>
+            <input type="text" class="form-control" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label">DISPLAY NAME:</label>
+            <input type="text" class="form-control" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label">EIN (TAX ID):</label>
+            <input type="text" class="form-control" />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label class="form-label">ADDRESS:</label>
+            <input type="text" class="form-control" />
+          </div>
+        </div>
+      </div>
+      <div class="d-flex justify-content-end mt-2">
+        <button class="btn btn-default" (click)="advancedToggle()">CANCEL</button>
+        <button class="btn btn-primary" (click)="advancedToggle()">Apply</button>
+      </div>
+    </div>
+  </div>
+</ng-template>

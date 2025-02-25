@@ -1,0 +1,90 @@
+<div class="donate-content--wrap m-auto pt-5 page-overview">
+  <div class="filter-button"></div>
+
+  <div class="query-report-inside">
+    <div class="query-report-data">
+      <div class="query-report-header">
+        @if(showParams){
+
+        <div class="d-flex gap-3">
+          <div [formGroup]="reportParamsForm">
+            <div formArrayName="reportParamsArray">
+              @for (item of reportParams?.controls; track $index; let i = $index) {
+              <div [formGroupName]="i" class="input-form input-one">
+                <div class="inside-input">
+                  <div class="lbl-col"></div>
+                  <div class="input-col">
+                    @if(item.get('parameterDisplayName')?.value){
+                    <label>{{ item.get('parameterDisplayName')?.value }}:</label>
+                    }
+                    @else {
+                    <label>{{ item.get('name')?.value }}:</label>
+                    }
+                  </div>
+                </div>
+
+                <div class="inside-input">
+                  <div class="input-col owner-field">
+                    @if(item.get('uiDataType')?.value === 'INT'){
+                    <input type="tel" class="form-control" mask="9*" formControlName="inputValue" />
+                    }
+                  </div>
+                </div>
+              </div>
+              }
+            </div>
+          </div>
+
+          <div class="d-flex flex-column">
+            <label>&nbsp;</label>
+            <button class="btn btn-primary btn-run" (click)="executeQuery()">Run</button>
+          </div>
+        </div>
+        <div class="donate-content--wrap m-auto pt-5 page-overview">
+          <app-report-table></app-report-table>
+        </div>
+
+        }
+        <div class="d-flex gap-3 mt-5">
+          <div class="choose-report" [formGroup]="formGroup">
+            <label>Enter Username</label>
+            <div class="input-group">
+              <input type="text" class="form-control" formControlName="entityId" />
+            </div>
+            <ng-container *ngIf="EntityId?.touched && EntityId?.invalid">
+              <app-input-error [errors]="EntityId?.errors"></app-input-error>
+            </ng-container>
+          </div>
+          <div class="d-flex flex-column">
+            <label>&nbsp;</label>
+            <button class="btn btn-primary btn-run" (click)="onSubmit()">Enter</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-cslog-portal></app-cslog-portal>
+</div>
+
+<ng-template #confirmActionModal let-modal>
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">Confirm Action</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+        (click)="modal.close()"></button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-inner">
+        <img src="assets/dist/img/icon-decline.png" alt="Check" class="icon-checked" />
+        <h6 style="text-align: center">Are you sure you want to access {{ name }}'s account?</h6>
+        @if (isNewChange()) {
+        <span class="small-head">This action will send an email to {{ name }} about this session.</span>
+        }
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" (click)="modal.close(true)">CONFIRM</button>
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="modal.close()">Cancel</button>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,294 @@
+<div class="schedules-page p-4">
+  <div class="table-wrapper">
+    <div class="top-header--content">
+      <div class="balance-card">
+        <ng-container *appPersonalAccessControl>
+          <div class="colm available-blnce">
+            <div class="amount-text large-amount">{{ availableBalance | currency }}</div>
+            <p class="lbl--text">Available Funds</p>
+          </div>
+          <div class="colm deposit-blnce">
+            <div class="amount-text small-amount">{{ deposits | currency }}</div>
+            <p class="lbl--text">Deposits this month</p>
+          </div>
+          <div class="colm donation-blnce">
+            <div class="amount-text small-amount">{{ donations | currency }}</div>
+            <p class="lbl--text">Donations this month</p>
+          </div>
+        </ng-container>
+
+        <ng-container *appBusinessDonorAccessControl>
+          <div class="colm available-blnce">
+            <div class="amount-text large-amount">{{ availableBalance | currency }}</div>
+            <p class="lbl--text">Available Funds</p>
+          </div>
+          <div class="colm deposit-blnce">
+            <div class="amount-text small-amount">{{ deposits | currency }}</div>
+            <p class="lbl--text">Deposits this month</p>
+          </div>
+          <div class="colm donation-blnce">
+            <div class="amount-text small-amount">{{ donations | currency }}</div>
+            <p class="lbl--text">Donations this month</p>
+          </div>
+        </ng-container>
+
+        <ng-container *appOrganizationAccessControl>
+          <div class="colm available-blnce">
+            <div class="amount-text large-amount">{{ availableBalance | currency }}</div>
+            <p class="lbl--text">Available Funds</p>
+          </div>
+          <div class="colm deposit-blnce" [class.border-right-none]="!fundingBalance">
+            <div class="amount-text small-amount">{{ presentBalance | currency }}</div>
+            <p class="lbl--text">Account Funds</p>
+          </div>
+
+          <ng-container *ngIf="fundingBalance && fundingBalance > 0">
+            <div class="colm deposit-blnce border-right-none">
+              <div class="amount-text small-amount">{{ fundingBalance | currency }}</div>
+              <p class="lbl--text">Funding</p>
+            </div>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *appBusinessAccessControl>
+          <div class="colm available-blnce">
+            <div class="amount-text large-amount">{{ availableBalance | currency }}</div>
+            <p class="lbl--text">Available Funds</p>
+          </div>
+          <div class="colm deposit-blnce" [class.border-right-none]="!fundingBalance">
+            <div class="amount-text small-amount">{{ presentBalance | currency }}</div>
+            <p class="lbl--text">Account Funds</p>
+          </div>
+
+          <ng-container *ngIf="fundingBalance && fundingBalance > 0">
+            <div class="colm deposit-blnce border-right-none">
+              <div class="amount-text small-amount">{{ fundingBalance | currency }}</div>
+              <p class="lbl--text">Funding</p>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="table-filters">
+      <div class="right-filers">
+        <ng-container *appPersonalAccessControl>
+          <ng-template [ngTemplateOutlet]="typeFilterTmp"></ng-template>
+        </ng-container>
+
+        <ng-container *appBusinessDonorAccessControl>
+          <ng-template [ngTemplateOutlet]="typeFilterTmp"></ng-template>
+        </ng-container>
+
+        <div class="filter by-transaction add-transaction">
+          <label>Status</label>
+          <ng-select
+            bindLabel="name"
+            bindValue="name"
+            [closeOnSelect]="true"
+            [searchable]="false"
+            [clearable]="false"
+            [(ngModel)]="selectedStatus"
+            [selectOnTab]="true"
+            [items]="scheduleStatusList"
+            (change)="onSelectStatus($event)"
+          >
+          </ng-select>
+        </div>
+
+        <!-- Time filter  -->
+        <ng-template [ngTemplateOutlet]="datePickerFilterTmp"></ng-template>
+        <!-- Report  -->
+        <div class="filter--btn export">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton2"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            aria-haspopup="false"
+            data-bs-auto-close="true"
+          >
+            Export
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+            <li>
+              <a class="dropdown-item" href="#" (click)="onExportScheduleData($event)"
+                ><i class="fas fa-file-csv"></i> Export</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table  -->
+    <div class="table">
+      <div class="t-head" [hidden]="isNoRecord">
+        <div class="t-row">
+          <div
+            class="desc-div th-div"
+            appSortableHeader
+            sortable="Description"
+            sortName="description"
+            (sort)="onSort($event)"
+          >
+            To/From
+          </div>
+
+          <div
+            class="schedule-id-div th-div"
+            appSortableHeader
+            sortable="ScheduleId"
+            sortName="scheduleNum"
+            (sort)="onSort($event)"
+          >
+            Schedule ID
+          </div>
+
+          <div
+            class="schedule-id-div th-div"
+            appSortableHeader
+            sortable="transType"
+            sortName="transType"
+            (sort)="onSort($event)"
+          >
+            Schedule Type
+          </div>
+
+          <div class="status-div th-div" appSortableHeader sortable="Status" sortName="status" (sort)="onSort($event)">
+            Status
+          </div>
+
+          <div
+            class="total-amount-div th-div text-center"
+            appSortableHeader
+            sortable="Total Amount"
+            sortName="totalAmount"
+            (sort)="onSort($event)"
+          >
+            Total Amount
+          </div>
+          <div
+            class="payments-div th-div"
+            appSortableHeader
+            sortable="Payments Left"
+            sortName="remaining"
+            (sort)="onSort($event)"
+          >
+            Payments Left
+          </div>
+          <div
+            class="frequency-div text-center th-div"
+            appSortableHeader
+            sortable="Frequency"
+            sortName="frequency"
+            (sort)="onSort($event)"
+          >
+            Frequency
+          </div>
+          <div
+            class="amount-div th-div"
+            appSortableHeader
+            sortable="Amount"
+            sortName="scheduleAmount"
+            (sort)="onSort($event)"
+          >
+            Amount
+          </div>
+          <div class="action-div th-div th-div">&nbsp;</div>
+        </div>
+      </div>
+      <ng-container *ngIf="isLoading">
+        <app-matbia-skeleton-loader-component [count]="10"></app-matbia-skeleton-loader-component>
+      </ng-container>
+      <ng-container *ngIf="!isLoading">
+        <ng-container *ngIf="rows$ | async as rows">
+          <ng-container *ngIf="rows.length !== 0">
+            <!-- List -->
+            <div class="t-body">
+              <ng-container *ngFor="let item of rows">
+                <app-schedule-row-item [item]="item" (refresh)="loadData()"></app-schedule-row-item>
+              </ng-container>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="rows.length === 0">
+            <ng-container *ngIf="isNoMatchingRecord">
+              <ng-template [ngTemplateOutlet]="noMatchingRecordsTmp"></ng-template>
+            </ng-container>
+            <ng-container *ngIf="isNoRecord">
+              <ng-template [ngTemplateOutlet]="noRecordsTmp"></ng-template>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+
+      <div class="d-flex justify-content-between p-2 pagination-wrap">
+        <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="gridService.pageSize">
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="50">50</option>
+          <option [ngValue]="100">100</option>
+        </select>
+
+        <ng-container *ngIf="(total$ | async)! && gridService.pageSize && (total$ | async)! > gridService.pageSize">
+          <ngb-pagination
+            [collectionSize]="(total$ | async)!"
+            [(page)]="gridService.page"
+            [pageSize]="gridService.pageSize"
+            [maxSize]="5"
+            [boundaryLinks]="true"
+          >
+          </ngb-pagination>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noMatchingRecordsTmp>
+  <div class="no-match text-center">No results found</div>
+</ng-template>
+
+<ng-template #noRecordsTmp>
+  <div class="no-record d-flex align-items-center justify-content-center text-center">
+    <div class="no-record-inner">
+      <h4 class="bg-transparent">You don't have any recurring activity...</h4>
+      <img class="bg-transparent" src="/assets/dist/img/no-record-schedule.png" alt="" />
+      <p class="bg-transparent">
+        If you have set up recurring donations with an organization, or automatic deposits, it will show up here.
+      </p>
+      <div class="action-btn bg-transparent">
+        <a [routerLink]="getAutoDepositRouterLink()" class="btn btn-primary"
+          ><i class="icon-deposit"></i> SET UP AUTOMATIC DEPOSITS</a
+        >
+        <a [routerLink]="getDonateRouterLink()" class="btn btn-secondary"
+          ><i class="icon-donate"></i> SCHEDULE A DONATION</a
+        >
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #typeFilterTmp>
+  <div class="filter by-transaction add-transaction">
+    <label>Type</label>
+    <ng-select
+      bindLabel="label"
+      bindValue="label"
+      [closeOnSelect]="true"
+      [searchable]="false"
+      [clearable]="false"
+      [(ngModel)]="selectedType"
+      [selectOnTab]="true"
+      [items]="scheduleTypeList"
+      (change)="onSelectType($event)"
+    >
+    </ng-select>
+  </div>
+</ng-template>
+
+<ng-template #datePickerFilterTmp>
+  <app-date-picker-filter [defaultSelected]="'5'" (filtered)="filterChange($event)" open="left" [isCustomModal]="true">
+  </app-date-picker-filter>
+</ng-template>

@@ -1,0 +1,175 @@
+<div
+  class="header-section"
+  [class.stickyheader]="isSticky"
+  [class.app-header]="isShulkiosk"
+  [class.header-home]="isHeaderHome"
+>
+  <ng-container *ngIf="!isHideHeder; else backHeader">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"><i class="fas fa-bars"></i></span>
+    </button>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fe-navbar justify-content-between">
+      <ng-container *ngIf="!isShulkiosk">
+        <a class="navbar-brand" href="#" [routerLink]="['/']">
+          <img src="assets/dist/img/logo.svg" class="color-logo" alt="Matbia" />
+          <img src="assets/dist/img/white-logo.svg" class="white-logo" alt="Matbia" />
+        </a>
+      </ng-container>
+      <ng-container *ngIf="isShulkiosk">
+        <a class="navbar-brand" (click)="$event.preventDefault()">
+          <img src="assets/dist/img/logo.svg" class="color-logo" alt="Matbia" />
+          <img src="assets/dist/img/white-logo.svg" class="white-logo" alt="Matbia" />
+        </a>
+      </ng-container>
+      <div id="navbarSupportedContent" class="nav-section navbar-collapse collapse">
+        <ul class="navbar-nav mx-auto justify-content-start">
+          <li class="nav-item active">
+            <ng-container *ngIf="!isShulkiosk">
+              <a class="nav-link" href="#main-banner">Home</a>
+            </ng-container>
+
+            <ng-container *ngIf="isShulkiosk">
+              <a class="nav-link" (click)="$event.preventDefault()">Home</a>
+            </ng-container>
+          </li>
+
+          <li class="nav-item">
+            <ng-container *ngIf="!isShulkiosk">
+              <a class="nav-link" [routerLink]="['/resources']">FAQ</a>
+            </ng-container>
+            <ng-container *ngIf="isShulkiosk">
+              <a class="nav-link" (click)="$event.preventDefault()">FAQ</a>
+            </ng-container>
+          </li>
+
+          <li class="nav-item">
+            <ng-container *ngIf="!isShulkiosk">
+              <a class="nav-link" href="#better-way">About</a>
+            </ng-container>
+            <ng-container *ngIf="isShulkiosk">
+              <a class="nav-link" (click)="$event.preventDefault()">About</a>
+            </ng-container>
+          </li>
+
+          <li class="nav-item">
+            <ng-container *ngIf="!isShulkiosk">
+              <a class="nav-link" href="#contact" (click)="onClickContact()">Contact</a>
+            </ng-container>
+            <ng-container *ngIf="isShulkiosk">
+              <a class="nav-link" (click)="$event.preventDefault()">Contact</a>
+            </ng-container>
+          </li>
+        </ul>
+      </div>
+
+      <ul class="sign-link my-lg-0 justify-content-end d-flex align-items-center">
+        <li class="nav-item">
+          <ng-container *ngIf="!isShulkiosk">
+            <ng-select
+              [(ngModel)]="selectedOption"
+              [items]="options"
+              bindLabel="label"
+              (change)="changeOrganization($event)"
+              [placeholder]="selectedOption ? 'Organization' : 'Organization'"
+            >
+            </ng-select>
+          </ng-container>
+          <ng-container *ngIf="isShulkiosk">
+            <a class="nav-link btn btn-primary" (click)="$event.preventDefault()">login/signup</a>
+          </ng-container>
+        </li>
+        <ng-container *ngIf="!isShulkiosk">
+          <li class="nav-item">
+            <a href="javascript:void(0)" (click)="Login()">Login</a>
+          </li>
+        </ng-container>
+      </ul>
+    </nav>
+
+    <span class="user-icon mobile-show">
+      <ng-container *ngIf="!isShulkiosk">
+        <a [routerLink]="['/auth/login']">
+          <i class="far fa-user"></i>
+        </a>
+      </ng-container>
+      <ng-container *ngIf="isShulkiosk">
+        <a (click)="$event.preventDefault()">
+          <i class="far fa-user"></i>
+        </a>
+      </ng-container>
+    </span>
+  </ng-container>
+</div>
+
+<div class="main-content" (click)="closeCollapse()">
+  <router-outlet></router-outlet>
+
+  <div class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="row">
+          <div class="usefull-links col-6">
+            <ul>
+              <li>&copy; {{ currentYear }} Matbia.org</li>
+              <li>
+                Patent pending - Patent no.
+                <span (click)="openPatentPDF($event)" style="cursor: pointer">#20230214628</span>
+              </li>
+            </ul>
+          </div>
+          <ng-container *ngIf="!isShulkiosk">
+            <div class="usefull-links col-6">
+              <ul>
+                <li><a href="privacy-and-policy">Privacy Policy</a></li>
+                <li><a href="#" (click)="openTerms($event)">Terms and Conditions</a></li>
+              </ul>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #backHeader>
+  <div class="navbar-white">
+    <nav class="navbar navbar-expand-lg">
+      <ng-container
+        *ngIf="
+          activeUrlValue.toLowerCase().indexOf('signup') === -1 &&
+          activeUrlValue.toLowerCase().indexOf('send-me-card') === -1
+        "
+      >
+      </ng-container>
+
+      <a class="navbar-brand ml-0 mr-auto" href="#" [routerLink]="['/']"
+        ><img src="assets/dist/img/logo.svg" alt=""
+      /></a>
+    </nav>
+  </div>
+</ng-template>
+
+<ng-template #backArrowTemp let-span="span">
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    fill="currentColor"
+    class="bi bi-chevron-left"
+    viewBox="0 0 16 16"
+  >
+    <path
+      fill-rule="evenodd"
+      d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"
+    />
+  </svg>
+  <span>{{ span }}</span>
+</ng-template>

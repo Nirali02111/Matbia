@@ -1,0 +1,205 @@
+<div class="setup-businnes-form" (keyup.enter)="triggerRegister()" [formGroup]="formGroup">
+  <div class="inside-setup-business-form">
+    <div class="input-form input-one">
+      <div class="inside-input" [@shakeTrigger]="BusinessType?.invalid && inAnimation">
+        <div class="lbl-col">
+          <label>BUSINESS TYPE:</label>
+        </div>
+        <div class="input-col" [class.is-invalid]="BusinessType?.touched && BusinessType?.invalid && isSubmitted">
+          <select formControlName="businessType">
+            <option *ngFor="let x of listOfBusinessTypes" [value]="x.name" [selected]="x.name === BusinessType?.value">
+              {{ x.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="input-form form-two">
+      <div class="inside-input" [@shakeTrigger]="Naics?.invalid && inAnimation">
+        <div class="lbl-col">
+          <label>NAICS CATEGORY:</label>
+        </div>
+        <div class="input-col" [class.is-invalid]="Naics?.touched && Naics?.invalid && isSubmitted">
+          <select formControlName="naics" (change)="onSelectNAIC()">
+            <option *ngFor="let x of listOfNAICCategory" [value]="x.id" [selected]="x.id === Naics?.value">
+              {{ x.label }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="inside-input" [@shakeTrigger]="NaicsCode?.invalid && inAnimation">
+        <div class="lbl-col">
+          <label>NAICS SUB-CATEGORY:</label>
+        </div>
+        <div class="input-col" [class.is-invalid]="NaicsCode?.touched && NaicsCode?.invalid && isSubmitted">
+          <select formControlName="naicsCode">
+            <option value="">Select Sub Category</option>
+            <option *ngFor="let x of listOfNAICSub" [value]="x.code" [selected]="x.code === NaicsCode?.value">
+              {{ x.subcategory }}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="form-part">
+      <div class="input-form form-two">
+        <div class="inside-input">
+          <div class="lbl-col">
+            <label>LEGAL COMPANY NA&#8204;ME:</label>
+          </div>
+          <div class="input-col" [class.is-invalid]="BusinessName?.touched && BusinessName?.invalid && isSubmitted">
+            <input
+              type="text"
+              formControlName="businessName"
+              placeholder="Legal Company name"
+              autocomplete="new-businessName"
+            />
+          </div>
+        </div>
+        <div class="inside-input">
+          <div class="lbl-col">
+            <label>DBA:</label>
+          </div>
+          <div
+            class="input-col"
+            [class.is-invalid]="DoingBusinessAs?.touched && DoingBusinessAs?.invalid && isSubmitted"
+          >
+            <input type="text" formControlName="doingBusinessAs" />
+          </div>
+        </div>
+      </div>
+      <div class="input-form form-one">
+        <div class="inside-input">
+          <div class="lbl-col">
+            <label>EMPLOYER ID #:</label>
+          </div>
+          <div class="input-col" [class.is-invalid]="EmployerId?.touched && EmployerId?.invalid && isSubmitted">
+            <input type="tel" formControlName="employerId" placeholder="Employer ID Number" [mask]="employerIdMask" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--Form part -->
+    <div class="main-form-part">
+      <div class="input-form form-one">
+        <div class="inside-input">
+          <div class="lbl-col">
+            <label>ADD&#8204;RESS:</label>
+          </div>
+          <div class="input-col" [class.is-invalid]="Address?.touched && Address?.invalid">
+            <input
+              type="email"
+              placeholder="Business Address"
+              formControlName="address"
+              appAddressAutocomplete
+              (onAddressChange)="onAddressChange($event)"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="input-form form-one">
+        <div class="inside-input">
+          <div class="lbl-col">
+            <label>ADD&#8204;RESS LINE 2:</label>
+          </div>
+          <div class="input-col" [class.is-invalid]="Address2?.touched && Address2?.invalid && isSubmitted">
+            <input type="text" placeholder="APT, Suite, Floor" formControlName="address2" />
+
+            <ng-container *ngIf="Address2?.touched && Address2?.invalid">
+              <app-input-error [errors]="Address2?.errors"></app-input-error>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="input-form form-two item-three">
+        <div class="inside-input">
+          <div class="lbl-col">
+            <label>CI&#8204;TY:</label>
+          </div>
+          <div class="input-col" [class.is-invalid]="City?.touched && City?.invalid && isSubmitted">
+            <input type="text" placeholder="City" formControlName="city" />
+          </div>
+        </div>
+        <div class="inside-input row-3">
+          <div class="lbl-col">
+            <label>STA&#8204;TE:</label>
+          </div>
+          <div class="input-col" [class.is-invalid]="State?.touched && State?.invalid && isSubmitted">
+            <ng-select
+              bindLabel="item_id"
+              bindValue="item_id"
+              formControlName="state"
+              [searchable]="true"
+              [addTag]="true"
+              [selectOnTab]="true"
+              [searchFn]="customSearchFn"
+              [items]="commonDataService.stateList"
+            >
+              <ng-template ng-option-tmp let-item="item">
+                {{ item.item_id }}
+              </ng-template>
+            </ng-select>
+          </div>
+          <div class="lbl-col ms-5">
+            <label>Z&#8204;IP:</label>
+          </div>
+          <div class="input-col" [class.is-invalid]="Zip?.touched && Zip?.invalid && isSubmitted">
+            <input type="tel" placeholder="Zip" [mask]="zipCodeMask" formControlName="zip" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main-form-part">
+      <div class="input-form form-two">
+        <div class="inside-input">
+          <div class="lbl-col">
+            <label>PHONE NUMBER:</label>
+          </div>
+          <div class="input-col" [class.is-invalid]="Phone?.touched && Phone?.invalid && isSubmitted">
+            <app-phone-input [isSubmit]="false" formControlName="phone"></app-phone-input>
+          </div>
+        </div>
+        <div class="inside-input">
+          <div class="lbl-col">
+            <label>BUSI&#8204;NESS EMA&#8204;IL:</label>
+          </div>
+          <div class="input-col" [class.is-invalid]="BusinessEmail?.touched && BusinessEmail?.invalid && isSubmitted">
+            <input
+              type="email"
+              placeholder="Business Email"
+              formControlName="businessEmail"
+              autocomplete="new-businessEmail"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div class="input-form form-two">
+        <div class="inside-input">
+          <div class="lbl-col">
+            <label>OFFICE NUMBER:</label>
+          </div>
+          <div class="input-col" [class.is-invalid]="OfficePhone?.touched && OfficePhone?.invalid && isSubmitted">
+            <app-phone-input [isSubmit]="false" formControlName="officePhone"></app-phone-input>
+          </div>
+        </div>
+        <div class="inside-input">
+          <div class="lbl-col">
+            <label>WE&#8204;BS&#8204;ITE:</label>
+          </div>
+          <div
+            class="input-col"
+            [class.is-invalid]="BusinessWebsite?.touched && BusinessWebsite?.invalid && isSubmitted"
+          >
+            <input
+              type="text"
+              placeholder="Business Website URL"
+              formControlName="businessWebsite"
+              autocomplete="new-businessWebsite"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

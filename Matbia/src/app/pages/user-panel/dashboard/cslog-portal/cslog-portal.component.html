@@ -1,0 +1,52 @@
+<div class="donate-content--wrap m-auto pt-5 page-overview">
+  <div class="d-flex justify-content-center query-report-header">
+    <h4>Your recent access history</h4>
+  </div>
+  <div class="filter-button"></div>
+  <ng-container *ngIf="(rows$ | async)?.length !== 0; else noRecordsTmp">
+    <div class="query-report-table p-2 table-responsive">
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <tbody>
+            <tr *ngFor="let item of rows$ | async">
+              <td>{{ item.actionDate | date : 'MM/dd/yyyy hh:mm a' }}</td>
+              <td>{{ item.name }}</td>
+              <td>{{ item.action }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="d-flex justify-content-between p-2 pagination-wrap">
+        <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="gridService.pageSize">
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="50">50</option>
+          <option [ngValue]="100">100</option>
+        </select>
+        <ng-container *ngIf="(total$ | async)! && gridService.pageSize && (total$ | async)! > gridService.pageSize">
+          <ngb-pagination
+            [collectionSize]="(total$ | async)!"
+            [(page)]="gridService.page"
+            [pageSize]="gridService.pageSize"
+            [maxSize]="5"
+            [boundaryLinks]="true"
+          >
+          </ngb-pagination>
+        </ng-container>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<ng-template #noRecordsTmp>
+  <div class="query-report-table p-2 table-responsive" *ngIf="initialize">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <tbody>
+          <tr>
+            <td colspan="15" style="text-align: center">No data found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-template>

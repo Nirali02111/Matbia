@@ -1,0 +1,251 @@
+@if(isShulKiosk){
+<div class="hero-banner" id="main-banner" #mainBanner>
+  <div class="hero-inner">
+    <div class="caption-text">
+      <h1>
+        A <span>Simplified <br />Charity</span> Solution
+      </h1>
+      <div class="paragraph">
+        <p>
+          Discover an easier way to donate.<br />
+          Give with an open hand and clear mind using our one-of-a-kind charity card and user portal.
+        </p>
+      </div>
+      <div class="buttons-group">
+        <a class="btn btn-primary btn-active-card" [routerLink]="['/signup']">Start with matbia now</a>
+
+        <ng-container *ngIf="isShulKiosk">
+          <a class="btn btn-secondary btn-active-card" (click)="onActivateCard($event)">Activate Card</a>
+          <a class="btn btn-secondary btn-request-card" (click)="onRequestCard($event)">Request Card</a>
+        </ng-container>
+      </div>
+    </div>
+    <div class="hero-image-bottom">
+      <img src="assets/dist/img/hero-image.png" alt="Hero Banner" />
+    </div>
+  </div>
+</div>
+} @else {
+<section class="section-banner" id="main-banner" #mainBanner>
+  <div class="container d-flex align-items-lg-center justify-content-lg-between gap-3 gap-lg-5 flex-lg-row flex-column">
+    <div class="flex-fill text-center text-lg-start">
+      <h1>
+        <span>Tzedakah</span><br />
+        happens<br />
+        with a <span>tap</span>
+      </h1>
+      <div class="d-flex flex-column flex-lg-row align-items-center">
+        <figure>
+          <img src="assets/dist/img/image-banner.png" alt="matbia card" />
+        </figure>
+        <div class="flex-fill d-flex flex-column">
+          <small><strong>Discover an easier way to donate.</strong></small>
+          <small>Give with an open hand and clear mind using our one-of-a-kind charity card and user portal.</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="card w-100 mx-auto mx-lg-0">
+      <div class="card-body">
+        <app-welcome-page></app-welcome-page>
+      </div>
+    </div>
+  </div>
+</section>
+}
+
+<div class="better-way-wrap" id="better-way" #betterWay>
+  <div class="container">
+    <div class="better-way-info">
+      <h2>A BETTER WAY TO GIVE</h2>
+      <p>
+        Matbia is a innovative charity solution for the contemporary Jew. We’ve aptly fused Halachic ordinances with
+        user-friendly technology to bring you a practical, in-depth analysis of where your charity is going.
+      </p>
+      <p>
+        It’s our hope that by using Matbia’s philanthropic tools, Jewish donors around the globe will better understand
+        their finances, give within the guidelines of Halacha, and discover a manageable path to fulfilling this good
+        deed.
+      </p>
+    </div>
+  </div>
+</div>
+<div class="matbia-service-list">
+  <div class="container">
+    <div class="matbia-service-box">
+      <div class="matbia-service-row">
+        <h4 class="visible-mobile">THE TZEDAKAH CARD</h4>
+        <div class="matbia-service-img">
+          <img src="assets/dist/img/matbia-card.png" alt="matbia card" />
+        </div>
+        <div class="matbia-service-content">
+          <h4 class="visible-desk">THE TZEDAKAH CARD</h4>
+          <h2>DONATE DYNAMICALLY</h2>
+          <p>
+            Our sleek and unique charity card empowers users to make on-the-go giving decisions. With a simple tap of
+            your card, direct a portion of your Maaser anywhere.
+          </p>
+          <p>
+            Donate your way by customizing the monetary amounts and digital functions for each of the card’s signature
+            four corners.*
+          </p>
+        </div>
+        <div class="matbia-additional-info">
+          <p>
+            *Donations are made to Matbia Inc, a NJ Nonprofit corp. ("Matbia"). Matbia is a Donor Advised Fund, and once
+            the donation is made, you only have the ability to advise Matbia as to which eligible organization to direct
+            your donation. All donations are subject to the Matbia rules.
+          </p>
+        </div>
+      </div>
+      <hr class="mobile-show" />
+      <div class="matbia-service-row">
+        <h4 class="visible-mobile">ADMIN PORTAL</h4>
+        <div class="matbia-service-content">
+          <h4 class="visible-desk">ADMIN PORTAL</h4>
+          <h2>TRACK YOUR CHARITY</h2>
+          <p>Our user portal offers a detailed analysis of all cards, accounts, transactions, and balances.</p>
+          <p>
+            Donate to the charity of your choice with ease directly from your dashboard, set up recurring donations and
+            monitor every payment in one convenient place.
+          </p>
+        </div>
+        <div class="matbia-service-img">
+          <img src="assets/dist/img/matbia-portal.png" alt="matbia portal" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="matbia-feature-wrap">
+  <div class="container">
+    <div class="matbia-feature-row">
+      <div class="matbia-feature-box">
+        <img src="assets/dist/img/tax-deductible.png" alt="Tax-deductible" />
+        <h4>tax deductible Donations</h4>
+        <p>
+          Matbia users obtain donation tax receipts for all funds in their account. Give confidently knowing that with
+          Matbia you’re positioned to receive the best possible tax benefits for your charitable commitment.
+        </p>
+      </div>
+      <div class="matbia-feature-box">
+        <img src="assets/dist/img/corner-feature.png" alt="Corner feature" />
+        <h4>4 corner feature</h4>
+        <p>
+          Matbia’s one-of-a-kind charity card’s four sides personalize the way you donate. Using its flexible features,
+          set the amount and the way you give to work for you.
+        </p>
+      </div>
+      <div class="matbia-feature-box">
+        <img src="assets/dist/img/recurring-donation.png" alt="Recurring donation" />
+        <h4>RECURRING DONATIONS</h4>
+        <p>
+          Keeping consistent with your contributions is easy with Matbia’s periodic payments. Schedule your donations
+          with just a few clicks, and analyze all activity in our user portal.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="matbia-become-member">
+  <div class="container">
+    <div class="matbia-member-info">
+      <h2>BECOME A MATBIA MEMBER</h2>
+      <p>
+        Contact us to find out how to receive your free Matbia card today. Activate to explore an effortless path to the
+        mitzvah of maaser.
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="middle-content">
+  <div class="contact-section" id="contact" #contact>
+    <div class="container">
+      <div class="card-wrap">
+        <div class="contact-box">
+          <h3>Contact Us</h3>
+          <p>Reach out to discover how easy charity can be.</p>
+          <div class="info-row">
+            <div class="info-box">
+              <div class="icon"><img src="assets/dist/img/email-icon.svg" alt="" /></div>
+              <div class="content">
+                <h6>General Support:</h6>
+                <h4><a *ngIf="!isShulKiosk" href="mailto:info@matbia.com">info&#64;matbia.com</a></h4>
+                <h4 *ngIf="isShulKiosk">info&#64;matbia.com</h4>
+              </div>
+            </div>
+            <div class="info-box">
+              <div class="icon"><img src="assets/dist/img/phone-icon.svg" alt="" /></div>
+              <div class="content">
+                <h6>Call Us:</h6>
+                <h4><a *ngIf="!isShulKiosk" href="tel:877-762-8242">877-762-8242</a></h4>
+                <h4 *ngIf="isShulKiosk" tel:877-762-8242>877-762-8242</h4>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-box">
+          <ngb-alert *ngIf="alertMessage" [attr.type]="alertType" role="alert" (closed)="alertMessage = ''"
+            >{{ alertMessage }}
+          </ngb-alert>
+
+          <form [formGroup]="contactUs" (ngSubmit)="onContactUs()">
+            <div class="form-group" appHasFocus [@shakeTrigger]="Name?.invalid && inAnimation">
+              <label>NAME<em class="required">*</em></label>
+              <input
+                #cFirstName
+                type="text"
+                class="form-control"
+                formControlName="name"
+                placeholder="Enter your name"
+              />
+
+              <ng-container *ngIf="Name?.invalid && isSubmited">
+                <app-input-error [errors]="Name?.errors"></app-input-error>
+              </ng-container>
+            </div>
+
+            <div class="form-group" appHasFocus [@shakeTrigger]="Email?.invalid && inAnimation">
+              <label>EMAIL<em class="required">*</em></label>
+              <input type="text" placeholder="Email address" formControlName="email" class="form-control" />
+              <ng-container *ngIf="Email?.invalid && isSubmited">
+                <app-input-error [errors]="Email?.errors"></app-input-error>
+              </ng-container>
+            </div>
+
+            <div class="form-group" appHasFocus [@shakeTrigger]="Phone?.invalid && inAnimation">
+              <label>PHONE<em class="required">*</em></label>
+              <app-phone-input [isSubmit]="isSubmited" formControlName="phone"></app-phone-input>
+            </div>
+
+            <div class="form-group" appHasFocus [@shakeTrigger]="ContactMessage?.invalid && inAnimation">
+              <label>MESSAGE<em class="required">*</em></label>
+              <textarea
+                class="form-control textarea-input"
+                formControlName="message"
+                placeholder="Write your message here…"
+              ></textarea>
+
+              <ng-container *ngIf="ContactMessage?.invalid && isSubmited">
+                <app-input-error [errors]="ContactMessage?.errors"></app-input-error>
+              </ng-container>
+            </div>
+
+            <div class="justify-content-end mt-4 mb-5 d-flex">
+              <div class="btn-loader-common">
+                <button type="submit" [disabled]="isLoading" class="btn btn-primary push-right btn-submit">
+                  <span *ngIf="!isLoading">Send Message</span>
+                </button>
+                <div *ngIf="isLoading" class="loader">
+                  <img src="assets/dist/img/rolling-loader.svg" alt="" />
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

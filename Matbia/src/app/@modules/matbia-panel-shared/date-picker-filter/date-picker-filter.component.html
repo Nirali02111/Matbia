@@ -1,0 +1,348 @@
+<div class="dropdown-sub filter" [class.show]="allowLegalYearSelection && showYearDrp()">
+  <div class="by-showing border-0" [ngClass]="rootClass" [formGroup]="filterAction" [id]="htmlId + 'root'">
+    <label class="lbl--text d-none d-md-inline-block" *ngIf="isShowLabel">Showing:</label>
+    <label for="" class="label-accordion d-md-none">Select time range</label>
+    <input
+      type="text"
+      class="drp-datepicker"
+      readonly
+      ngxDaterangepickerMd
+      startKey="fromDate"
+      endKey="toDate"
+      [opens]="open"
+      [drops]="drop"
+      formControlName="selectedDates"
+      [locale]="locale"
+      [showCustomRangeLabel]="showCustomRangeLabel"
+      [alwaysShowCalendars]="alwaysShowCalendars"
+      [linkedCalendars]="linkedCalendars"
+      [showRangeLabelOnInput]="showRangeLabelOnInput"
+      [showClearButton]="showClearButton"
+      [showRangeLabelOnInput]="showRangeLabelOnInput"
+      (datesUpdated)="datesUpdated($event)"
+    />
+
+    <button
+      class="btn select dropdown-toggle"
+      #mainDrp
+      type="button"
+      [id]="htmlId"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      <div class="d-none">
+        <ng-container>Select time range</ng-container>
+      </div>
+
+      <ng-container *ngIf="selectedDatesDrp?.value === '1'">1 Day</ng-container>
+      <ng-container *ngIf="selectedDatesDrp?.value === '2'">1 Week</ng-container>
+      <ng-container *ngIf="selectedDatesDrp?.value === '3'">1 Month</ng-container>
+      <ng-container *ngIf="selectedDatesDrp?.value === '4'">1 Year</ng-container>
+      <ng-container *ngIf="selectedDatesDrp?.value === '7'">{{ this.yearName }}</ng-container>
+      <ng-container *ngIf="selectedDatesDrp?.value === '5'">All Time</ng-container>
+      <ng-container *ngIf="selectedDatesDrp?.value === '6'">Custom</ng-container>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end" [attr.aria-labelledby]="htmlId">
+      <li>
+        <div class="custom-control custom-radio">
+          <input
+            type="radio"
+            [id]="optionOneId"
+            class="custom-control-input"
+            value="1"
+            formControlName="selectedDatesDrp"
+          />
+          <label class="custom-control-label" [for]="optionOneId">1 Day</label>
+        </div>
+      </li>
+      <li>
+        <div class="custom-control custom-radio">
+          <input
+            type="radio"
+            [id]="optionTwoId"
+            class="custom-control-input"
+            value="2"
+            formControlName="selectedDatesDrp"
+          />
+          <label class="custom-control-label" [for]="optionTwoId">1 Week</label>
+        </div>
+      </li>
+      <li>
+        <div class="custom-control custom-radio">
+          <input
+            type="radio"
+            [id]="optionThreeId"
+            class="custom-control-input"
+            value="3"
+            formControlName="selectedDatesDrp"
+          />
+          <label class="custom-control-label" [for]="optionThreeId">1 Month</label>
+        </div>
+      </li>
+      <li>
+        <div class="custom-control custom-radio">
+          <input
+            type="radio"
+            [id]="optionFourId"
+            class="custom-control-input"
+            value="4"
+            formControlName="selectedDatesDrp"
+          />
+          <label class="custom-control-label" [for]="optionFourId">1 Year</label>
+        </div>
+      </li>
+
+      @if (allowLegalYearSelection) {
+      <li class="d-none d-md-inline-block">
+        <div class="custom-control custom-radio">
+          <ng-template [ngTemplateOutlet]="legalYearSelectionTmp"></ng-template>
+        </div>
+      </li>
+      }
+
+      <li>
+        <div class="custom-control custom-radio">
+          <input
+            type="radio"
+            [id]="optionFiveId"
+            class="custom-control-input"
+            value="5"
+            formControlName="selectedDatesDrp"
+          />
+          <label class="custom-control-label" [for]="optionFiveId">All Time</label>
+        </div>
+      </li>
+
+      <ng-container *ngIf="!isCustomModal">
+        <li class="filters-menu ngx-daterangepicker-action" (click)="CalenderFocus()">Custom</li>
+      </ng-container>
+
+      @if(isCustomModal){
+      <li (click)="openModal($event, isMobile ? customDateRangeSelectionTmp : customDateContent)">
+        <div class="custom-control custom-radio">
+          <input type="radio" id="custom" class="custom-control-input" value="6" formControlName="selectedDatesDrp" />
+          <label class="custom-control-label" for="custom">
+            Custom
+            <svg xmlns="http://www.w3.org/2000/svg" width="4.977" height="8.539" viewBox="0 0 4.977 8.539">
+              <path
+                id="Path_37360"
+                data-name="Path 37360"
+                d="M0,0,3.563,3.563,7.125,0"
+                transform="translate(0.707 7.832) rotate(-90)"
+                fill="none"
+                stroke="#616161"
+                stroke-linecap="round"
+                stroke-width="1"
+              />
+            </svg>
+          </label>
+        </div>
+      </li>
+      }
+    </ul>
+  </div>
+</div>
+
+<div class="filter d-md-none">
+  @if (allowLegalYearSelection) {
+  <ng-template [ngTemplateOutlet]="legalYearSelectionTmp"></ng-template>
+  }
+</div>
+
+<!-- Custom Modal -->
+<ng-template #customDateContent let-modal>
+  <div class="modal-header calendar-modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Filter by Date</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+  </div>
+  <div class="modal-body calendar-modal-body">
+    <form [formGroup]="customFilterAction">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label for="from-date">From</label>
+          <div class="input-group" [@shakeTrigger]="CustomFromDate?.invalid && inAnimation">
+            <input
+              type="text"
+              readonly
+              ngxDaterangepickerMd
+              formControlName="fromDate"
+              class="form-control"
+              [singleDatePicker]="true"
+              [closeOnAutoApply]="true"
+              [showDropdowns]="true"
+              [autoApply]="true"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label for="to-date">To</label>
+          <div class="input-group" [@shakeTrigger]="CustomToDate?.invalid && inAnimation">
+            <input
+              type="text"
+              readonly
+              ngxDaterangepickerMd
+              formControlName="toDate"
+              class="form-control"
+              [singleDatePicker]="true"
+              [closeOnAutoApply]="true"
+              [showDropdowns]="true"
+              [autoApply]="true"
+            />
+          </div>
+        </div>
+      </div>
+    </form>
+
+    <!-- {{ customFilterAction.value | json }} -->
+  </div>
+  <div class="modal-footer calendar-modal-footer">
+    <button type="button" class="btn btn-cancel" (click)="modal.dismiss()">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="onCustomFilter(modal)">Submit</button>
+  </div>
+</ng-template>
+
+<ng-template #customDateRangeSelectionTmp let-customRangeModal>
+  <div class="modal-header">
+    <h5 class="modal-title">Select custom time range</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
+  </div>
+  <div class="modal-body pb-3">
+    <form action="" [formGroup]="customFilterAction">
+      <mat-calendar
+        [headerComponent]="customHeaderComponent"
+        (selectedChange)="onSelect($event)"
+        [dateClass]="dateClass()"
+      ></mat-calendar>
+      <div class="d-flex w-100">
+        <div class="form-group position-relative w-100">
+          <input
+            type="text"
+            readonly
+            placeholder="No start date"
+            formControlName="fromDate"
+            class="form-control rounded-end-0"
+          />
+          @if(CustomFromDate?.value ){
+          <i (click)="removeDateValue('startDate')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+              <g id="Group_1426" data-name="Group 1426" transform="translate(0.49)">
+                <circle
+                  id="Ellipse_526"
+                  data-name="Ellipse 526"
+                  cx="11"
+                  cy="11"
+                  r="11"
+                  transform="translate(-0.49)"
+                  fill="#454545"
+                  opacity="0.122"
+                />
+                <g id="Group_1367" data-name="Group 1367" transform="translate(10.51 4.853) rotate(45)" opacity="0.356">
+                  <line
+                    id="Line_185"
+                    data-name="Line 185"
+                    y2="8.717"
+                    transform="translate(4.358 0)"
+                    fill="none"
+                    stroke="#454545"
+                    stroke-linecap="round"
+                    stroke-width="2"
+                  />
+                  <line
+                    id="Line_186"
+                    data-name="Line 186"
+                    x2="8.717"
+                    transform="translate(0 4.358)"
+                    fill="none"
+                    stroke="#454545"
+                    stroke-linecap="round"
+                    stroke-width="2"
+                  />
+                </g>
+              </g>
+            </svg>
+          </i>
+          }
+        </div>
+        <div class="form-group position-relative w-100">
+          <input
+            type="text"
+            readonly
+            placeholder="No end date"
+            formControlName="toDate"
+            class="form-control rounded-start-0"
+          />
+          @if(CustomToDate?.value){
+          <i (click)="removeDateValue('endDate')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22">
+              <g id="Group_1426" data-name="Group 1426" transform="translate(0.49)">
+                <circle
+                  id="Ellipse_526"
+                  data-name="Ellipse 526"
+                  cx="11"
+                  cy="11"
+                  r="11"
+                  transform="translate(-0.49)"
+                  fill="#454545"
+                  opacity="0.122"
+                />
+                <g id="Group_1367" data-name="Group 1367" transform="translate(10.51 4.853) rotate(45)" opacity="0.356">
+                  <line
+                    id="Line_185"
+                    data-name="Line 185"
+                    y2="8.717"
+                    transform="translate(4.358 0)"
+                    fill="none"
+                    stroke="#454545"
+                    stroke-linecap="round"
+                    stroke-width="2"
+                  />
+                  <line
+                    id="Line_186"
+                    data-name="Line 186"
+                    x2="8.717"
+                    transform="translate(0 4.358)"
+                    fill="none"
+                    stroke="#454545"
+                    stroke-linecap="round"
+                    stroke-width="2"
+                  />
+                </g>
+              </g>
+            </svg>
+          </i>
+          }
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer gap-2 border-0">
+    <button type="button" class="btn m-0 btn-primary w-100" (click)="onCustomFilter(customRangeModal)">
+      APPLY & SEARCH
+    </button>
+    <button type="button" class="btn btn-default w-100 m-0" (click)="closeModal()">CANCEL</button>
+  </div>
+</ng-template>
+
+<ng-template #legalYearSelectionTmp>
+  <div
+    #legalYear="ngbDropdown"
+    ngbDropdown
+    class="custom-control custom-radio"
+    placement="bottom-end"
+    (click)="$event.stopPropagation(); legalYear.toggle(); onYearDrpClick()"
+  >
+    <label class="custom-control-label label-accordion" [id]="htmlId + 'legal-year-drp'" ngbDropdownToggle
+      >Legal Year Selection</label
+    >
+    <div
+      ngbDropdownMenu
+      [class.show]="allowLegalYearSelection && showYearDrp()"
+      [attr.aria-labelledby]="htmlId + 'legal-year-drp'"
+    >
+      @for (item of listOfYears(); track $index) {
+      <button class="btn btn-primary" ngbDropdownItem (click)="onSelectYear(item)">{{ item.label }}</button>
+      }
+    </div>
+  </div>
+</ng-template>

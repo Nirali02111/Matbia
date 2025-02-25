@@ -1,0 +1,236 @@
+@if (showCardCase) {
+<div class="signup-card mb-4" [formGroup]="formGroup" [@shakeTrigger]="formGroup?.invalid && IsAnimate">
+  <div class="row">
+    <div class="col-md-7">
+      <div class="form-group" [class.is-invalid-er]="cardNum?.touched && cardNum?.invalid && isSubmitted">
+        <label class="form-label">CARD NUMBER:</label>
+        <app-credit-card-input formControlName="cardNum"></app-credit-card-input>
+      </div>
+    </div>
+    <div class="col-md-5">
+      <div class="form-group">
+        <div class="form-group mb-4 pb-md-3" [class.is-invalid-er]="Pin?.touched && Pin?.invalid && isSubmitted">
+          <label class="form-label">CREATE CARD PIN:</label>
+          <ng-otp-input [config]="pinConfig" (onInputChange)="onOtpChange($event)"> </ng-otp-input>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+}
+<div class="signup-card">
+  <div class="row" [formGroup]="formGroup" [@shakeTrigger]="formGroup?.invalid && IsAnimate">
+    <div class="col-md-12">
+      <div class="upload-profile d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+          <div class="upload-img">
+            <img src="{{ profileIcon }}" alt="image" />
+          </div>
+          <label class="form-label mb-0">PROFILE:</label>
+        </div>
+        <div class="field-input-item">
+          <button class="btn btn-primary btn-upload">UPLOAD LOGO</button>
+          <input type="file" class="file-input" (change)="onFileChange($event)" />
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div
+        class="form-group"
+        [class.is-invalid-er]="
+          FirstName?.touched && ((FirstName?.invalid && isSubmitted) || FirstName?.errors?.hebrewFound)
+        "
+      >
+        <label class="form-label">FI&#8204;RST NA&#8204;ME:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="First Name"
+          formControlName="data_input_field_1"
+          [attr.autocomplete]="isAutoSuggestion ? 'new-firstName' : null"
+        />
+
+        <ng-container
+          *ngIf="FirstName?.touched && ((FirstName?.invalid && isSubmitted) || FirstName?.errors?.hebrewFound)"
+        >
+          <ng-container *ngIf="FirstName?.value && FirstName?.errors?.hebrewFound">
+            <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div
+        class="form-group"
+        [class.is-invalid-er]="
+          LastName?.touched && ((LastName?.invalid && isSubmitted) || LastName?.errors?.hebrewFound)
+        "
+      >
+        <label class="form-label">LA&#8204;ST NA&#8204;ME:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Last Name"
+          formControlName="data_input_field_2"
+          [attr.autocomplete]="isAutoSuggestion ? 'new-lastName' : null"
+        />
+
+        <ng-container
+          *ngIf="LastName?.touched && ((LastName?.invalid && isSubmitted) || LastName?.errors?.hebrewFound)"
+        >
+          <ng-container *ngIf="LastName?.value && LastName?.errors?.hebrewFound">
+            <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-9">
+      <div
+        class="form-group"
+        [class.is-invalid-er]="Address?.touched && ((Address?.invalid && isSubmitted) || Address?.errors?.hebrewFound)"
+      >
+        <label class="form-label">MA&#8204;ILI&#8204;NG AD&#8204;DR&#8204;ES&#8204;S:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Street"
+          formControlName="data_input_field_3"
+          appAddressAutocomplete
+          (onAddressChange)="onAddressChange($event)"
+        />
+
+        <ng-container *ngIf="Address?.touched && ((Address?.invalid && isSubmitted) || Address?.errors?.hebrewFound)">
+          <ng-container *ngIf="Address?.value && Address?.errors?.hebrewFound">
+            <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="form-group" [class.is-invalid-er]="Apt?.touched && Apt?.invalid && isSubmitted">
+        <label>APT#:</label>
+        <input
+          type="text"
+          id="Apt"
+          placeholder=""
+          class="form-control"
+          formControlName="apt"
+          [attr.autocomplete]="isAutoSuggestion ? 'new-apt' : null"
+        />
+      </div>
+      <ng-container *ngIf="Apt?.touched && ((Apt?.invalid && isSubmitted) || Apt?.errors?.hebrewFound)">
+        <ng-container *ngIf="Apt?.value && Apt?.errors?.hebrewFound">
+          <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+        </ng-container>
+      </ng-container>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group" [class.is-invalid-er]="City?.touched && City?.invalid && isSubmitted">
+        <label class="form-label">CITY:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Enter city"
+          formControlName="city"
+          [attr.autocomplete]="isAutoSuggestion ? 'new-city' : null"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="form-group" [class.is-invalid-er]="State?.touched && State?.invalid && isSubmitted">
+        <label class="form-label">STATE:</label>
+
+        <ng-select
+          bindLabel="item_id"
+          bindValue="item_id"
+          [addTag]="true"
+          [searchable]="true"
+          formControlName="state"
+          [searchFn]="customSearchFn"
+          [items]="commonDataService.stateList"
+        >
+          <ng-template ng-option-tmp let-item="item">
+            {{ item.item_id }}
+          </ng-template>
+        </ng-select>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="form-group" [class.is-invalid-er]="Zip?.touched && Zip?.invalid && isSubmitted">
+        <label class="form-label">ZIP:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Zip code"
+          [mask]="zipCodeMask"
+          [validation]="zipCodeValidation"
+          formControlName="zip"
+          [attr.autocomplete]="isAutoSuggestion ? 'new-zip' : null"
+        />
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group" [class.is-invalid-er]="Phone?.touched && Phone?.invalid && isSubmitted">
+        <label class="form-label">PH&#8204;ON&#8204;E NU&#8204;MB&#8204;ER:</label>
+        <app-phone-input [isSubmit]="false" formControlName="phone"></app-phone-input>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group" [class.is-invalid-er]="Cellphone?.touched && Cellphone?.invalid && isSubmitted">
+        <label class="form-label">CE&#8204;LL&#8204;PH&#8204;ON&#8204;E NU&#8204;MB&#8204;ER:</label>
+        <app-phone-input [isSubmit]="false" formControlName="cellPhone"></app-phone-input>
+      </div>
+    </div>
+
+    <div class="col-md-12">
+      <div
+        class="form-group"
+        [class.is-invalid-er]="Email?.touched && ((Email?.invalid && isSubmitted) || Email?.errors?.hebrewFound)"
+      >
+        <label class="form-label">EMAIL ADDRESS:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Enter email address"
+          formControlName="email"
+          [attr.autocomplete]="isAutoSuggestion ? 'new-email' : null"
+        />
+
+        <ng-container *ngIf="Email?.touched && ((Email?.invalid && isSubmitted) || Email?.errors?.hebrewFound)">
+          <ng-container *ngIf="Email?.value && Email?.errors?.hebrewFound">
+            <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="signup-card mt-4">
+  <div class="row" [formGroup]="formGroup" [@shakeTrigger]="formGroup?.invalid && IsAnimate">
+    <div class="col-md-12">
+      <div
+        class="form-group mb-0"
+        [class.is-invalid-er]="HeardAboutUs?.touched && HeardAboutUs?.invalid && isSubmitted"
+      >
+        <label class="form-label">HOW DID YOU HEAR ABOUT US? </label>
+        <input type="text" class="form-control" placeholder="Type answer" formControlName="heardAboutUs" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noHebrewMessage>
+  <div class="row text-danger error-container">
+    <div class="val-error">Hebrew characters not allowed</div>
+  </div>
+</ng-template>

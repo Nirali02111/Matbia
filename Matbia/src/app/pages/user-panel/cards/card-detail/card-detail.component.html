@@ -1,0 +1,53 @@
+<div class="account-content--wrap account-content-setting small--container w-75 m-auto py-5">
+  <div class="top-head--section">
+    <div class="d-flex justify-content-between align-items-center">
+      <ng-container *ngIf="isAllowToBack()">
+        <div class="title--bar card-icon" [routerLink]="getCardsRouterLink()">
+          <i class="mdi mdi-arrow-back align-middle me-2"></i>Card.. {{ cardNumber | displayLast }}
+          <ng-container *ngIf="isCardLock()">
+            <span class="material-icons">lock</span>
+          </ng-container>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Display Overlay popup only for additional card -->
+  <!--Note: Add overlay div and card-overlay z-1048 class to both div -->
+  <ng-container *ngIf="cardSettingData && !isAllowToBack()">
+    <div class="overlay z-1048"></div>
+  </ng-container>
+
+  <div
+    class="finish-setup-content setup-card-setting card-details-page"
+    [class.card-overlay]="cardSettingData && !isAllowToBack()"
+    [class.z-1048]="cardSettingData && !isAllowToBack()"
+    (keyup.enter)="matbiaCardSubmitButton ? onUpdate() : onMatbiaCardNextCorner()"
+  >
+    <app-matbia-card-form-group
+      [formGroup]="matbiaCardDetailForm"
+      [changePinSettingButton]="true"
+      (allCornerSet)="canMatbiaCardSetup($event)"
+      (replaceThisCard)="openCardReplacePopup()"
+      [isEndWithnine]="isEndWithnine"
+    ></app-matbia-card-form-group>
+  </div>
+
+  @if (matbiaCardForm && matbiaCardForm.canSubmit) {
+
+  <div
+    class="bottom-tokan-bar bottom-card-bar border-top position-fixed w-100 bg-white start-0 justify-content-end align-items-center d-flex py-3 pe-4 pe-xl-5 gap-4"
+    [class.card-overlay]="cardSettingData && !isAllowToBack()"
+    [class.z-1048]="cardSettingData && !isAllowToBack()"
+  >
+    @if (!matbiaCardSubmitButton) {
+    <button type="submit" class="btn btn-primary w-auto" (click)="onMatbiaCardNextCorner()">Next</button>
+    } @if (matbiaCardSubmitButton) {
+    <a (click)="onCancel($event)" class="link me-3">Cancel</a>
+    <button type="submit" class="btn btn-primary btn-loader-inside" [disabled]="isLoading" (click)="onUpdate()">
+      <app-button-loader [loading]="isLoading" label="Update"></app-button-loader>
+    </button>
+    }
+  </div>
+  }
+</div>

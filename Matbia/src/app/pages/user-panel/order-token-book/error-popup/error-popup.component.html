@@ -1,0 +1,72 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" [class.donation-error-title]="isError">
+      <ng-container *ngIf="!isError"> Donation Sent! </ng-container>
+      <ng-container *ngIf="isError">
+        {{ errorMessage }}
+      </ng-container>
+    </h5>
+
+    <ng-container *ngIf="!isError">
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="modal"
+        aria-label="Close"
+        (click)="goToOverview()"
+      ></button>
+    </ng-container>
+    <ng-container *ngIf="isError">
+      <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="modal"
+        aria-label="Close"
+        (click)="closePopup()"
+      ></button>
+    </ng-container>
+  </div>
+  <div class="modal-body">
+    <!-- icons -->
+    <ng-container *ngIf="!isError"> </ng-container>
+
+    <ng-container *ngIf="isError"> </ng-container>
+
+    <ng-container *ngIf="!isError">
+      <ng-template [ngTemplateOutlet]="donationTmp"></ng-template>
+    </ng-container>
+
+    <ng-container *ngIf="isError">
+      <ng-template [ngTemplateOutlet]="donationErrorTmp"></ng-template>
+    </ng-container>
+  </div>
+  <div class="modal-footer">
+    <ng-container *ngIf="!isError">
+      <button type="button" class="btn btn-primary" (click)="goToOverview()">Done</button>
+    </ng-container>
+
+    <ng-container *ngIf="isError">
+      <button type="button" class="btn btn-primary" (click)="goToAddFunds()">Add funds to your account</button>
+
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="closePopup()">
+        Cancel donation
+      </button>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #donationErrorTmp>
+  <div class="modal-inner">
+    <img src="assets/dist/img/icon-decline.png" alt="Check" class="icon-checked" />
+    <span>{{ error }}</span>
+  </div>
+</ng-template>
+
+<ng-template #donationTmp>
+  <div class="modal-inner">
+    <img src="assets/dist/img/icon-checked.png" alt="Check" class="icon-checked" />
+    <h4>{{ amount | currency }}</h4>
+    <span>Your donation to {{ organization }} is being </span>
+    <span>processed</span>
+  </div>
+</ng-template>

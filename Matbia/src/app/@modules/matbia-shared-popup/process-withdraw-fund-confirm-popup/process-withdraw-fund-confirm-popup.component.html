@@ -1,0 +1,18 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title">Confirm Redeem</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="modal-inner">
+      <span class="small-head">We are processing your request to redeem</span>
+      <h4>{{ amount | currency }}</h4>
+      <span>To you checking account ending in {{ accoNum | displayLast }}</span>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="onConfirmClick()">CONFIRM</button>
+    <span class="small-foot">By submitting you agree to our <a href="#">Term & Conditions</a></span>
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="closePopup()">Cancel</button>
+  </div>
+</div>

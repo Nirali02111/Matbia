@@ -1,0 +1,953 @@
+<button class="sidebar-arrow" (click)="changeBodyClass()"><span></span></button>
+<button class="sidebar-arrow-mobile" (click)="changeBodyClassMobile()"><span></span></button>
+<span class="sidebar-backdrop" (click)="changeBodyClassMobile()"><span></span></span>
+<div class="left-sidebar-menu desktop-view" #sidebarRef (scroll)="saveScrollPosition($event)">
+  <ul class="side-nav">
+    <li class="side-nav-item" [routerLinkActive]="'menuitem-active'" [routerLinkActiveOptions]="{ exact: true }">
+      <a href="#" [routerLink]="getDashboardRouterLink()" class="side-nav-link" (click)="changeBodyClassMobile()">
+        <i class="icon-dashboard"></i>
+        <span> OVERVIEW </span>
+      </a>
+    </li>
+
+    <ng-container *appReportAccessControl>
+      <ng-template [ngTemplateOutlet]="reportUserOption"></ng-template>
+    </ng-container>
+
+    <ng-container *appBusinessAccessControl>
+      <ng-template [ngTemplateOutlet]="businessUserOption"></ng-template>
+    </ng-container>
+
+    <ng-container *appOrganizationAccessControl>
+      <ng-template [ngTemplateOutlet]="businessUserOption"></ng-template>
+    </ng-container>
+
+    <ng-container *appPersonalAccessControl>
+      <ng-template [ngTemplateOutlet]="donorUserOption"></ng-template>
+    </ng-container>
+
+    <ng-container *appBusinessDonorAccessControl>
+      <ng-template [ngTemplateOutlet]="donorUserOption"></ng-template>
+    </ng-container>
+  </ul>
+
+  <div class="aside-bottom">
+    <a href="#" class="btn btn-primary" (click)="changeBodyClassMobile()"
+      ><img src="/assets/dist/img/add-user.svg" alt="" />REFER A FRIEND</a
+    >
+
+    <div class="copyright-text">&copy; {{ currentYear }} Matbia. All rights reserved</div>
+    <div class="copyright-text mt-1">Version - {{ version }}</div>
+  </div>
+</div>
+
+<ng-template #reportUserOption>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'" [routerLinkActiveOptions]="{ exact: true }">
+    <a href="#" (click)="changeBodyClassMobile()" [routerLink]="getEnterDonorPortalRouterLink()" class="side-nav-link">
+      <i class="icon-dashboard"></i>
+      <span> Access donor portal</span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #businessUserOption>
+  @if (!isBatchVisible) {
+  <ng-container>
+    <ng-template [ngTemplateOutlet]="withdrawFundsLinkTmp"></ng-template>
+  </ng-container>
+  }
+
+  <ng-template [ngTemplateOutlet]="processCardLinkTmp"></ng-template>
+
+  <ng-template [ngTemplateOutlet]="processTokenLinkTmp"></ng-template>
+
+  @if (isBatchVisible) {
+  <li class="side-nav-title side-nav-item">Batches</li>
+
+  <ng-container *ngIf="isDevEnv">
+    <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+      <a href="#" (click)="changeBodyClassMobile()" [routerLink]="getCurrentBatchesRouterLink()" class="side-nav-link">
+        <i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16.435" height="12.174" viewBox="0 0 16.435 12.174">
+            <path
+              id="Icon_metro-coins"
+              data-name="Icon metro-coins"
+              d="M20.807,18.06H13.353a4.8,4.8,0,0,0,.5-1.217h6.958a.609.609,0,1,1,0,1.217Zm0-1.826h-6.84a4.432,4.432,0,0,0,0-1.217h6.84a.609.609,0,1,1,0,1.217Zm0-1.826H13.85a4.82,4.82,0,0,0-.5-1.217h7.454a.609.609,0,1,1,0,1.217Zm0-1.826H12.938A4.875,4.875,0,0,0,11.5,11.364h9.311a.609.609,0,0,1,0,1.217Zm0-1.826H11.068a.609.609,0,1,1,0-1.217h9.739a.609.609,0,0,1,0,1.217Zm0-1.826H11.068a.609.609,0,1,1,0-1.217h9.739a.609.609,0,0,1,0,1.217Zm-7.3,6.7a4.261,4.261,0,1,1-4.261-4.261A4.261,4.261,0,0,1,13.5,15.625Zm-2.753.463a1.3,1.3,0,0,0-.24-.38,1.569,1.569,0,0,0-.338-.278,3.9,3.9,0,0,0-.388-.208q-.193-.089-.388-.173a2.53,2.53,0,0,1-.34-.175.858.858,0,0,1-.24-.213.46.46,0,0,1-.089-.284.558.558,0,0,1,.04-.208A.438.438,0,0,1,8.888,14a.59.59,0,0,1,.2-.11.914.914,0,0,1,.285-.04,1.367,1.367,0,0,1,.384.051,2.2,2.2,0,0,1,.308.114q.133.062.225.115a.315.315,0,0,0,.133.052.093.093,0,0,0,.066-.023.15.15,0,0,0,.038-.072.715.715,0,0,0,.019-.125c0-.051.005-.114.005-.187s0-.121,0-.165a.862.862,0,0,0-.013-.111.346.346,0,0,0-.023-.071.288.288,0,0,0-.052-.064.606.606,0,0,0-.156-.094,1.8,1.8,0,0,0-.27-.1,2.392,2.392,0,0,0-.327-.072c-.024,0-.048,0-.072-.005v-.629h-.6v.629a2.195,2.195,0,0,0-.32.066,1.506,1.506,0,0,0-.525.264,1.277,1.277,0,0,0-.354.444,1.561,1.561,0,0,0-.04,1.15,1.306,1.306,0,0,0,.238.382,1.562,1.562,0,0,0,.332.277,3.444,3.444,0,0,0,.384.208c.132.061.26.118.384.173a2.555,2.555,0,0,1,.332.175.914.914,0,0,1,.238.213.462.462,0,0,1,.091.287A.639.639,0,0,1,9.75,17a.534.534,0,0,1-.154.2.723.723,0,0,1-.245.124,1.128,1.128,0,0,1-.327.044,1.714,1.714,0,0,1-.489-.063,2.242,2.242,0,0,1-.363-.139,2.4,2.4,0,0,1-.249-.139.318.318,0,0,0-.15-.063.11.11,0,0,0-.066.021.137.137,0,0,0-.046.071.59.59,0,0,0-.025.13c-.005.054-.008.119-.008.2a1.349,1.349,0,0,0,.021.268.281.281,0,0,0,.071.142.81.81,0,0,0,.161.113,1.665,1.665,0,0,0,.279.122,2.849,2.849,0,0,0,.386.1,2.566,2.566,0,0,0,.474.041h.022v.586h.6v-.665c.029-.007.059-.011.087-.019a1.714,1.714,0,0,0,.578-.295,1.408,1.408,0,0,0,.392-.488,1.522,1.522,0,0,0,.144-.681,1.329,1.329,0,0,0-.09-.514Zm2.188,2.58h7.869a.609.609,0,0,1,0,1.217H11.5a4.875,4.875,0,0,0,1.442-1.217Z"
+              transform="translate(-4.981 -7.712)"
+              fill="#cfd0e6"
+            />
+          </svg>
+        </i>
+        <span>Current Batch</span>
+      </a>
+    </li>
+  </ng-container>
+
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'" [routerLinkActiveOptions]="{ exact: true }">
+    <a href="#" (click)="changeBodyClassMobile()" [routerLink]="getBatchesRouterLink()" class="side-nav-link">
+      <i
+        ><svg
+          id="Group_1501"
+          data-name="Group 1501"
+          xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink"
+          width="17.52"
+          height="13.951"
+          viewBox="0 0 17.52 13.951"
+        >
+          <defs>
+            <clipPath id="clip-path">
+              <rect id="Rectangle_3360" data-name="Rectangle 3360" width="17.52" height="13.951" fill="#cfd0e6" />
+            </clipPath>
+          </defs>
+          <g id="Group_1500" data-name="Group 1500" clip-path="url(#clip-path)">
+            <path
+              id="Path_1839"
+              data-name="Path 1839"
+              d="M16.832,3.486A1.619,1.619,0,0,0,17.52,2.1V2.083A1.89,1.89,0,0,0,15.928,0H1.592A1.89,1.89,0,0,0,0,2.083V2.1A1.619,1.619,0,0,0,.687,3.486a1.173,1.173,0,0,1,.492,1.006A1.172,1.172,0,0,1,.687,5.5,1.619,1.619,0,0,0,0,6.886v.179A1.619,1.619,0,0,0,.687,8.453a1.173,1.173,0,0,1,.492,1.006,1.172,1.172,0,0,1-.492,1.006A1.619,1.619,0,0,0,0,11.853v.015a1.89,1.89,0,0,0,1.592,2.083H15.928a1.89,1.89,0,0,0,1.592-2.083v-.015a1.619,1.619,0,0,0-.687-1.388,1.172,1.172,0,0,1-.492-1.006,1.173,1.173,0,0,1,.492-1.006,1.619,1.619,0,0,0,.687-1.388V6.886A1.619,1.619,0,0,0,16.832,5.5a1.172,1.172,0,0,1-.492-1.006,1.173,1.173,0,0,1,.492-1.006M7.106,9.6v.745H6.725V9.6a1.527,1.527,0,0,1-1.6-1.531H6.2a.6.6,0,0,0,.526.607V7.352c-.073-.024-.073-.024-.178-.065C5.6,6.972,5.17,6.494,5.17,5.756a1.453,1.453,0,0,1,.875-1.393,1.826,1.826,0,0,1,.68-.162V3.6h.381v.6A1.451,1.451,0,0,1,8.637,5.773H7.575a.607.607,0,0,0-.47-.648V6.364a3.556,3.556,0,0,1,.842.324,1.4,1.4,0,0,1,.753,1.3A1.547,1.547,0,0,1,7.106,9.6m5.752,2.05h-.666V2.3h.666ZM7.106,7.49V8.665c.332-.081.47-.235.47-.559,0-.308-.1-.429-.47-.616M6.255,5.627c0,.3.089.413.47.591v-1.1c-.324.065-.47.227-.47.51"
+              transform="translate(0)"
+              fill="#cfd0e6"
+            />
+          </g>
+        </svg>
+      </i>
+      <span> Batches</span>
+    </a>
+  </li>
+
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a
+      href="#"
+      (click)="changeBodyClassMobile()"
+      [routerLink]="getBatchClosingOptionsRouterLink()"
+      class="side-nav-link"
+    >
+      <i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="17.435" height="17.321" viewBox="0 0 17.435 17.321">
+          <g id="Group_2885" data-name="Group 2885" transform="translate(-63 -479.702)">
+            <path
+              id="Icon_ionic-ios-settings"
+              data-name="Icon ionic-ios-settings"
+              d="M11.791,8.473a1.022,1.022,0,0,1,.656-.954,4.052,4.052,0,0,0-.49-1.181,1.037,1.037,0,0,1-.416.089,1.02,1.02,0,0,1-.933-1.436,4.042,4.042,0,0,0-1.18-.49,1.022,1.022,0,0,1-1.908,0,4.054,4.054,0,0,0-1.182.49A1.02,1.02,0,0,1,5.4,6.426a1,1,0,0,1-.416-.089A4.142,4.142,0,0,0,4.5,7.521a1.022,1.022,0,0,1,0,1.908,4.052,4.052,0,0,0,.49,1.181A1.021,1.021,0,0,1,6.34,11.957a4.078,4.078,0,0,0,1.182.49,1.02,1.02,0,0,1,1.9,0,4.054,4.054,0,0,0,1.182-.49,1.022,1.022,0,0,1,1.347-1.347,4.076,4.076,0,0,0,.49-1.181A1.027,1.027,0,0,1,11.791,8.473Zm-3.3,1.653a1.655,1.655,0,1,1,1.656-1.655A1.655,1.655,0,0,1,8.492,10.126Z"
+              transform="translate(63.244 479.832)"
+              fill="#cfd0e6"
+            />
+            <g id="Group_2884" data-name="Group 2884" transform="translate(-613 -44.211)">
+              <path
+                id="Path_596"
+                data-name="Path 596"
+                d="M3452.171,1710.878a.633.633,0,0,1,.119.011.641.641,0,0,1,.115.036.692.692,0,0,1,.106.055.564.564,0,0,1,.093.077.617.617,0,0,1,.18.433.61.61,0,0,1-.011.122.783.783,0,0,1-.036.115.658.658,0,0,1-.055.106.765.765,0,0,1-.078.093.615.615,0,0,1-.945-.095.51.51,0,0,1-.056-.1.622.622,0,0,1-.035-.117.511.511,0,0,1-.011-.118.612.612,0,0,1,.614-.615Z"
+                transform="translate(-2760.801 -1174.474)"
+                fill="#cfd0e6"
+              />
+              <path
+                id="Path_597"
+                data-name="Path 597"
+                d="M3603.9,2032.606a.614.614,0,1,1,.4.768A.613.613,0,0,1,3603.9,2032.606Z"
+                transform="translate(-2912.139 -1497.83)"
+                fill="#cfd0e6"
+              />
+              <path
+                id="Path_598"
+                data-name="Path 598"
+                d="M3660.895,2384.006a.614.614,0,1,1-.6-.622.614.614,0,0,1,.6.624Z"
+                transform="translate(-2967.578 -1851.29)"
+                fill="#cfd0e6"
+              />
+              <path
+                id="Path_600"
+                data-name="Path 600"
+                d="M1165.736,1154.379l-5.011-.53a.188.188,0,0,1-.1-.318l1.809-1.809a7.436,7.436,0,1,0-.423,10.908.614.614,0,1,1,.813.921,8.665,8.665,0,1,1,.479-12.7l1.809-1.809a.188.188,0,0,1,.318.1l.525,5.017A.188.188,0,0,1,1165.736,1154.379Z"
+                transform="translate(-472.524 -624.406)"
+                fill="#cfd0e6"
+              />
+            </g>
+          </g>
+        </svg>
+      </i>
+      <span> Batch Closing options</span>
+    </a>
+  </li>
+  }
+  <ng-container *appOrganizationAccessControl>
+    <ng-template [ngTemplateOutlet]="activityOptionsOrg"></ng-template>
+  </ng-container>
+  <ng-container *appBusinessAccessControl>
+    <ng-template [ngTemplateOutlet]="activityOptionsOrg"></ng-template>
+  </ng-container>
+  <ng-container *appPersonalAccessControl>
+    <ng-template [ngTemplateOutlet]="activityOptions"></ng-template>
+  </ng-container>
+  <ng-container *appBusinessDonorAccessControl>
+    <ng-template [ngTemplateOutlet]="activityOptions"></ng-template>
+  </ng-container>
+
+  <li class="side-nav-title side-nav-item">Settings</li>
+
+  <ng-container *ngIf="isDevEnv">
+    <ng-template [ngTemplateOutlet]="integrationLinkTmp"></ng-template>
+  </ng-container>
+
+  <ng-template [ngTemplateOutlet]="bankAccountLinkTmp"></ng-template>
+
+  <ng-template [ngTemplateOutlet]="profileLinkTmp"></ng-template>
+
+  <ng-container *ngIf="isDevEnv">
+    <ng-template [ngTemplateOutlet]="organizationInfoLinkTmp"></ng-template>
+  </ng-container>
+
+  <ng-container *ngIf="isDevEnv">
+    <ng-template [ngTemplateOutlet]="manageUserLinkTmp"></ng-template>
+  </ng-container>
+</ng-template>
+
+<ng-template #donorUserOption>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a href="#" (click)="changeBodyClassMobile()" [routerLink]="getDonateRouterLink()" class="side-nav-link">
+      <i class="icon-donate"></i>
+      <span> DONATE </span>
+    </a>
+  </li>
+
+  @if (!isProdEnv && toShowGenerateTokenButton) {
+  <li class="side-nav-item side-nav-item-hide-mobile" [routerLinkActive]="'menuitem-active'">
+    <a href="#" class="side-nav-link" (click)="changeBodyClassMobile()" [routerLink]="getGenerateTokensRouterLink()">
+      <i class="icon-deposit"></i>
+      <span>GENERATE TOKENS</span>
+    </a>
+  </li>
+  }
+
+  <li class="side-nav-item">
+    <a
+      href="javascript:void(0);"
+      class="side-nav-link side-nav-sub-link"
+      [class.down]="showMenus.addFundsMenu"
+      (click)="toggleNavbar('addFundsMenu')"
+    >
+      <i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15.936" viewBox="0 0 16 15.936">
+          <path
+            id="Union_50"
+            data-name="Union 50"
+            d="M.982,15.936A1.014,1.014,0,0,1,0,14.894V4.1A1.014,1.014,0,0,1,.982,3.056H14.044A1.014,1.014,0,0,1,15.027,4.1V7h-4.32A1.285,1.285,0,0,0,9.462,8.32v2.352a1.285,1.285,0,0,0,1.244,1.32h4.32v2.9a1.014,1.014,0,0,1-.982,1.042Zm9.753-4.6a.65.65,0,0,1-.63-.668V8.32a.65.65,0,0,1,.63-.668H15.37A.65.65,0,0,1,16,8.32v2.352a.65.65,0,0,1-.63.668ZM10.98,9.5a.706.706,0,1,0,.705-.748A.728.728,0,0,0,10.98,9.5ZM3.89,2.4l6-2.368a.978.978,0,0,1,1.2.738L11.5,2.4Z"
+            transform="translate(0 0)"
+            fill="currentColor"
+            opacity="0.55"
+          />
+        </svg>
+      </i>
+      <span> ADD FUNDS </span>
+    </a>
+    <ul [class.down]="showMenus.addFundsMenu">
+      <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+        <a href="#" (click)="changeBodyClassMobile()" class="side-nav-link" [routerLink]="getAddFundsRouterLink()">
+          <i class="icon-add"></i>
+          <span> Deposit Funds </span>
+        </a>
+      </li>
+
+      <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+        <a href="#" (click)="changeBodyClassMobile()" class="side-nav-link" [routerLink]="getAutoDepositRouterLink()">
+          <i class="icon-deposit"></i>
+          <span> Auto-Deposits </span>
+        </a>
+      </li>
+    </ul>
+  </li>
+
+  @if (!isProdEnv) {
+  <li class="side-nav-item">
+    <a
+      href="javascript:void(0);"
+      class="side-nav-link side-nav-sub-link"
+      [class.down]="showMenus.tokenMenu"
+      (click)="toggleNavbar('tokenMenu')"
+    >
+      <i class="icon-deposit"></i>
+      <span>TOKENS</span>
+    </a>
+
+    <ul [class.down]="showMenus.tokenMenu">
+      <li class="side-nav-item side-nav-item-desktop-hide" [routerLinkActive]="'menuitem-active'">
+        <a
+          href="#"
+          class="side-nav-link"
+          (click)="changeBodyClassMobile()"
+          [routerLink]="showSidebarToken ? getGenerateTokensRouterLink() : getTokenSettingsRouterLink()"
+        >
+          <i class="icon-deposit"></i>
+          <span> Generate Tokens </span>
+        </a>
+      </li>
+      <!-- @if(showSidebarToken){
+      <li class="side-nav-item" [routerLinkActive]="'menuitem-active'" *ngIf="isDevEnv">
+        <a href="#" class="side-nav-link" (click)="changeBodyClassMobile()"
+          [routerLink]="getOrderTokenBookRouterLink()">
+          <i class="icon-voucher"></i>
+          <span> Order Token Books </span>
+        </a>
+      </li>
+      }  -->
+      <li
+        class="side-nav-item side-nav-item-desktop-hide"
+        [routerLinkActive]="'menuitem-active'"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <a href="#" class="side-nav-link" (click)="changeBodyClassMobile()" [routerLink]="getTokenListRouterLink()">
+          <i class="icon-token-list"></i>
+          <span> Token list </span>
+        </a>
+      </li>
+      <li class="side-nav-item" [routerLinkActive]="'menuitem-active'" [routerLinkActiveOptions]="{ exact: true }">
+        <a href="#" class="side-nav-link" (click)="changeBodyClassMobile()" [routerLink]="getTokenSettingsRouterLink()">
+          <i class="">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15.17" height="15.17" viewBox="0 0 15.17 15.17">
+              <path
+                id="Icon_ionic-ios-settings"
+                data-name="Icon ionic-ios-settings"
+                d="M18.418,12.083a1.952,1.952,0,0,1,1.252-1.821,7.734,7.734,0,0,0-.936-2.255,1.979,1.979,0,0,1-.794.17,1.947,1.947,0,0,1-1.782-2.741A7.715,7.715,0,0,0,13.906,4.5a1.951,1.951,0,0,1-3.642,0,7.739,7.739,0,0,0-2.256.936A1.947,1.947,0,0,1,6.226,8.177a1.914,1.914,0,0,1-.794-.17A7.905,7.905,0,0,0,4.5,10.266a1.951,1.951,0,0,1,0,3.641,7.735,7.735,0,0,0,.936,2.255,1.948,1.948,0,0,1,2.572,2.571,7.784,7.784,0,0,0,2.256.936,1.947,1.947,0,0,1,3.634,0,7.739,7.739,0,0,0,2.256-.936,1.95,1.95,0,0,1,2.572-2.571,7.78,7.78,0,0,0,.936-2.255A1.961,1.961,0,0,1,18.418,12.083Zm-6.3,3.156a3.16,3.16,0,1,1,3.16-3.16A3.159,3.159,0,0,1,12.121,15.239Z"
+                transform="translate(-4.5 -4.5)"
+                fill="currentColor"
+              />
+            </svg>
+          </i>
+          <span> Token Settings </span>
+        </a>
+      </li>
+    </ul>
+  </li>
+
+  }
+
+  <ng-template [ngTemplateOutlet]="activityOptions"></ng-template>
+
+  <li class="side-nav-item side-nav-item-desktop-hide">
+    <a
+      href="javascript:void(0);"
+      class="side-nav-link side-nav-sub-link"
+      [class.down]="showMenus.cardsMenu"
+      (click)="toggleNavbar('cardsMenu')"
+    >
+      <i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="15.169" height="10.835" viewBox="0 0 15.169 10.835">
+          <g id="Icon_ionic-ios-card" data-name="Icon ionic-ios-card" transform="translate(-2.25 -6.75)" opacity="0.55">
+            <path
+              id="Path_31"
+              data-name="Path 31"
+              d="M17.419,7.834A1.087,1.087,0,0,0,16.336,6.75h-13A1.087,1.087,0,0,0,2.25,7.834V9.459H17.419Z"
+              transform="translate(0 0)"
+              fill="currentColor"
+            />
+            <path
+              id="Path_32"
+              data-name="Path 32"
+              d="M2.25,21.168a1.087,1.087,0,0,0,1.084,1.084h13a1.087,1.087,0,0,0,1.084-1.084V15.75H2.25Zm4.808-1.625h5.553a.475.475,0,0,1,.474.474h0a.475.475,0,0,1-.474.474H7.058a.475.475,0,0,1-.474-.474h0A.475.475,0,0,1,7.058,19.542Zm-2.438,0h.406a.475.475,0,0,1,.474.474h0a.475.475,0,0,1-.474.474H4.62a.475.475,0,0,1-.474-.474h0A.475.475,0,0,1,4.62,19.542Z"
+              transform="translate(0 -4.666)"
+              fill="currentColor"
+            />
+          </g>
+        </svg>
+      </i>
+      <span> CARDS </span>
+    </a>
+
+    <ul [class.down]="showMenus.cardsMenu">
+      <ng-template [ngTemplateOutlet]="cardSettingLinkTmp"></ng-template>
+
+      <ng-template [ngTemplateOutlet]="activateCardTmp"></ng-template>
+
+      <ng-template [ngTemplateOutlet]="requestCardTmp"></ng-template>
+
+      <ng-template [ngTemplateOutlet]="addAdditionalCardTmp"></ng-template>
+    </ul>
+  </li>
+
+  <li class="side-nav-item side-nav-item-desktop-hide">
+    <a
+      href="javascript:void(0);"
+      class="side-nav-link side-nav-sub-link"
+      [class.down]="showMenus.bankAccountsMenu"
+      (click)="toggleNavbar('bankAccountsMenu')"
+    >
+      <i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14.17" height="15.661" viewBox="0 0 14.17 15.661">
+          <path
+            id="Icon_material-account-balance"
+            data-name="Icon material-account-balance"
+            d="M4.492,8.212v5.22H6.729V8.212Zm4.475,0v5.22H11.2V8.212ZM3,17.161H17.17V14.924H3ZM13.441,8.212v5.22h2.237V8.212ZM10.085,1.5,3,5.229V6.72H17.17V5.229Z"
+            transform="translate(-3 -1.5)"
+            fill="currentColor"
+            opacity="0.55"
+          />
+        </svg>
+      </i>
+      <span> BANK ACCOUNTS </span>
+    </a>
+
+    <ul [class.down]="showMenus.bankAccountsMenu">
+      <ng-template [ngTemplateOutlet]="accountSettingsTmp"></ng-template>
+      <ng-template [ngTemplateOutlet]="addNewBankTmp"></ng-template>
+    </ul>
+  </li>
+
+  <ng-template [ngTemplateOutlet]="statementsAndReceiptsTmp"></ng-template>
+  <ng-template [ngTemplateOutlet]="alertSettingLinkTmp"></ng-template>
+
+  <li class="side-nav-item side-nav-item-desktop-hide">
+    <a
+      href="javascript:void(0);"
+      class="side-nav-link side-nav-sub-link"
+      [class.down]="showMenus.profileMenu"
+      (click)="toggleNavbar('profileMenu')"
+    >
+      <i class="mdi mdi-account"></i>
+      <span>PROFILE</span>
+    </a>
+
+    <ul [class.down]="showMenus.profileMenu">
+      <ng-template [ngTemplateOutlet]="profileLinkTmp"></ng-template>
+      <li>
+        <div
+          class="account d-flex align-items-center on-header"
+          app-account-hash
+          defaultLabel="Account Number"
+          [withLabel]="true"
+        ></div>
+      </li>
+    </ul>
+  </li>
+
+  <li class="side-nav-item side-nav-item-hide-mobile">
+    <a
+      href="javascript:void(0);"
+      class="side-nav-link side-nav-sub-link"
+      [class.down]="showMenus.profileMenu"
+      (click)="toggleNavbar('profileMenu')"
+    >
+      <i class="mdi mdi-account"></i>
+      <span>Settings</span>
+    </a>
+
+    <ul [class.down]="showMenus.profileMenu">
+      <ng-template [ngTemplateOutlet]="cardSettingLinkTmp"></ng-template>
+      <ng-template [ngTemplateOutlet]="bankSettingsTmp"></ng-template>
+      <ng-template [ngTemplateOutlet]="alertSettingTmp"></ng-template>
+      <ng-template [ngTemplateOutlet]="profileTmp"></ng-template>
+    </ul>
+  </li>
+</ng-template>
+
+<ng-template #processCardLinkTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a href="#" (click)="changeBodyClassMobile()" [routerLink]="getProcessCardRouterLink()" class="side-nav-link">
+      <i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="17.971" height="12.837" viewBox="0 0 17.971 12.837">
+          <g id="Icon_ionic-ios-card" data-name="Icon ionic-ios-card" transform="translate(-2.25 -6.75)">
+            <path
+              id="Path_31"
+              data-name="Path 31"
+              d="M20.221,8.034A1.287,1.287,0,0,0,18.938,6.75H3.534A1.287,1.287,0,0,0,2.25,8.034V9.959H20.221Z"
+              transform="translate(0)"
+              fill="#cfd0e6"
+            />
+            <path
+              id="Path_32"
+              data-name="Path 32"
+              d="M2.25,22.168a1.287,1.287,0,0,0,1.284,1.284h15.4a1.287,1.287,0,0,0,1.284-1.284V15.75H2.25Zm5.7-1.926h6.579a.563.563,0,0,1,.562.562h0a.563.563,0,0,1-.562.562H7.946a.563.563,0,0,1-.562-.562h0A.563.563,0,0,1,7.946,20.243Zm-2.888,0h.481A.563.563,0,0,1,6.1,20.8h0a.563.563,0,0,1-.562.562H5.058A.563.563,0,0,1,4.5,20.8h0A.563.563,0,0,1,5.058,20.243Z"
+              transform="translate(0 -3.865)"
+              fill="#cfd0e6"
+            />
+          </g>
+        </svg>
+      </i>
+      <span>Process Card</span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #processTokenLinkTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a href="#" (click)="changeBodyClassMobile()" [routerLink]="getProcessTokenListRouterLink()" class="side-nav-link">
+      <i class="mdi mdi-cc-card"></i>
+      <span>Process Token</span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #withdrawFundsLinkTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a href="#" (click)="changeBodyClassMobile()" [routerLink]="getWithdrawFundsRouterLink()" class="side-nav-link">
+      <i class="mdi mdi-cc-card"></i>
+      <span>Withdraw Funds</span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #activityOptions>
+  <li class="side-nav-item">
+    <a
+      href="javascript:void(0);"
+      class="side-nav-link side-nav-sub-link"
+      [class.down]="showMenus.activityMenu"
+      (click)="toggleNavbar('activityMenu')"
+    >
+      <i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="15.17" height="15.193" viewBox="0 0 15.17 15.193">
+          <g id="Group_2744" data-name="Group 2744" transform="translate(14224 15226.603)" opacity="0.55">
+            <path
+              id="Path_17604"
+              data-name="Path 17604"
+              d="M240.927,410.464a.464.464,0,1,0-.464.464.464.464,0,0,0,.464-.464"
+              transform="translate(-14460.29 -15630.087)"
+              fill="currentColor"
+            />
+            <path
+              id="Path_17605"
+              data-name="Path 17605"
+              d="M0,410.464a.464.464,0,1,1,.464.464A.464.464,0,0,1,0,410.464"
+              transform="translate(-14224 -15630.087)"
+              fill="currentColor"
+            />
+            <path
+              id="Path_17606"
+              data-name="Path 17606"
+              d="M120,410.464a.464.464,0,1,1,.464.464.464.464,0,0,1-.464-.464"
+              transform="translate(-14342.145 -15630.087)"
+              fill="currentColor"
+            />
+            <path
+              id="Path_17607"
+              data-name="Path 17607"
+              d="M747.487,244.156a.487.487,0,0,1-.344-.831l2.747-2.747-2.747-2.747a.487.487,0,0,1,.689-.689l3.091,3.091a.487.487,0,0,1,0,.689l-3.091,3.091A.485.485,0,0,1,747.487,244.156Z"
+              transform="translate(-14959.896 -15460.202)"
+              fill="currentColor"
+            />
+            <path
+              id="Line_1395"
+              data-name="Line 1395"
+              d="M6.252-2.026H-2.513A.487.487,0,0,1-3-2.513.487.487,0,0,1-2.513-3H6.252a.487.487,0,0,1,.487.487A.487.487,0,0,1,6.252-2.026Z"
+              transform="translate(-14215.645 -15217.175)"
+              fill="currentColor"
+            />
+            <path
+              id="Path_17608"
+              data-name="Path 17608"
+              d="M530.927,750.464a.464.464,0,1,0-.464.464.464.464,0,0,0,.464-.464"
+              transform="translate(-14745.809 -15964.833)"
+              fill="currentColor"
+            />
+            <path
+              id="Path_17609"
+              data-name="Path 17609"
+              d="M40,110.464a.464.464,0,1,1,.464.464.464.464,0,0,1-.464-.464"
+              transform="translate(-14263.382 -15334.725)"
+              fill="currentColor"
+            />
+            <path
+              id="Path_17610"
+              data-name="Path 17610"
+              d="M650,750.464a.464.464,0,1,1,.464.464.464.464,0,0,1-.464-.464"
+              transform="translate(-14863.954 -15964.833)"
+              fill="currentColor"
+            />
+            <path
+              id="Path_17611"
+              data-name="Path 17611"
+              d="M160,110.464a.464.464,0,1,1,.464.464.464.464,0,0,1-.464-.464"
+              transform="translate(-14381.527 -15334.725)"
+              fill="currentColor"
+            />
+            <path
+              id="Path_17612"
+              data-name="Path 17612"
+              d="M427.487,21.683a.487.487,0,0,1-.344-.831l1.51-1.51-1.51-1.51a.487.487,0,0,1,.689-.689L429.686,19a.487.487,0,0,1,0,.689l-1.855,1.855A.486.486,0,0,1,427.487,21.683Z"
+              transform="translate(-14644.842 -15243.603)"
+              fill="currentColor"
+            />
+            <path
+              id="Path_17613"
+              data-name="Path 17613"
+              d="M69.96,622.92a.485.485,0,0,1-.344-.143L67.143,620.3a.487.487,0,0,1,0-.689l2.473-2.473a.487.487,0,0,1,.689.689l-2.129,2.129,2.129,2.129a.487.487,0,0,1-.344.831Z"
+              transform="translate(-14290.405 -15834.329)"
+              fill="currentColor"
+            />
+            <path
+              id="Line_1396"
+              data-name="Line 1396"
+              d="M3.188-2.026h-5.7A.487.487,0,0,1-3-2.513.487.487,0,0,1-2.513-3h5.7a.487.487,0,0,1,.487.487A.487.487,0,0,1,3.188-2.026Z"
+              transform="translate(-14220.233 -15211.856)"
+              fill="currentColor"
+            />
+            <path
+              id="Line_1397"
+              data-name="Line 1397"
+              d="M1.058-2.026H-2.513A.487.487,0,0,1-3-2.513.487.487,0,0,1-2.513-3H1.058a.487.487,0,0,1,.487.487A.487.487,0,0,1,1.058-2.026Z"
+              transform="translate(-14216.78 -15221.72)"
+              fill="currentColor"
+            />
+          </g>
+        </svg>
+      </i>
+      <span> ACTIVITY </span>
+      @if(requestsCount > 0 && !showMenus.activityMenu && isDonor){
+      <i class="requests-count ms-auto">{{ requestsCount }} Requests</i>
+      }
+    </a>
+    <ul [class.down]="showMenus.activityMenu">
+      <ng-template [ngTemplateOutlet]="transactionsLinkTmp"></ng-template>
+      <ng-template [ngTemplateOutlet]="scheduleLinkTmp"></ng-template>
+      <ng-template [ngTemplateOutlet]="requestsLinkTmp"></ng-template>
+
+       @if (!isProdEnv) {
+      <li class="side-nav-item side-nav-item-hide-mobile"
+        [routerLinkActive]="'menuitem-active'"
+        [routerLinkActiveOptions]="{ exact: true }">
+
+        <a href="#" class="side-nav-link" (click)="changeBodyClassMobile()" [routerLink]="getTokenListRouterLink()">
+          <i class="icon-token-list"></i>
+          <span> Token list </span>
+        </a>
+      </li>
+    }
+    </ul>
+  </li>
+</ng-template>
+
+<ng-template #activityOptionsOrg>
+  <li class="side-nav-title side-nav-item">Activity</li>
+  <ng-template [ngTemplateOutlet]="transactionsLinkTmp"></ng-template>
+  <ng-template [ngTemplateOutlet]="scheduleLinkTmp"></ng-template>
+  <ng-template [ngTemplateOutlet]="requestsLinkTmp"></ng-template>
+</ng-template>
+
+<ng-template #transactionsLinkTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a href="#" (click)="changeBodyClassMobile()" [routerLink]="getTransactionsRouterLink()" class="side-nav-link">
+      <i class="icon-transaction"></i>
+      <span> Transactions </span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #scheduleLinkTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a
+      class="side-nav-link"
+      (click)="changeBodyClassMobile()"
+      [routerLink]="getSchedulesRouterLink()"
+      class="side-nav-link"
+    >
+      <i class="icon-schedule"></i>
+      <span> Schedules </span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #requestsLinkTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a
+      class="side-nav-link"
+      (click)="changeBodyClassMobile()"
+      [routerLink]="getRequestsRouterLink()"
+      class="side-nav-link"
+    >
+      <i class="icon-request"></i>
+      <span>
+        Requests @if(requestsCount > 0 && isDonor){
+        <i class="requests-count">{{ requestsCount }}</i>
+        }
+      </span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #cardSettingLinkTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'" [routerLinkActiveOptions]="{ exact: true }">
+    <a href="#" [routerLink]="getCardsRouterLink()" (click)="changeBodyClassMobile()" class="side-nav-link">
+      <i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="15.169" height="10.835" viewBox="0 0 15.169 10.835">
+          <g id="Icon_ionic-ios-card" data-name="Icon ionic-ios-card" transform="translate(-2.25 -6.75)">
+            <path
+              id="Path_31"
+              data-name="Path 31"
+              d="M17.419,7.834A1.087,1.087,0,0,0,16.336,6.75h-13A1.087,1.087,0,0,0,2.25,7.834V9.459H17.419Z"
+              transform="translate(0 0)"
+              fill="currentColor"
+            />
+            <path
+              id="Path_32"
+              data-name="Path 32"
+              d="M2.25,21.168a1.087,1.087,0,0,0,1.084,1.084h13a1.087,1.087,0,0,0,1.084-1.084V15.75H2.25Zm4.808-1.625h5.553a.475.475,0,0,1,.474.474h0a.475.475,0,0,1-.474.474H7.058a.475.475,0,0,1-.474-.474h0A.475.475,0,0,1,7.058,19.542Zm-2.438,0h.406a.475.475,0,0,1,.474.474h0a.475.475,0,0,1-.474.474H4.62a.475.475,0,0,1-.474-.474h0A.475.475,0,0,1,4.62,19.542Z"
+              transform="translate(0 -4.666)"
+              fill="currentColor"
+            />
+          </g>
+        </svg>
+      </i>
+      <span> Cards</span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #bankAccountLinkTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a href="#" (click)="changeBodyClassMobile()" [routerLink]="getBankAccountsRouterLink()" class="side-nav-link">
+      <i class="mdi mdi-bank"></i>
+      <span> Bank Accounts</span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #profileLinkTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a href="#" (click)="changeBodyClassMobile()" [routerLink]="getProfileRouterLink()" class="side-nav-link">
+      <i class="mdi mdi-setting"></i>
+      <span> Profile Settings</span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #profileTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a href="#" (click)="changeBodyClassMobile()" [routerLink]="getProfileRouterLink()" class="side-nav-link">
+      <i class="mdi mdi-setting"></i>
+      <span>Profile</span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #statementLinkTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a href="#" (click)="changeBodyClassMobile()" href="javascript:void(0);" class="side-nav-link">
+      <i class="icon-schedule"></i>
+      <span> Statement</span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #alertSettingLinkTmp>
+  <li class="side-nav-item side-nav-item-desktop-hide" [routerLinkActive]="'menuitem-active'">
+    <a href="#" (click)="changeBodyClassMobile()" [routerLink]="getNotificationRouterLink()" class="side-nav-link">
+      <i class="icon-notifications"></i>
+      <span>Alerts Settings</span>
+    </a>
+  </li>
+</ng-template>
+<ng-template #alertSettingTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a href="#" (click)="changeBodyClassMobile()" [routerLink]="getNotificationRouterLink()" class="side-nav-link">
+      <i class="icon-notifications"></i>
+      <span>Alerts Settings</span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #organizationInfoLinkTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a href="#" (click)="changeBodyClassMobile()" href="javascript:void(0);" class="side-nav-link">
+      <i
+        ><svg xmlns="http://www.w3.org/2000/svg" width="14.949" height="16.499" viewBox="0 0 14.949 16.499">
+          <path
+            id="Union_62"
+            data-name="Union 62"
+            d="M20107.3-9272.5a.262.262,0,0,1-.262-.272v-2.478a.911.911,0,0,0-.891-.914.908.908,0,0,0-.9.914v2.478a.261.261,0,0,1-.256.272h-3.119a.537.537,0,0,1-.533-.541v-14.313a1.624,1.624,0,0,1,1.605-1.645h6.395a1.628,1.628,0,0,1,1.605,1.645v3.853h3.738a1.633,1.633,0,0,1,1.605,1.653v8.808a.547.547,0,0,1-.545.541Zm3.648-1.095h4.133a.132.132,0,0,0,.127-.145v-8.109a.54.54,0,0,0-.521-.552h-3.738Zm-4.273-6.233v1.467a.364.364,0,0,0,.363.364h2.133a.365.365,0,0,0,.357-.364v-1.467a.367.367,0,0,0-.357-.374h-2.133A.366.366,0,0,0,20106.676-9279.829Zm-3.908,0v1.467a.363.363,0,0,0,.357.364h2.127a.365.365,0,0,0,.369-.364v-1.467a.367.367,0,0,0-.369-.374h-2.127A.365.365,0,0,0,20102.768-9279.829Zm3.908-3.3v1.466a.365.365,0,0,0,.363.364h2.133a.366.366,0,0,0,.357-.364v-1.466a.367.367,0,0,0-.357-.375h-2.133A.366.366,0,0,0,20106.676-9283.128Zm-3.908,0v1.466a.363.363,0,0,0,.357.364h2.127a.366.366,0,0,0,.369-.364v-1.466a.367.367,0,0,0-.369-.375h-2.127A.365.365,0,0,0,20102.768-9283.128Zm3.908-3.3v1.458a.367.367,0,0,0,.363.375h2.133a.369.369,0,0,0,.357-.375v-1.458a.369.369,0,0,0-.357-.375h-2.133A.368.368,0,0,0,20106.676-9286.43Zm-3.908,0v1.458a.366.366,0,0,0,.357.375h2.127a.368.368,0,0,0,.369-.375v-1.458a.369.369,0,0,0-.369-.375h-2.127A.367.367,0,0,0,20102.768-9286.43Zm9.439,11.73a.361.361,0,0,1-.352-.362v-1.468a.356.356,0,0,1,.352-.365h1.594a.36.36,0,0,1,.357.365v1.468a.364.364,0,0,1-.357.362Zm0-3.3a.362.362,0,0,1-.352-.364v-1.467a.364.364,0,0,1,.352-.374h1.594a.367.367,0,0,1,.357.374v1.467a.365.365,0,0,1-.357.364Z"
+            transform="translate(-20101.344 9289)"
+            fill="#cfd0e6"
+          />
+        </svg>
+      </i>
+      <span> Organization Info</span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #manageUserLinkTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a href="#" (click)="changeBodyClassMobile()" href="javascript:void(0);" class="side-nav-link">
+      <i
+        ><svg xmlns="http://www.w3.org/2000/svg" width="18.859" height="13.202" viewBox="0 0 18.859 13.202">
+          <path
+            id="Icon_awesome-user-friends"
+            data-name="Icon awesome-user-friends"
+            d="M5.658,8.851a3.3,3.3,0,1,0-3.3-3.3A3.3,3.3,0,0,0,5.658,8.851Zm2.263.943H7.676a4.557,4.557,0,0,1-4.037,0H3.395A3.4,3.4,0,0,0,0,13.188v.849a1.415,1.415,0,0,0,1.414,1.414H9.9a1.415,1.415,0,0,0,1.414-1.414v-.849A3.4,3.4,0,0,0,7.921,9.794Zm6.224-.943a2.829,2.829,0,1,0-2.829-2.829A2.83,2.83,0,0,0,14.145,8.851Zm1.414.943h-.112a3.716,3.716,0,0,1-2.6,0H12.73a3.273,3.273,0,0,0-1.641.454,4.312,4.312,0,0,1,1.17,2.941V14.32c0,.065-.015.127-.018.189h5.2a1.415,1.415,0,0,0,1.414-1.414,3.3,3.3,0,0,0-3.3-3.3Z"
+            transform="translate(0 -2.25)"
+            fill="#cfd0e6"
+          />
+        </svg>
+      </i>
+      <span> Manage Users</span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #integrationLinkTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a [routerLink]="getIntegrationRouterLink()" (click)="changeBodyClassMobile()" class="side-nav-link">
+      <i
+        ><svg xmlns="http://www.w3.org/2000/svg" width="15.172" height="15.16" viewBox="0 0 15.172 15.16">
+          <path
+            id="Union_61"
+            data-name="Union 61"
+            d="M22254.105-5266.841a.91.91,0,0,1-.658-.268l-1.5-1.5a4.485,4.485,0,0,1-3.027.726,4.6,4.6,0,0,1-2.854-1.363l-.252-.251,6.7-6.686.234.24a4.538,4.538,0,0,1,1.357,2.848,4.568,4.568,0,0,1-.709,3.044l1.5,1.486a.9.9,0,0,1,.268.7,1.044,1.044,0,0,1-.312.709,1.046,1.046,0,0,1-.715.318Zm-6.523-2.726a3.423,3.423,0,0,0,1.463.486,3.43,3.43,0,0,0,.408.022,3.215,3.215,0,0,0,1.832-.553l.715-.475.4-.614a3.412,3.412,0,0,0,.525-2.268,3.431,3.431,0,0,0-.475-1.446Zm-2.223-2.6-1.609-1.6-1.111,1.106-.234-.251a4.553,4.553,0,0,1-1.357-2.854,4.493,4.493,0,0,1,.709-3.022l-1.484-1.485a.9.9,0,0,1-.268-.7,1.018,1.018,0,0,1,.313-.709,1.033,1.033,0,0,1,.715-.318.882.882,0,0,1,.691.268l1.486,1.486a4.485,4.485,0,0,1,3.027-.726,4.7,4.7,0,0,1,2.871,1.357l.234.257-1.105,1.105,1.613,1.6a.877.877,0,0,1,.268.692,1.013,1.013,0,0,1-.318.709,1.03,1.03,0,0,1-.709.318.894.894,0,0,1-.7-.268l-1.609-1.6-1.58,1.581,1.607,1.6a.886.886,0,0,1,.27.692,1.015,1.015,0,0,1-.312.715,1.038,1.038,0,0,1-.711.313h-.045A.892.892,0,0,1,22245.359-5272.17Z"
+            transform="translate(-22240.002 5282.001)"
+            fill="#d0d1e6"
+          />
+        </svg>
+      </i>
+      <span> Integrations </span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #activateCardTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a [routerLink]="getAddAdditionalCardRouterLink()" (click)="changeBodyClassMobile()" class="side-nav-link">
+      <i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15">
+          <path
+            id="Icon_material-power-settings-new"
+            data-name="Icon material-power-settings-new"
+            d="M12.833,4.5H11.167v8.333h1.667Zm4.025,1.808L15.675,7.492A5.767,5.767,0,0,1,17.833,12,5.833,5.833,0,1,1,8.317,7.483L7.142,6.308a7.5,7.5,0,1,0,9.717,0Z"
+            transform="translate(-4.5 -4.5)"
+            fill="currentColor"
+            opacity="0.75"
+          />
+        </svg>
+      </i>
+      <span> Activate Card </span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #requestCardTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a [routerLink]="getCardRequestRouterLink()" (click)="changeBodyClassMobile()" class="side-nav-link">
+      <i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14">
+          <g id="Icon_feather-plus" data-name="Icon feather-plus" transform="translate(-6.6 -6.6)" opacity="0.75">
+            <path
+              id="Path_17636"
+              data-name="Path 17636"
+              d="M18.012,20.6a.883.883,0,0,1-.912-.851V7.451a.914.914,0,0,1,1.824,0v12.3A.883.883,0,0,1,18.012,20.6Z"
+              transform="translate(-4.412 0)"
+              fill="currentColor"
+            />
+            <path
+              id="Path_17637"
+              data-name="Path 17637"
+              d="M19.749,18.924H7.451a.914.914,0,0,1,0-1.824h12.3a.914.914,0,0,1,0,1.824Z"
+              transform="translate(0 -4.412)"
+              fill="currentColor"
+            />
+          </g>
+        </svg>
+      </i>
+      <span> Request Card </span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #addAdditionalCardTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a [routerLink]="getAddAdditionalCardRouterLink()" (click)="changeBodyClassMobile()" class="side-nav-link">
+      <i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14">
+          <g id="Icon_feather-plus" data-name="Icon feather-plus" transform="translate(-6.6 -6.6)" opacity="0.75">
+            <path
+              id="Path_17636"
+              data-name="Path 17636"
+              d="M18.012,20.6a.883.883,0,0,1-.912-.851V7.451a.914.914,0,0,1,1.824,0v12.3A.883.883,0,0,1,18.012,20.6Z"
+              transform="translate(-4.412 0)"
+              fill="currentColor"
+            />
+            <path
+              id="Path_17637"
+              data-name="Path 17637"
+              d="M19.749,18.924H7.451a.914.914,0,0,1,0-1.824h12.3a.914.914,0,0,1,0,1.824Z"
+              transform="translate(0 -4.412)"
+              fill="currentColor"
+            />
+          </g>
+        </svg>
+      </i>
+      <span> Add Additional Card </span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #accountSettingsTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a (click)="changeBodyClassMobile()" [routerLink]="getBankAccountsRouterLink()" class="side-nav-link">
+      <i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="15.17" height="15.17" viewBox="0 0 15.17 15.17">
+          <path
+            id="Icon_ionic-ios-settings"
+            data-name="Icon ionic-ios-settings"
+            d="M18.418,12.083a1.952,1.952,0,0,1,1.252-1.821,7.734,7.734,0,0,0-.936-2.255,1.979,1.979,0,0,1-.794.17,1.947,1.947,0,0,1-1.782-2.741A7.715,7.715,0,0,0,13.906,4.5a1.951,1.951,0,0,1-3.642,0,7.739,7.739,0,0,0-2.256.936A1.947,1.947,0,0,1,6.226,8.177a1.914,1.914,0,0,1-.794-.17A7.905,7.905,0,0,0,4.5,10.266a1.951,1.951,0,0,1,0,3.641,7.735,7.735,0,0,0,.936,2.255,1.948,1.948,0,0,1,2.572,2.571,7.784,7.784,0,0,0,2.256.936,1.947,1.947,0,0,1,3.634,0,7.739,7.739,0,0,0,2.256-.936,1.95,1.95,0,0,1,2.572-2.571,7.78,7.78,0,0,0,.936-2.255A1.961,1.961,0,0,1,18.418,12.083Zm-6.3,3.156a3.16,3.16,0,1,1,3.16-3.16A3.159,3.159,0,0,1,12.121,15.239Z"
+            transform="translate(-4.5 -4.5)"
+            fill="currentColor"
+            opacity="0.55"
+          />
+        </svg>
+      </i>
+      <span> Account Settings </span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #bankSettingsTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a (click)="changeBodyClassMobile()" [routerLink]="getBankAccountsRouterLink()" class="side-nav-link">
+      <i class="mdi mdi-bank"></i>
+      <span>Bank Accounts</span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #addNewBankTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a (click)="changeBodyClassMobile()" [routerLink]="getLinkNewAccountRouterLink()" class="side-nav-link">
+      <i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14">
+          <g id="Icon_feather-plus" data-name="Icon feather-plus" transform="translate(-6.6 -6.6)" opacity="0.75">
+            <path
+              id="Path_17636"
+              data-name="Path 17636"
+              d="M18.012,20.6a.883.883,0,0,1-.912-.851V7.451a.914.914,0,0,1,1.824,0v12.3A.883.883,0,0,1,18.012,20.6Z"
+              transform="translate(-4.412 0)"
+              fill="currentColor"
+            />
+            <path
+              id="Path_17637"
+              data-name="Path 17637"
+              d="M19.749,18.924H7.451a.914.914,0,0,1,0-1.824h12.3a.914.914,0,0,1,0,1.824Z"
+              transform="translate(0 -4.412)"
+              fill="currentColor"
+            />
+          </g>
+        </svg>
+      </i>
+      <span> Add New Bank </span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #statementsAndReceiptsTmp>
+  <li class="side-nav-item" [routerLinkActive]="'menuitem-active'">
+    <a (click)="changeBodyClassMobile()" [routerLink]="getStatementReportRouterLink()" class="side-nav-link">
+      <i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="15.398" height="16.541" viewBox="0 0 15.398 16.541">
+          <path
+            id="Icon_awesome-receipt"
+            data-name="Icon awesome-receipt"
+            d="M14.372.128l-1.54,1.8L10.65.128a.638.638,0,0,0-.77,0L7.7,1.924,5.518.128a.638.638,0,0,0-.77,0l-2.181,1.8L1.027.128A.641.641,0,0,0,0,.641V15.9a.641.641,0,0,0,1.027.513l1.54-1.8,2.181,1.8a.638.638,0,0,0,.77,0l2.181-1.8,2.181,1.8a.638.638,0,0,0,.77,0l2.181-1.8,1.54,1.8A.642.642,0,0,0,15.4,15.9V.641A.641.641,0,0,0,14.372.128Zm-1.54,10.458a.322.322,0,0,1-.321.321H2.887a.322.322,0,0,1-.321-.321V9.944a.322.322,0,0,1,.321-.321h9.624a.322.322,0,0,1,.321.321Zm0-3.85a.322.322,0,0,1-.321.321H2.887a.322.322,0,0,1-.321-.321V6.094a.322.322,0,0,1,.321-.321h9.624a.322.322,0,0,1,.321.321Z"
+            transform="translate(0 0.002)"
+            fill="currentColor"
+          />
+        </svg>
+      </i>
+      <span>Statements & Receipts</span>
+    </a>
+  </li>
+</ng-template>

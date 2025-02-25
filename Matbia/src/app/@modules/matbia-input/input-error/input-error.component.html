@@ -1,0 +1,124 @@
+<ng-container *ngIf="errors">
+  <div class="row text-danger error-container" [class.first-err-only]="firstOnly">
+    <div *ngIf="errors?.required" class="val-error">Field is required</div>
+    <div *ngIf="errors?.email" class="val-error">Email is not valid</div>
+    <div *ngIf="errors?.invalidSsn" class="val-error">SSN is Invalid</div>
+    <div *ngIf="errors?.mask" class="val-error">Field is not valid</div>
+    <div *ngIf="errors?.mismatch" class="val-error">Field is not match</div>
+    <div *ngIf="errors?.min" class="val-error">Field is not valid</div>
+    <div *ngIf="errors?.max" class="val-error">Field is not valid</div>
+
+    <div *ngIf="errors?.invalidEmailAndCard" class="val-error">Field is not a valid email or card</div>
+    <div *ngIf="errors?.invalidCardNumber" class="val-error">Enter valid card number</div>
+    <div *ngIf="errors?.phoneInValid" class="val-error">Field is not valid</div>
+
+    <div *ngIf="errors?.minlength" class="val-error">
+      Must be at least {{ errors?.minlength?.requiredLength }} characters
+    </div>
+    <div *ngIf="errors?.maxlength" class="val-error">
+      Must be less then {{ errors?.maxlength?.requiredLength }} characters
+    </div>
+
+    <div *ngIf="errors?.invalidAge" class="val-error">Date is not valid</div>
+    <div *ngIf="errors?.pattern" class="val-error">Field is not valid</div>
+
+    <div *ngIf="errors?.lessThan" class="val-error">
+      <ng-container *ngIf="errors?.lessThan?.labelMessage">
+        <ng-container *ngIf="!errors?.lessThan?.inSpan"> {{ errors?.lessThan?.labelMessage }}</ng-container>
+        <ng-container *ngIf="errors?.lessThan?.inSpan">
+          <span class="material-icons">warning</span>
+          <span class="val-error-lbl-msg">{{ errors?.lessThan?.labelMessage }}</span>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="!errors?.lessThan?.labelMessage"
+        >Field should be less than {{ errors?.lessThan?.toCompare }}
+      </ng-container>
+    </div>
+
+    <div *ngIf="errors?.greaterThan" class="val-error">
+      <ng-container *ngIf="errors?.greaterThan?.labelMessage">
+        <ng-container *ngIf="!errors?.greaterThan?.inSpan">{{ errors?.greaterThan?.labelMessage }}</ng-container>
+        <ng-container *ngIf="errors?.greaterThan?.inSpan">
+          <span class="material-icons">warning</span>
+          <span class="val-error-lbl-msg">{{ errors?.greaterThan?.labelMessage }}</span>
+        </ng-container>
+      </ng-container>
+      <ng-container *ngIf="!errors?.greaterThan?.labelMessage"
+        >Field should be greater than {{ errors?.greaterThan?.toCompare }}</ng-container
+      >
+    </div>
+
+    <div *ngIf="errors?.googleMapError" class="val-error">{{ errors?.googleMapError }}</div>
+
+    <div *ngIf="errors?.whiteSpace" class="val-error">
+      <ng-container *ngIf="errors?.whiteSpace?.labelMessage">
+        {{ errors?.whiteSpace?.labelMessage }}
+      </ng-container>
+      <ng-container *ngIf="!errors?.whiteSpace?.labelMessage">Field is not valid </ng-container>
+    </div>
+
+    <div *ngIf="errors?.hebrewFound" class="val-error">
+      <ng-container *ngIf="errors?.hebrewFound?.labelMessage">
+        {{ errors?.hebrewFound?.labelMessage }}
+      </ng-container>
+      <ng-container *ngIf="!errors?.hebrewFound?.labelMessage">Hebrew characters not allowed </ng-container>
+    </div>
+
+    <div *ngIf="errors?.accountInactive" class="val-error">
+      The selected account is inactive, please select a different one
+    </div>
+
+    <div *ngIf="errors?.strongPassword" class="val-error val-error-password">
+      <h4>Password must contain the following:</h4>
+      <ul class="mb-0 list-unstyled">
+        <li [class.not-filled]="errors?.strongPassword?.isLengthInvalid">
+          <ng-container *ngIf="errors?.strongPassword?.isLengthInvalid">
+            <span class="material-icons">close</span>Minimum 8 characters
+          </ng-container>
+
+          <ng-container *ngIf="!errors?.strongPassword?.isLengthInvalid">
+            <span class="material-icons">check</span>Minimum 8 characters
+          </ng-container>
+        </li>
+        <li [class.not-filled]="errors?.strongPassword?.isLowerCaseInvalid">
+          <ng-container *ngIf="errors?.strongPassword?.isLowerCaseInvalid">
+            <span class="material-icons">close</span>1 Lowercase <small>(a-z)</small>
+          </ng-container>
+
+          <ng-container *ngIf="!errors?.strongPassword?.isLowerCaseInvalid">
+            <span class="material-icons">check</span>1 Lowercase <small>(a-z)</small>
+          </ng-container>
+        </li>
+        <li [class.not-filled]="errors?.strongPassword?.isUpperCaseInvalid">
+          <ng-container *ngIf="errors?.strongPassword?.isUpperCaseInvalid">
+            <span class="material-icons">close</span>1 Uppercase letter <small>(A-Z)</small>
+          </ng-container>
+
+          <ng-container *ngIf="!errors?.strongPassword?.isUpperCaseInvalid">
+            <span class="material-icons">check</span>1 Uppercase letter <small>(A-Z)</small>
+          </ng-container>
+        </li>
+        <li [class.not-filled]="errors?.strongPassword?.isNumberInvalid">
+          <ng-container *ngIf="errors?.strongPassword?.isNumberInvalid">
+            <span class="material-icons">close</span>1 Number <small>(0-9)</small>
+          </ng-container>
+
+          <ng-container *ngIf="!errors?.strongPassword?.isNumberInvalid">
+            <span class="material-icons">check</span>1 Number <small>(0-9)</small>
+          </ng-container>
+        </li>
+        <li [class.not-filled]="errors?.strongPassword?.isSpecialCharacterInvalid">
+          <ng-container *ngIf="errors?.strongPassword?.isSpecialCharacterInvalid">
+            <span class="material-icons">close</span>1 Special character <small>($&#64;#!%*?&^)</small>
+          </ng-container>
+
+          <ng-container *ngIf="!errors?.strongPassword?.isSpecialCharacterInvalid">
+            <span class="material-icons">check</span>1 Special character <small>($&#64;#!%*?&^)</small>
+          </ng-container>
+        </li>
+      </ul>
+    </div>
+
+    <div *ngIf="errors?.serverError" class="val-error">{{ errors?.serverError }}</div>
+  </div>
+</ng-container>

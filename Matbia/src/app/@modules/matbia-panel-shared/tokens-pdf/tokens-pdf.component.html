@@ -1,0 +1,131 @@
+<div [hidden]="true">
+  <div #tokensPDF>
+    <ul
+      class="list-pdf"
+      style="
+        display: flex;
+        flex-wrap: wrap;
+        overflow: hidden;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        width: 448px;
+        letter-spacing: 0;
+        word-spacing: 0;
+        position: relative;
+      "
+    >
+      <li
+        style="
+          flex: 0 0 auto;
+          width: 33.333333%;
+          margin: 0;
+          -webkit-box-sizing: border-box;
+          -moz-box-sizing: border-box;
+          box-sizing: border-box;
+          height: 210.33px;
+        "
+        *ngFor="let item of tokensArrayForPDF; let i = index"
+      >
+        <div
+          style="
+            border-right: 0.5px dashed #1a1818;
+            border-bottom: 0.5px dashed #1a1818;
+            width: 100%;
+            height: 100%;
+            padding: 8px 14px;
+          "
+          [style]="getCustomStyle(i)"
+        >
+          <div
+            *ngIf="item"
+            style="
+              display: flex;
+              flex-direction: column;
+              border: 0.5px solid #5a5b5e;
+              border-radius: 8px;
+              padding: 8px 6px;
+              text-align: center;
+              -webkit-box-sizing: border-box;
+              -moz-box-sizing: border-box;
+              box-sizing: border-box;
+            "
+          >
+            <figure style="margin: 0 auto; padding: 0; line-height: 0; vertical-align: top">
+              <img src="assets/dist/img/print-logo.png" width="39" height="7" alt="" style="vertical-align: top" />
+            </figure>
+            <figure style="margin: 4px auto 6.44px; padding: 0; line-height: 0; vertical-align: top">
+              <img src="assets/dist/img/print-brand.png" width="82" height="7" alt="" style="vertical-align: top" />
+            </figure>
+
+            <h3
+              style="
+                margin: 0 auto;
+                color: #1a1818;
+                font-size: 20px;
+                line-height: 24px;
+                font-weight: 500;
+                vertical-align: top;
+                font-family: 'SFProDisplay-Medium';
+                font-weight: 500;
+              "
+            >
+              {{ item.amount | currency : 'USD' }}
+            </h3>
+            <h4
+              style="
+                margin: 0 auto;
+                padding: 0;
+                color: #1a1818;
+                font-size: 5px;
+                line-height: 6px;
+                font-weight: 400;
+                vertical-align: top;
+                font-family: 'SFProDisplay-Regular';
+                font-weight: normal;
+              "
+            >
+            Expires  {{ item.expDate | date : "MM.dd.'YY" }}
+            </h4>
+            <figure style="margin: 8px auto; padding: 0; line-height: 0; vertical-align: top">
+              <img src="assets/dist/img/print-token.png" width="66" height="66" alt="" />
+            </figure>
+            <h4
+              style="
+                margin: 0 auto;
+                padding: 0;
+                color: #1a1818;
+                font-size: 10px;
+                line-height: 14px;
+                font-weight: 400;
+                vertical-align: top;
+                font-family: 'SFProDisplay-Regular';
+                font-weight: normal;
+                letter-spacing: 1px;
+              "
+            >
+              {{ item.formattedToken }}
+            </h4>
+            <figure style="margin: 0 auto 6px; padding: 0; line-height: 0; vertical-align: top">
+              <img id="{{ 'token-' + item.tokenId }}" width="65" height="12" alt="" style="vertical-align: top" />
+            </figure>
+            <span
+              style="
+                margin: 0 auto;
+                padding: 0px 0 0px;
+                color: #1a1818;
+                font-size: 5px;
+                line-height: 6px;
+                font-weight: 400;
+                vertical-align: top;
+                font-family: 'SFProDisplay-Regular';
+                font-weight: normal;
+              "
+              >To redeem, go to matbia.org/tzedakahtoken</span
+            >
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>

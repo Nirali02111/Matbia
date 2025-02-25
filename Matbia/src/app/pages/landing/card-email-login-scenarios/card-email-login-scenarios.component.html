@@ -1,0 +1,55 @@
+<div class="link-wrapper">
+  <h3>SCENARIOS</h3>
+  <!-- for emails -->
+  @if (isEmail && !commonSevice.cardThroughEmail) {
+  <ul class="d-flex scenario-3">
+    <li (click)="click(true, true)">
+      <span>Has <strong>email & password</strong></span>
+    </li>
+    <li (click)="click(true, false)">
+      <span>Has <strong>email</strong>. <del>No password</del></span>
+    </li>
+    <li (click)="click(false, false)">
+      <span><strong>Doesn't</strong> have <del>email & password</del></span>
+    </li>
+  </ul>
+  } @if(isEmail && commonSevice.cardThroughEmail) {
+  <!-- for cards -->
+  <ul class="d-flex scenario-5">
+    <li (click)="card('otherEmail', true, true)">
+      <span>Card is active with other <strong>email & password</strong></span>
+    </li>
+    <li (click)="card('otherEmail', true, false)">
+      <span>Card has active <strong>email</strong>. <del>No password</del></span>
+    </li>
+    <li (click)="card('', false, false, true)">
+      <span>Card is active. <del>No email & password</del>.</span>
+    </li>
+    <li (click)="card('', false, false, false, true)">
+      <span>Card is active <strong>Prepaid</strong>. <del>No email & password</del></span>
+    </li>
+    <li (click)="card('', null, null, null, null, true)">
+      <span>Card is not <del>activated</del>.</span>
+    </li>
+  </ul>
+  } @if(!isEmail && !commonSevice.cardThroughEmail) {
+  <!-- for cards -->
+  <ul class="d-flex scenario-6">
+    <li (click)="card('', true, true)">
+      <span>Card is active with <strong>email & password</strong></span>
+    </li>
+    <li (click)="card('', true, false)">
+      <span>Card has active <strong>email</strong>. <del>No password</del></span>
+    </li>
+    <li (click)="card('', false, false, true)">
+      <span>Card is active. <del>No email & password</del>.</span>
+    </li>
+    <li (click)="card('', false, false, false, true)">
+      <span>Card is active <strong>prepaid</strong>. <strong>No email & password</strong></span>
+    </li>
+    <li (click)="card('', null, null, null, null, true)">
+      <span>Card is not <del>activated</del>.</span>
+    </li>
+  </ul>
+  }
+</div>

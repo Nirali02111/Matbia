@@ -1,0 +1,16 @@
+<ng-template #contentModal let-modal>
+  <div class="modal-header">
+    <h2 class="modal-title"><span>Complete</span> Sign up</h2>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.close()"></button>
+  </div>
+  <div class="modal-body page-signin">
+    <div class="login--form">
+      <app-online-account-form-group
+        [formGroup]="signUpWithoutCardForm"
+        [isLoading]="isLoading"
+        (fgSubmit)="onSignUpWithoutCardFormSubmit()"
+      >
+      </app-online-account-form-group>
+    </div>
+  </div>
+</ng-template>

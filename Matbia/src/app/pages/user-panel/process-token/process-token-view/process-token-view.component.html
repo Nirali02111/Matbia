@@ -1,0 +1,166 @@
+<div class="token-page token-page-bottom-bar p-3 p-md-4">
+  <div class="h-100 overflow-auto">
+    <div class="d-flex flex-column flex-xl-row gap-3 gap-xxl-4 mb-4">
+      <ng-template [ngTemplateOutlet]="formSection"></ng-template>
+
+      <div class="token-data-sub text-center">
+        <span class="mb-2 d-inline-block w-100">CLEARED: ({{ infoSection.cleared.count }})</span>
+        <h2>{{ infoSection.cleared.amount | currency }}</h2>
+        <hr />
+        <div class="d-flex flex-column gap-2 gap-xxl-0 flex-xxl-row justify-content-around">
+          <div>
+            <span class="text-warning mb-1 d-inline-block w-100">TO BE REVIEWED ({{ infoSection.expired.count }})</span>
+            <h5>{{ infoSection.expired.amount | currency }}</h5>
+          </div>
+          <div>
+            <span class="text-danger mb-1 d-inline-block w-100">VOIDED ({{ infoSection.voided.count }})</span>
+            <h5>{{ infoSection.voided.amount | currency }}</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    @if ((total$ | async)! && (total$ | async)! !== 0) {
+    <div class="tokan-table-gray w-100">
+      <div class="table-responsive table-responsive-token">
+        <div class="table table-process">
+          <div class="t-head">
+            <div class="t-row">
+              <div class="th-div">TOKEN NUMBER</div>
+              <div class="th-div">DONOR</div>
+              <div class="th-div">STATUS</div>
+              <div class="th-div">AMOUNT</div>
+              <div class="th-div th-action"></div>
+            </div>
+          </div>
+          <div class="t-body">
+            @for (item of rows$ | async; track item.tokenNumber) {
+            <app-process-token-list-row-item [item]="item"></app-process-token-list-row-item>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+    }
+  </div>
+</div>
+
+<ng-template #formSection>
+  <div
+    class="tokan-scane bg-white justify-content-center flex-fill d-flex flex-column gap-3 gap-xl-4 gap-xxl-0 flex-xxl-row align-items-start"
+  >
+    <figure class="mb-0">
+      <img src="assets/dist/img/image-token.jpg" alt="Token Image" />
+    </figure>
+    <div
+      class="token-box d-flex flex-column flex-md-row gap-3 gap-xxl-4"
+      [formGroup]="formGroup"
+      (keyup.enter)="onValidate()"
+    >
+      <div class="form-group form-token-code w-100 position-relative">
+        <label for="">
+          Scan or Enter 8-digit token code:
+          <i
+            ><svg xmlns="http://www.w3.org/2000/svg" width="11.789" height="11.789" viewBox="0 0 11.789 11.789">
+              <g
+                id="Icon_ionic-ios-help-circle-outline"
+                data-name="Icon ionic-ios-help-circle-outline"
+                transform="translate(-3.375 -3.375)"
+              >
+                <path
+                  id="Path_1824"
+                  data-name="Path 1824"
+                  d="M9.27,4.168A5.1,5.1,0,1,1,5.662,5.662,5.067,5.067,0,0,1,9.27,4.168m0-.793A5.895,5.895,0,1,0,15.164,9.27,5.894,5.894,0,0,0,9.27,3.375Z"
+                  transform="translate(0 0)"
+                  fill="#8b8b8b"
+                />
+                <path
+                  id="Path_1825"
+                  data-name="Path 1825"
+                  d="M15.334,11.25c1.063,0,1.794.589,1.794,1.437a1.386,1.386,0,0,1-.8,1.258c-.493.286-.66.5-.66.859v.224h-.983l-.009-.244a1.18,1.18,0,0,1,.669-1.247c.479-.286.68-.468.68-.819a.688.688,0,0,0-.762-.609.717.717,0,0,0-.759.7H13.5A1.617,1.617,0,0,1,15.334,11.25Zm-.745,4.857a.608.608,0,1,1,.606.584A.594.594,0,0,1,14.588,16.107Z"
+                  transform="translate(-6.044 -4.701)"
+                  fill="#8b8b8b"
+                />
+              </g>
+            </svg>
+          </i>
+        </label>
+        <i class="icon">
+          <svg id="upc-scan" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+            <path
+              id="Path_19117"
+              data-name="Path 19117"
+              d="M2.813,1.875a.938.938,0,0,0-.937.938V8.438A.938.938,0,1,1,0,8.438V2.813A2.813,2.813,0,0,1,2.813,0H8.438a.938.938,0,0,1,0,1.875ZM20.625.938A.938.938,0,0,1,21.563,0h5.625A2.812,2.812,0,0,1,30,2.813V8.438a.938.938,0,0,1-1.875,0V2.813a.938.938,0,0,0-.937-.937H21.563a.938.938,0,0,1-.937-.938ZM.938,20.625a.938.938,0,0,1,.938.938v5.625a.938.938,0,0,0,.938.938H8.438a.938.938,0,0,1,0,1.875H2.813A2.812,2.812,0,0,1,0,27.188V21.563a.938.938,0,0,1,.938-.937Zm28.125,0a.938.938,0,0,1,.938.938v5.625A2.812,2.812,0,0,1,27.188,30H21.563a.938.938,0,0,1,0-1.875h5.625a.938.938,0,0,0,.938-.937V21.563A.938.938,0,0,1,29.063,20.625ZM5.625,8.438a.938.938,0,0,1,1.875,0V21.563a.938.938,0,0,1-1.875,0Zm3.75,0a.938.938,0,0,1,1.875,0V21.563a.938.938,0,0,1-1.875,0Zm3.75,0a.938.938,0,0,1,1.875,0V21.563a.938.938,0,0,1-1.875,0Zm3.75,0a.938.938,0,0,1,.938-.937h1.875a.938.938,0,0,1,.938.938V21.563a.938.938,0,0,1-.937.938H17.813a.938.938,0,0,1-.937-.937Zm5.625,0a.938.938,0,0,1,1.875,0V21.563a.938.938,0,0,1-1.875,0Z"
+              fill="#5d62e0"
+            />
+          </svg>
+        </i>
+
+        <ng-container *ngIf="TokenNumber?.value">
+          <a class="removed rounded-circle" (click)="clearToken($event)"></a>
+        </ng-container>
+
+        <input
+          type="text"
+          name=""
+          class="form-control"
+          [class.border-danger]="TokenNumber?.touched && TokenNumber?.invalid && isSubmit"
+          formControlName="tokenNumber"
+          [validation]="false"
+          [mask]="tokenMask"
+          [placeholder]="tokenMask"
+          #tokenNumInput
+        />
+
+        <ng-container *ngIf="TokenNumber?.touched && TokenNumber?.invalid && isSubmit">
+          <app-input-error [errors]="TokenNumber?.errors"></app-input-error>
+        </ng-container>
+      </div>
+      <div class="d-flex form-token-amout gap-2 gap-sm-3 gap-xxl-4 w-100 position-relative">
+        <div class="form-group flex-fill" (focusout)="focusout()">
+          <label>Enter Token amount:</label>
+
+          <app-amount-input
+            class="text-end"
+            formControlName="tokenAmount"
+            [outputFormat]="false"
+            [isSubmit]="isSubmit"
+          ></app-amount-input>
+        </div>
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <span class="icon">$</span>
+          <button class="" (click)="onValidate()">
+            <svg
+              id="arrow-90deg-left"
+              xmlns="http://www.w3.org/2000/svg"
+              width="23.211"
+              height="21"
+              viewBox="0 0 23.211 21"
+            >
+              <g id="Group_3157" data-name="Group 3157">
+                <path
+                  id="Path_19127"
+                  data-name="Path 19127"
+                  d="M12.233,40.944a.829.829,0,0,0,0,1.174l6.631,6.631a.83.83,0,0,0,1.174-1.174L14.821,42.36H31.056A4.145,4.145,0,0,0,35.2,38.216V28.821a.829.829,0,1,0-1.658,0v9.394A2.487,2.487,0,0,1,31.056,40.7H14.821l5.217-5.215a.83.83,0,0,0-1.174-1.174Z"
+                  transform="translate(-11.989 -27.992)"
+                  fill="rgba(69, 69, 69, 0.5)"
+                  fill-rule="evenodd"
+                />
+              </g>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-container *ngIf="(total$ | async)! && (total$ | async)! !== 0">
+  <div class="bottom-tokan-bar border-top position-fixed bottom-0 w-100 bg-white start-0">
+    <div class="d-flex flex-column flex-sm-row align-items-center justify-content-end py-3 px-4 p-lg-4 gap-2 gap-sm-5">
+      <a style="cursor: pointer" class="link mx-auto mx-sm-0" (click)="onCancel($event)">Cancel</a>
+      <button class="btn btn-primary" (click)="onProcess()">PROCESS TOKENS</button>
+    </div>
+  </div>
+</ng-container>

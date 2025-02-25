@@ -1,0 +1,255 @@
+<ng-template [ngTemplateOutlet]="newCode"></ng-template>
+
+<ng-template #newCode>
+  <div
+    class="bank-linked d-flex align-items-center justify-content-between"
+    [class.schedule-to-other]="schedulesFromAccount && schedulesFromAccount !== id"
+  >
+    <ng-container *ngIf="schedulesFromAccount && schedulesFromAccount !== id">
+      <div class="link-account-radio link-btn-left">
+        <input
+          type="radio"
+          class="custom-control-input"
+          [attr.id]="'otherSchedule' + id"
+          [value]="id"
+          (change)="handleScheduleChange($event)"
+          [checked]="schedulesToAccount === id"
+        />
+        <label class="custom-control-label" [attr.for]="'otherSchedule' + id"></label>
+      </div>
+    </ng-container>
+
+    <div class="bank-link d-flex align-items-center">
+      <div class="bank-detail">
+        <h4>{{ item.bankName }}</h4>
+        <p>{{ item.accountNickName }}</p>
+      </div>
+    </div>
+    <div class="bank-connect">
+      <h5>CONNECTION: {{ item.accountLinked }}</h5>
+      <p>
+        <ng-container *ngIf="item.accountStatus">
+          <span class="bank-status" [class.in-active]="isInactive" [class.active]="isActive">
+            {{ item.accountStatus }}
+          </span>
+        </ng-container>
+
+        Verified {{ item.createdDate | date : 'MM/dd/yyyy' }}
+      </p>
+    </div>
+    <div class="bank-btns d-flex align-items-center">
+      <ng-container *ngIf="item.isDefault">
+        <button class="btn btn-primary">Primary</button>
+      </ng-container>
+
+      <ng-container *ngIf="needVerify">
+        <div class="btn-action" [hidden]="true">
+          <app-plaid-button
+            [userHandle]="userHandle?.value"
+            [accessToken]="item.accessToken || ''"
+            title="Connect"
+            (linked)="onLinked()"
+            classList="connect-btn"
+          ></app-plaid-button>
+        </div>
+
+        <button class="btn btn-verify" (click)="onPlaidVerify()">VERIFY ACCOUNT</button>
+      </ng-container>
+
+      <div ngbDropdown>
+        <button type="button" class="btn-action" ngbDropdownToggle>
+          <img src="assets/dist/img/icon-dots.svg" alt="Dots" />
+        </button>
+        <div ngbDropdownMenu>
+          <ng-container *ngIf="isAvailableForDefaultAccount">
+            <div ngbDropdownItem>
+              <input
+                type="checkbox"
+                [attr.id]="'customRadio' + id"
+                [value]="id"
+                (change)="handleChange($event)"
+                [checked]="primaryAccount === id"
+              />
+              <label [attr.for]="'customRadio' + id">Set as primary</label>
+            </div>
+            <div class="dropdown-divider"></div>
+          </ng-container>
+
+          <button ngbDropdownItem (click)="onEditNickName()">
+            <span class="material-icons">edit</span>
+            Set a nickname
+          </button>
+          <button ngbDropdownItem class="removed-account" (click)="deleteAction()">
+            <span class="material-icons">delete</span>
+            Remove account
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #oldCode>
+  <div class="item-collapse-panel flex-wrap account-list--item mt-3 justify-content-between d-flex position-relative">
+    <div
+      class="col-md-7 pe-3 collapse-item-inside"
+      type="button"
+      data-bs-toggle="collapse"
+      aria-expanded="false"
+      [attr.data-bs-target]="'#collapseExample' + id"
+      [attr.aria-controls]="'collapseExample' + id"
+    >
+      <ng-container *ngIf="schedulesFromAccount && schedulesFromAccount !== id">
+        <div class="link-account-radio link-btn-left">
+          <input
+            type="radio"
+            class="custom-control-input"
+            [attr.id]="'otherSchedule' + id"
+            [value]="id"
+            (change)="handleScheduleChange($event)"
+            [checked]="schedulesToAccount === id"
+          />
+          <label class="custom-control-label" [attr.for]="'otherSchedule' + id"></label>
+        </div>
+      </ng-container>
+
+      <div class="bank-info-wrap">
+        <label class="lbl--text">Bank:</label>
+        <h6 class="bank-tooltip">
+          {{ item.accountNickName }}
+          <ng-container *ngIf="isInactive">
+            <div class="bank-info-tooltip" [attr.data-hover]="item.linkError">
+              <img style="margin: 0px 15px 15px 15px; height: 25px" src="/assets/dist/img/Cautionico.svg" alt="" />
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="isRelink">
+            <div
+              class="bank-info-tooltip"
+              data-hover="This bank account has expired please relink to continue depositing funds"
+            >
+              <img style="margin: 0px 15px 15px 15px; height: 25px" src="/assets/dist/img/CautionAlertico.svg" alt="" />
+            </div>
+          </ng-container>
+        </h6>
+      </div>
+
+      <ng-container *ngIf="!isAvailableForDefaultAccount || isRelink">
+        <div class="acc-verification-status">
+          <div class="account-verify-wrap">
+            <label>Status:</label>
+            <ng-container *ngIf="isRelink">
+              <h6>Account Expired</h6>
+            </ng-container>
+
+            <ng-container *ngIf="!isAvailableForDefaultAccount">
+              <h6>Verification Pending</h6>
+            </ng-container>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+
+    <ng-container *ngIf="needVerify">
+      <div class="btn-action" [hidden]="true">
+        <app-plaid-button
+          [userHandle]="userHandle?.value"
+          [accessToken]="item.accessToken || ''"
+          title="Connect"
+          (linked)="onLinked()"
+          classList="connect-btn"
+        ></app-plaid-button>
+      </div>
+
+      <div class="col-md-3 account-verify-wrap">
+        <button class="btn btn-warning btn-verify" (click)="onPlaidVerify()">Verify Account</button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="isAvailableForDefaultAccount">
+      <div class="col-md-2 pe-3 mt-3 row-button">
+        <div class="custom-control custom-radio link-account-radio">
+          <input
+            type="radio"
+            [attr.id]="'customRadio' + id"
+            class="custom-control-input"
+            [value]="id"
+            (change)="handleChange($event)"
+            [checked]="primaryAccount === id"
+          />
+          <label class="custom-control-label" [attr.for]="'customRadio' + id">Primary</label>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="col position-absolute end-0 pe-3 mt-2 row-arrow">
+      <div class="arrow-click-area">
+        <button
+          class="col-md-10 pe-3"
+          type="button"
+          data-bs-toggle="collapse"
+          aria-expanded="false"
+          [attr.data-bs-target]="'#collapseExample' + id"
+          [attr.aria-controls]="'collapseExample' + id"
+        >
+          <i class="mdi mdi-arrow-d fs-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="collapse w-100 bank-info-body" [attr.id]="'collapseExample' + id">
+      <div class="card-body">
+        <div class="tbl--wrapper link-bank--acounts-tbl">
+          <div class="tbl--row">
+            <div class="tbl--colm chase--colm">
+              <label for="">{{ item.bankName }}</label>
+              <h6>{{ item.accountType }}</h6>
+            </div>
+            <div class="tbl--colm">
+              <label for="">{{ item.accountOwnerName }}</label>
+              <h6>{{ item.accountNumber }}</h6>
+            </div>
+            <div class="tbl--colm">
+              <label for="">{{ item.accountStatus }}</label>
+              <h6>Added {{ item.createdDate | date : 'MM/dd/yyyy' }}</h6>
+            </div>
+            <div class="tbl--colm action--colm">
+              <button class="del--action" (click)="deleteAction()">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #bankNickNameModal let-modal>
+  <div class="modal-header p-0">
+    <h5 class="modal-title">Set a nickname</h5>
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="modal"
+      aria-label="Close"
+      (click)="modal.dismiss()"
+    ></button>
+  </div>
+  <div class="modal-body p-0">
+    <form [formGroup]="bankAccountNickNameFormGroup">
+      <div class="form-group" [@shakeTrigger]="NickNameCtrl?.invalid && inAnimation">
+        <div class="lbl-col">
+          <label>Write your accounts nickname:</label>
+        </div>
+        <div class="input-col">
+          <input type="text" placeholder="nickname" formControlName="accountNickname" class="form-control" />
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer p-0">
+    <button type="button" class="btn btn-cancel" (click)="modal.dismiss()">Cancel</button>
+    <button type="button" class="btn btn-primary" (click)="onSubmitNickname(modal)">Submit</button>
+  </div>
+</ng-template>

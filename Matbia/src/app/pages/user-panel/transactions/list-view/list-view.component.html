@@ -1,0 +1,477 @@
+<div class="transaction-page p-4 selected-row-active">
+  <div class="table-wrapper">
+    <div class="top-header--content" #tableHead>
+      <div class="balance-card">
+        <ng-container *appPersonalAccessControl>
+          <div class="colm available-blnce">
+            <div class="amount-text large-amount">{{ availableBalance | currency }}</div>
+            <p class="lbl--text">Available Funds</p>
+          </div>
+          <div class="colm deposit-blnce">
+            <div class="amount-text small-amount">{{ deposits | currency }}</div>
+            <p class="lbl--text">Deposits</p>
+          </div>
+          <div class="colm donation-blnce">
+            <div class="amount-text small-amount">{{ donations | currency }}</div>
+            <p class="lbl--text">Donations</p>
+          </div>
+        </ng-container>
+
+        <ng-container *appBusinessDonorAccessControl>
+          <div class="colm available-blnce">
+            <div class="amount-text large-amount">{{ availableBalance | currency }}</div>
+            <p class="lbl--text">Available Funds</p>
+          </div>
+          <div class="colm deposit-blnce">
+            <div class="amount-text small-amount">{{ deposits | currency }}</div>
+            <p class="lbl--text">Deposits</p>
+          </div>
+          <div class="colm donation-blnce">
+            <div class="amount-text small-amount">{{ donations | currency }}</div>
+            <p class="lbl--text">Donations</p>
+          </div>
+        </ng-container>
+
+        <ng-container *appOrganizationAccessControl>
+          <div class="colm available-blnce">
+            <div class="amount-text large-amount">{{ availableBalance | currency }}</div>
+            <p class="lbl--text">Available Funds</p>
+          </div>
+          <div class="colm deposit-blnce" [class.border-right-none]="!fundingBalance">
+            <div class="amount-text small-amount">{{ presentBalance | currency }}</div>
+            <p class="lbl--text">Account Funds</p>
+          </div>
+
+          <ng-container *ngIf="fundingBalance && fundingBalance > 0">
+            <div class="colm deposit-blnce border-right-none">
+              <div class="amount-text small-amount">{{ fundingBalance | currency }}</div>
+              <p class="lbl--text">Funding</p>
+            </div>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *appBusinessAccessControl>
+          <div class="colm available-blnce">
+            <div class="amount-text large-amount">{{ availableBalance | currency }}</div>
+            <p class="lbl--text">Available Funds</p>
+          </div>
+
+          <div class="colm deposit-blnce" [class.border-right-none]="!fundingBalance">
+            <div class="amount-text small-amount">{{ presentBalance | currency }}</div>
+            <p class="lbl--text">Account Funds</p>
+          </div>
+
+          <ng-container *ngIf="fundingBalance && fundingBalance > 0">
+            <div class="colm deposit-blnce border-right-none">
+              <div class="amount-text small-amount">{{ fundingBalance | currency }}</div>
+              <p class="lbl--text">Funding</p>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+
+    <ng-container *ngIf="batchNum">
+      <ng-container *appOrganizationAccessControl>
+        <ng-template [ngTemplateOutlet]="batchFilter"></ng-template>
+      </ng-container>
+
+      <ng-container *appBusinessAccessControl>
+        <ng-template [ngTemplateOutlet]="batchFilter"></ng-template>
+      </ng-container>
+    </ng-container>
+
+    <ng-container *ngIf="!batchNum">
+      <ng-template [ngTemplateOutlet]="transactionFilter"></ng-template>
+    </ng-container>
+
+    <div class="table" [class.table-organization]="isOrganizationUser && isBatchVisible">
+      <div class="t-head">
+        <div class="t-row">
+          <div
+            class="date-div th-div"
+            appSortableHeader
+            sortable="Date & Time"
+            sortName="transDate"
+            (sort)="onSort($event)"
+          >
+            Date & Time
+          </div>
+
+          <ng-container *appPersonalAccessControl>
+            <div
+              class="desc-div th-div"
+              appSortableHeader
+              sortable="Description"
+              sortName="organization"
+              (sort)="onSort($event)"
+            >
+              Description
+            </div>
+          </ng-container>
+
+          <ng-template #descDonorTmp>
+            <div class="desc-div th-div" appSortableHeader sortable="Donor" sortName="source" (sort)="onSort($event)">
+              Donor
+            </div>
+          </ng-template>
+
+          <ng-template #batchColumnTmp>
+            <ng-container *ngIf="isBatchVisible">
+              <div
+                class="transaction-batch-div th-div"
+                appSortableHeader
+                sortable="BatchNum"
+                sortName="batchNum"
+                (sort)="onSort($event)"
+              >
+                Status
+              </div>
+            </ng-container>
+          </ng-template>
+
+          <ng-container *appBusinessDonorAccessControl>
+            <ng-template [ngTemplateOutlet]="descDonorTmp"></ng-template>
+          </ng-container>
+          <ng-container *appOrganizationAccessControl>
+            <ng-template [ngTemplateOutlet]="descDonorTmp"></ng-template>
+          </ng-container>
+          <ng-container *appBusinessAccessControl>
+            <ng-template [ngTemplateOutlet]="descDonorTmp"></ng-template>
+          </ng-container>
+
+          <div class="type-div th-div" appSortableHeader sortable="Type" sortName="transType" (sort)="onSort($event)">
+            Type
+          </div>
+
+          <ng-container *appOrganizationAccessControl>
+            <ng-template [ngTemplateOutlet]="batchColumnTmp"></ng-template>
+          </ng-container>
+          <ng-container *appBusinessAccessControl>
+            <ng-template [ngTemplateOutlet]="batchColumnTmp"></ng-template>
+          </ng-container>
+
+          <div class="amount-div th-div" appSortableHeader sortable="Amount" sortName="amount" (sort)="onSort($event)">
+            Amount
+          </div>
+
+          <ng-container *appPersonalAccessControl>
+            <div class="blnce-div th-div" appSortableHeader sortable="Funds" sortName="balance" (sort)="onSort($event)">
+              Funds
+            </div>
+          </ng-container>
+
+          <ng-container *appBusinessAccessControl>
+            <div class="blnce-div th-div"></div>
+          </ng-container>
+          <ng-container *appOrganizationAccessControl>
+            <div class="blnce-div th-div"></div>
+          </ng-container>
+
+          <div class="th-div">&nbsp;</div>
+        </div>
+      </div>
+      <ng-container *ngIf="isLoading">
+        <app-matbia-skeleton-loader-component></app-matbia-skeleton-loader-component>
+      </ng-container>
+      <ng-container *ngIf="!isLoading">
+        <div class="t-body">
+          <ng-container *appPersonalAccessControl>
+            <ng-template [ngTemplateOutlet]="donorTransactionListTmp"></ng-template>
+          </ng-container>
+
+          <ng-container *appBusinessDonorAccessControl>
+            <ng-template [ngTemplateOutlet]="donorTransactionListTmp"></ng-template>
+          </ng-container>
+
+          <ng-container *appOrganizationAccessControl>
+            <ng-template [ngTemplateOutlet]="orgTransactionListTmp"></ng-template>
+          </ng-container>
+
+          <ng-container *appBusinessAccessControl>
+            <ng-template [ngTemplateOutlet]="orgTransactionListTmp"></ng-template>
+          </ng-container>
+        </div>
+      </ng-container>
+    </div>
+
+    <div class="d-flex justify-content-between p-2 pagination-wrap">
+      <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="gridService.pageSize">
+        <option [ngValue]="10">10</option>
+        <option [ngValue]="50">50</option>
+        <option [ngValue]="100">100</option>
+      </select>
+
+      <ng-container *ngIf="(total$ | async)! && gridService.pageSize && (total$ | async)! > gridService.pageSize">
+        <ngb-pagination
+          [collectionSize]="(total$ | async)!"
+          [(page)]="gridService.page"
+          [pageSize]="gridService.pageSize"
+          [maxSize]="5"
+          [boundaryLinks]="true"
+        >
+        </ngb-pagination>
+      </ng-container>
+    </div>
+
+    <ng-container *ngIf="batchNum">
+      <ng-template [ngTemplateOutlet]="batchDetailSection"></ng-template>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #transactionTypeDrpTmp let-items="items">
+  <label class="label-accordion">Type</label>
+  <ng-select
+    bindLabel="label"
+    bindValue="id"
+    [isOpen]="isTransactionTypeOpen"
+    (click)="isTransactionTypeOpen = !isTransactionTypeOpen"
+    [closeOnSelect]="true"
+    [searchable]="false"
+    [(ngModel)]="selectedTypes"
+    [selectOnTab]="true"
+    [items]="items"
+    (change)="onSelectTypes($event, false)"
+  >
+  </ng-select>
+</ng-template>
+
+<ng-template #batchFilter>
+  <app-list-page-filter
+    [isDatePickerFilter]="false"
+    [batchNum]="batchNum"
+    (search)="onSearch($event)"
+    (exportToExcel)="onExportTransactionData()"
+  ></app-list-page-filter>
+</ng-template>
+
+<ng-template #transactionFilter>
+  <div class="table-filters">
+    <div class="right-filers flex-nowrap gap-2 gap-md-0 justify-content-center justify-content-md-end">
+      <ng-container *appPersonalAccessControl>
+        <div class="flex-fill d-md-none">
+          <ng-template [ngTemplateOutlet]="filterPopupToggleTmp"></ng-template>
+        </div>
+
+        <div class="filter by-transaction add-transaction">
+          <ng-template
+            [ngTemplateOutlet]="transactionTypeDrpTmp"
+            [ngTemplateOutletContext]="{ items: commonDataService.transactionTypeList }"
+          ></ng-template>
+        </div>
+      </ng-container>
+
+      <ng-container *appBusinessAccessControl>
+        <ng-template [ngTemplateOutlet]="filterPopupToggleTmp"></ng-template>
+
+        <div class="filter by-transaction">
+          <ng-template
+            [ngTemplateOutlet]="transactionTypeDrpTmp"
+            [ngTemplateOutletContext]="{ items: commonDataService.ORGtransactionTypeList }"
+          ></ng-template>
+        </div>
+      </ng-container>
+
+      <ng-container *appOrganizationAccessControl>
+        <ng-template [ngTemplateOutlet]="filterPopupToggleTmp"></ng-template>
+
+        <div class="filter by-transaction">
+          <ng-template
+            [ngTemplateOutlet]="transactionTypeDrpTmp"
+            [ngTemplateOutletContext]="{ items: commonDataService.ORGtransactionTypeList }"
+          ></ng-template>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="!batchNum">
+        <ng-template [ngTemplateOutlet]="transactionStatusDrpTmp"></ng-template>
+      </ng-container>
+
+      <div class="flex-fill d-md-none w-100">
+        <button
+          class="btn btn-secondary w-100 text-center"
+          (click)="openDateRangePopup()"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          Showing
+        </button>
+      </div>
+
+      <div class="d-none d-md-inline-block">
+        <app-date-picker-filter
+          (filtered)="filterChange($event)"
+          open="left"
+          [defaultSelected]="defaultSelectedRange"
+          [isCustomModal]="true"
+        >
+        </app-date-picker-filter>
+      </div>
+
+      <div class="filter--btn dropdown export text-nowrap">
+        <button class="btn btn-secondary" type="button" id="dropdownMenuButton1" (click)="onExportTransactionData()">
+          <span class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17.193" height="17.193" viewBox="0 0 17.193 17.193">
+              <path
+                id="Icon_feather-download"
+                data-name="Icon feather-download"
+                d="M20.193,14.962v3.487a1.744,1.744,0,0,1-1.744,1.744H6.244A1.744,1.744,0,0,1,4.5,18.449V14.962M7.987,10.6l4.359,4.359L16.706,10.6m-4.359,4.359V4.5"
+                transform="translate(-3.75 -3.75)"
+                fill="none"
+                stroke="#454545"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+              />
+            </svg>
+          </span>
+          <span> DOWNLOAD CSV </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #batchDetailSection>
+  <div class="selected-row d-flex justify-content-between flex-wrap">
+    <div class="selected-col">
+      <label>Batch Id#:</label>
+      <span>{{ batchDetails?.batchNum }}</span>
+    </div>
+    <div class="selected-col">
+      <label>Created On:</label>
+      <span>
+        <ng-container *ngIf="selectedDates.fromDate">
+          {{ selectedDates.fromDate }}
+        </ng-container>
+      </span>
+    </div>
+    <div class="selected-col">
+      <label>To Bank:</label>
+      <span>{{ batchDetails?.toBank }}</span>
+    </div>
+    <div class="selected-col">
+      <label>Donations: ({{ batchDetails?.donationCount || 0 }})</label>
+      <span>{{ batchDetails?.donationAmount | currency }}</span>
+    </div>
+
+    <ng-container *ngIf="false">
+      <div class="selected-col">
+        <label>Credits: (3)</label>
+        <span>-$2.67</span>
+      </div>
+    </ng-container>
+
+    <div class="selected-col">
+      <label>Matbia Fees:</label>
+      <span>{{ batchDetails?.totalMatbiaFee | currency }}</span>
+    </div>
+
+    <ng-container *ngIf="false">
+      <div class="selected-col">
+        <label>Processing Fees:</label>
+        <span>-$9.39</span>
+      </div>
+    </ng-container>
+
+    <div class="selected-col">
+      <label>Total:</label>
+      <span>{{ batchDetails?.totalAmount | currency }}</span>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #donorTransactionListTmp>
+  @for (item of transactions$ | async; track item.encryptedTransId) {
+  <app-transaction-row-item [item]="item" (refresh)="refreshDonorTransaction()"></app-transaction-row-item>
+  } @empty {
+  <div class="t-row justify-content-center">No transactions found</div>
+  }
+</ng-template>
+
+<ng-template #orgTransactionListTmp>
+  @for (item of transactions$ | async; track item.encryptedTransId) {
+  <app-transaction-row-item [item]="item" (refresh)="refreshOrganizationTransaction()"> </app-transaction-row-item>
+  } @empty {
+  <div class="t-row justify-content-center">No transactions found</div>
+  }
+</ng-template>
+
+<ng-template #transactionStatusDrpTmp>
+  <div class="filter by-transaction">
+    <label class="label-accordion">Status</label>
+    <ng-select
+      bindLabel="label"
+      bindValue="id"
+      [closeOnSelect]="true"
+      [isOpen]="isTransactionStatusOpen"
+      [searchable]="false"
+      [(ngModel)]="selectedStatus"
+      [selectOnTab]="true"
+      [items]="commonDataService.transactionStatusList"
+      (change)="onSelectStatus($event, false)"
+      (click)="isTransactionStatusOpen = !isTransactionStatusOpen"
+    >
+    </ng-select>
+  </div>
+</ng-template>
+
+<ng-template #filterDrpdwnForMobile>
+  <div class="modal-header">
+    <h5 class="modal-title">Filters</h5>
+
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
+  </div>
+  <div class="modal-body py-0">
+    <div class="filter by-transaction">
+      <ng-container *appPersonalAccessControl>
+        <ng-template
+          [ngTemplateOutlet]="transactionTypeDrpTmp"
+          [ngTemplateOutletContext]="{ items: commonDataService.transactionTypeList }"
+        ></ng-template>
+      </ng-container>
+    </div>
+
+    <ng-container *appBusinessAccessControl>
+      <ng-template
+        [ngTemplateOutlet]="transactionTypeDrpTmp"
+        [ngTemplateOutletContext]="{ items: commonDataService.ORGtransactionTypeList }"
+      ></ng-template>
+    </ng-container>
+
+    <ng-container *appOrganizationAccessControl>
+      <ng-template
+        [ngTemplateOutlet]="transactionTypeDrpTmp"
+        [ngTemplateOutletContext]="{ items: commonDataService.ORGtransactionTypeList }"
+      ></ng-template>
+    </ng-container>
+
+    <ng-template [ngTemplateOutlet]="transactionStatusDrpTmp"></ng-template>
+  </div>
+  <div class="modal-footer gap-2 border-0">
+    <button type="button" class="btn m-0 btn-primary w-100" (click)="filterTransactions()">APPLY & SEARCH</button>
+    <button type="button" class="btn btn-default w-100 m-0" (click)="closeModal()">CANCEL</button>
+  </div>
+</ng-template>
+
+<ng-template #filterPopupToggleTmp>
+  <button (click)="openFilterPopup()" class="btn btn-secondary w-100 text-center d-md-none">Filters</button>
+</ng-template>
+
+<ng-template #datePickerFilterTmp>
+  <div class="modal-header">
+    <h5 class="modal-title">Showing</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closeModal()"></button>
+  </div>
+  <div class="modal-body pt-0">
+    <app-date-picker-filter
+      (filtered)="filterChange($event)"
+      open="left"
+      [defaultSelected]="defaultSelectedRange"
+      [isCustomModal]="true"
+    >
+    </app-date-picker-filter>
+  </div>
+</ng-template>

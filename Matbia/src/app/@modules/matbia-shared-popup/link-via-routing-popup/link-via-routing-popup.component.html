@@ -1,0 +1,109 @@
+<div class="modal-content enter-bank-info-modal">
+  <div class="modal-header" style="overflow: hidden" [class.error-header]="isError">
+    <ng-container *ngIf="!isError">
+      <h5 class="modal-title">Enter Your Bank Info</h5>
+      <button type="button" class="close" aria-label="Close" (click)="onClose()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </ng-container>
+  </div>
+  <div class="modal-body" [class.error-body]="isError">
+    <ng-container *ngIf="!isError">
+      <ng-template [ngTemplateOutlet]="modalFields"></ng-template>
+    </ng-container>
+    <ng-container *ngIf="isError">
+      <ng-template [ngTemplateOutlet]="ErrorTemp"></ng-template>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #modalFields>
+  <ngb-alert
+    *ngIf="alertMessage && isSuccess"
+    [attr.type]="alertType"
+    class="mt-2"
+    [dismissible]="true"
+    role="alert"
+    (closed)="alertMessage = ''"
+    >{{ alertMessage }}
+  </ngb-alert>
+
+  <form [formGroup]="setupAccountForm" (keyup.enter)="onSetupAccount()" (ngSubmit)="onSetupAccount()">
+    <div class="account-content--wrap" *ngIf="!isSuccess">
+      <div class="new-account--panel bank-acc--panel">
+        <div class="">
+          <div class="form--details w-100">
+            <app-bank-and-credit-card-form-group [optionTypeEnable]="false" [formGroup]="bankDetailForm">
+            </app-bank-and-credit-card-form-group>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="alertMessage && alertType === 'danger'">
+      <div class="error-block is-invalid">
+        <span class="material-icons">error</span>
+        {{ alertMessage }}
+      </div>
+    </ng-container>
+
+    <div class="action--buttons btn-group justify-content-end d-flex mt-5">
+      <ng-container *ngIf="isSuccess; else continueButton">
+        <button type="submit" class="btn btn-primary" (click)="onDone()">Done</button>
+      </ng-container>
+
+      <ng-template #continueButton>
+        <button type="submit" class="btn btn-plain" aria-label="Close" (click)="onClose()">Cancel</button>
+
+        <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+          <app-button-loader [loading]="isLoading" label="CONTINUE"></app-button-loader>
+        </button>
+      </ng-template>
+    </div>
+  </form>
+</ng-template>
+
+<ng-template #ErrorTemp>
+  <span><img src="assets/dist/img/icon-error.png" alt="Payment Failed" /></span>
+
+  <ng-container *appBusinessAccessControl>
+    <ng-template [ngTemplateOutlet]="forOrg"></ng-template>
+  </ng-container>
+
+  <ng-container *appOrganizationAccessControl>
+    <ng-template [ngTemplateOutlet]="forOrg"></ng-template>
+  </ng-container>
+
+  <ng-container *appPersonalAccessControl>
+    <ng-template [ngTemplateOutlet]="forDonor"></ng-template>
+  </ng-container>
+
+  <ng-container *appBusinessDonorAccessControl>
+    <ng-template [ngTemplateOutlet]="forDonor"></ng-template>
+  </ng-container>
+
+  <div class="action--buttons d-flex flex-column">
+    <button type="submit" class="btn btn-primary" aria-label="Close" (click)="onClose()">Ok</button>
+    <button type="submit" class="btn btn-plain" aria-label="Close" (click)="onGoBackAndRetry()">
+      Go Back & try Again
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #forOrg>
+  <p>
+    We were unable to automatically validate your account, please upload a bank statement or a voided check to our
+    customer service email
+    <a href="https://mail.google.com/mail/?view=cm&fs=1&to=office@matbia.com&su=Bank Account Verification Documents"
+      >office&#64;matbia.com</a
+    >
+    so we can manually verify your account info
+  </p>
+</ng-template>
+
+<ng-template #forDonor>
+  <p>
+    We were unable to automatically validate your account, we will manually validate your account within 2 business
+    days.
+  </p>
+</ng-template>

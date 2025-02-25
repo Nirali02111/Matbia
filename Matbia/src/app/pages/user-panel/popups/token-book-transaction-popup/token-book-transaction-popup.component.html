@@ -1,0 +1,174 @@
+<div class="d-flex flex-column w-100">
+  <div class="modal-header d-flex align-items-center gap-2">
+    <a href="javascript:void(0)" (click)="closePopup()" title="Back" class="me-1">
+      <svg xmlns="http://www.w3.org/2000/svg" width="7.663" height="12.496" viewBox="0 0 7.663 12.496">
+        <path
+          id="Path_18012"
+          data-name="Path 18012"
+          d="M0,5.542,5.541,0l5.541,5.542"
+          transform="translate(1.414 11.789) rotate(-90)"
+          fill="none"
+          stroke="#454545"
+          stroke-width="2"
+        />
+      </svg>
+    </a>
+    <h4 class="modal-title text-start">
+      {{ tokenBook.organization }}
+    </h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="closePopup()"></button>
+  </div>
+  <div class="modal-body py-0 overflow-visible">
+    <div class="w-100 border-top top-bar d-flex flex-column justify-content-between gap-4 pb-3 pb-xl-4 pb-xxl-5">
+      <div class="box-history-data d-flex flex-column flex-md-row align-items-md-center flex-fill">
+        <figure>
+          <img width="300" height="300" src="assets/dist/img/Tokens-sidebar-image.png" />
+        </figure>
+        <div class="d-flex flex-wrap flex-sm-nowrap flex-sm-row align-items-sm-center">
+          <div class="div-item ms-md-2 ps-md-3 pe-sm-3 pe-md-4 border-end me-sm-3 me-md-4">
+            <span class="text-gray">Total Tokens ({{ tokenBook.tokenBookDetails?.totalCount }})</span>
+            <h4>{{ tokenBook.tokenBookDetails?.totalAmount | currency }}</h4>
+          </div>
+          <div class="div-item me-sm-3 me-md-5">
+            <span class="text-success">Processed ({{ tokenBook.tokenBookDetails?.processCount }})</span>
+            <h4>{{ tokenBook.tokenBookDetails?.processAmount | currency }}</h4>
+          </div>
+          <div class="div-item me-sm-3 me-md-5">
+            <span class="text-danger">Canceled ({{ expiredCount }})</span>
+            <h4>{{ expiredAmount | currency }}</h4>
+          </div>
+          <div class="div-item">
+            <span>Remaining ({{ remCount }})</span>
+            <h4>{{ remAmount | currency }}</h4>
+          </div>
+        </div>
+      </div>
+      <div class="list-number">
+        <ul class="d-flex justify-content-between flex-wrap">
+          <li>
+            <span>CREATED ON:</span>
+            <h6>{{ tokenBook.transDate | date : 'MM/dd/yyyy hh:mm a' }}</h6>
+          </li>
+          <li>
+            <span>GROUP ID:</span>
+            <h6>{{ tokenBook.bookNumber }}</h6>
+          </li>
+          <li>
+            <span>METHOD:</span>
+            <h6>Token Book</h6>
+          </li>
+          <li>
+            <span>SOURCE:</span>
+            <h6>Matbia Inc</h6>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-body box-background py-0">
+  <div class="w-100 h-100 overflow-hidden">
+    <div class="table-responsive h-100 overflow-hidden">
+      @if((tokenBook?.tokenBookDetails?.tokenBookList?.length || 0) > 0 ){
+      <div class="table table-token-book d-flex flex-column overflow-hidden h-100">
+        <div class="t-head">
+          <div class="t-row">
+            <div class="th-div bg-transparent">TOKEN #</div>
+            <div class="th-div bg-transparent text-center">AMOUNT</div>
+            <div class="th-div bg-transparent">STATUS</div>
+            <div class="th-div bg-transparent flex-fill text-nowrap">PROCESSED BY</div>
+            <div class="th-div bg-transparent"></div>
+          </div>
+        </div>
+
+        <div class="t-body overflow-auto">
+          @for (item of tokenBook.tokenBookDetails?.tokenBookList; track $index) {
+
+          <div class="t-row py-0">
+            <div class="td-div">
+              {{ item.method }}
+            </div>
+            <div class="td-div text-center">
+              <strong>{{ item.amount | currency }}</strong>
+            </div>
+            <div class="td-div">
+              <span
+                class="badge"
+                [class.badge-light]="isGenerated(item) || isPending(item) || isFunding(item)"
+                [class.badge-success]="isProcessed(item) || isSuccess(item)"
+                [class.badge-danger]="isExpired(item)"
+                [class.badge-warning]="isVoid(item)"
+              >
+                {{ item.transStatus }}
+              </span>
+            </div>
+            <div class="td-div d-flex align-items-center flex-fill">
+              <div class="image rounded-circle overflow-hidden">
+                @if (item.organization || item.organizationId) {
+                <img [src]="item.orgLogo" appDefaultImgOnMissing width="32" height="32px" />
+                }
+              </div>
+              <span class="ps-2">{{ item.organization }}</span>
+            </div>
+            <div width="34" class="td-div">
+              <button
+                type="button"
+                class="btn-arrow fas fa-chevron-down"
+                data-bs-toggle="collapse"
+                aria-expanded="false"
+                [attr.data-bs-target]="'#batchCollapse-' + $index"
+                [attr.aria-controls]="'batchCollapse-' + $index"
+              ></button>
+            </div>
+
+            <div class="w-100 p-0 collapse-content collapse" [id]="'batchCollapse-' + $index">
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-4">
+                    @if (isSuccess(item)) {
+                    <div class="lbl--text">COMPLETED DATE:</div>
+                    <div class="lbl--value">{{ item.completedDate | date : 'MM/dd/yyyy hh:mm a' }}</div>
+                    } @else if(isGenerated(item)) {
+                    <div class="lbl--text">CREATED DATE:</div>
+                    <div class="lbl--value">{{ item.createdDate | date : 'MM/dd/yyyy hh:mm a' }}</div>
+                    } @else {
+                    <div class="lbl--text">CREATED DATE:</div>
+                    <div class="lbl--value">{{ item.transDate | date : 'MM/dd/yyyy hh:mm a' }}</div>
+                    }
+                  </div>
+                  <div class="col-4"></div>
+                  <div class="col-4">
+                    <div class="lbl--text">SOURCE:</div>
+                    <div class="lbl--value">Matbia Inc</div>
+                  </div>
+                </div>
+
+                @if (item.note) {
+
+                <div class="transaction-note d-inline-flex w-100 hide-mobile">
+                  <i class="icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15">
+                      <path
+                        id="Subtraction_26"
+                        data-name="Subtraction 26"
+                        d="M-6725.084-1447h-.2v-4.286H-6721v.2a.8.8,0,0,1-.235.565l-3.281,3.281A.809.809,0,0,1-6725.084-1447Zm-1.273,0h-8.839a.8.8,0,0,1-.8-.8V-1461.2a.8.8,0,0,1,.8-.8h13.392a.8.8,0,0,1,.8.8v8.84h-4.554a.8.8,0,0,0-.8.8V-1447Zm-6.64-9.6a.6.6,0,0,0-.6.6.6.6,0,0,0,.6.6h3a.6.6,0,0,0,.6-.6.6.6,0,0,0-.6-.6Zm0-3a.6.6,0,0,0-.6.6.6.6,0,0,0,.6.6h9a.6.6,0,0,0,.6-.6.6.6,0,0,0-.6-.6Z"
+                        transform="translate(6736 1462)"
+                        fill="#5d62e0"
+                      />
+                    </svg>
+                  </i>
+
+                  <p class="mb-0">{{ item.note }}</p>
+                  <span class="material-icons material-edit">edit</span>
+                </div>
+                }
+              </div>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+      }
+    </div>
+  </div>
+</div>

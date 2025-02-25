@@ -1,0 +1,326 @@
+<div class="signup-box profile-page account-content--wrap small--container w-75 m-auto info-box">
+  <h4>Account info</h4>
+  <div class="card--custom info-accout">
+    <div class="row gx-5 gy-4 gy-md-0 position-relative">
+      <div class="col-md-6">
+        <div class="account-detail app-account-hash-wrap" app-account-hash></div>
+        <ng-container>
+          <div class="account-detail app-account-hash-wrap" app-custom-donate-url></div>
+        </ng-container>
+      </div>
+      <div class="col-md-6">
+        <ng-container *ngIf="OrgHandle?.value">
+          <div class="account-detail app-account-hash-wrap" app-apikey [value]="OrgHandle?.value"></div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <h4>Owner info</h4>
+  <div class="card--custom info-accout">
+    <div class="row gx-5 gy-4 hide-line position-relative">
+      <div class="col-md-4">
+        <div class="account-detail app-account-hash-wrap">
+          <p class="account-hash-tag action-copy"><b>NAME:</b>{{ orgProfileResponse?.ownerName }}</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="account-detail app-account-hash-wrap">
+          <p class="account-hash-tag action-copy"><b>EMAIL ADDRESS:</b>{{ orgProfileResponse?.ownerEmail }}</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="account-detail app-account-hash-wrap">
+          <p class="account-hash-tag action-copy">
+            <b>PHONE NUMBER:</b>{{ getPhoneNumberAsNumber(orgProfileResponse?.ownerPhone) | mask : '(000)-000-0000' }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h4>Organization details</h4>
+  <div class="card--custom info-accout">
+    <div class="row gx-5 gy-4 hide-line position-relative">
+      <div class="col-md-4">
+        <div class="account-detail app-account-hash-wrap">
+          <p class="account-hash-tag action-copy"><b>ORG. LEGAL NAME:</b>{{ orgProfileResponse?.businessName }}</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="account-detail app-account-hash-wrap">
+          <p class="account-hash-tag action-copy"><b>DBA NAME:</b>{{ orgProfileResponse?.doingBusinessAs }}</p>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="account-detail app-account-hash-wrap">
+          <p class="account-hash-tag action-copy"><b>EIN:</b>{{ orgProfileResponse?.taxId }}</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="account-detail app-account-hash-wrap">
+          <p class="account-hash-tag action-copy">
+            <b>LEGAL ADDRESS:</b>
+            @if (orgProfileResponse?.addressType == 'Legal') {
+            {{ orgProfileResponse?.apt }}
+            {{ orgProfileResponse?.address }}
+            {{ orgProfileResponse?.city }}
+            {{ orgProfileResponse?.state }}
+            {{ orgProfileResponse?.zip }}
+            }
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <form [formGroup]="registerDonorCard" (ngSubmit)="onUpdate()">
+    <div
+      class="card--custom flex-wrap account-list--item d-flex position-relative page-profile"
+      [class.animate]="IsAnimate"
+    >
+      <div class="form--details w-100 business-view-of-profile">
+        <ng-template
+          [ngTemplateOutlet]="profileImgField"
+          [ngTemplateOutletContext]="{ formGroup: registerDonorCard?.get('orgLogo') }"
+        ></ng-template>
+
+        <div class="form-profile row gx-3 gy-4">
+          <ng-template
+            [ngTemplateOutlet]="organizationNameFieldRow"
+            [ngTemplateOutletContext]="{ formGroup: businessForm }"
+          ></ng-template>
+
+          <div class="col-md-6">
+            <label class="form-label"> DISPLAY PHONE NUMBER: </label>
+            <small>This will also be visible to donors</small>
+
+            <div
+              appHasFocus
+              [class.is-invalid-er]="Cellphone?.touched && Cellphone?.invalid && registerDonorCardSubmitted"
+            >
+              <app-phone-input [isSubmit]="false" formControlName="cellPhone"></app-phone-input>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label"> ORG. EMAIL ADDRESS: </label>
+            <small>Alerts will be sent to this email</small>
+
+            <div
+              appHasFocus
+              [class.is-invalid-er]="
+                Email?.touched && ((Email?.invalid && registerDonorCardSubmitted) || Email?.errors?.hebrewFound)
+              "
+            >
+              <input
+                type="email"
+                placeholder="Enter Email Address"
+                class="form-control"
+                formControlName="email"
+                [attr.autocomplete]="isAutoSuggestion ? 'new-email' : null"
+              />
+
+              <ng-container
+                *ngIf="Email?.touched && ((Email?.invalid && registerDonorCardSubmitted) || Email?.errors?.hebrewFound)"
+              >
+                <ng-container *ngIf="Email?.value && Email?.errors?.hebrewFound">
+                  <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <label class="form-label"> MAILING ADDRESS: </label>
+            <small>This will also be visible to donors</small>
+            <div
+              [class.disabled-field]="Address?.disabled"
+              appHasFocus
+              [class.is-invalid-er]="
+                Address?.touched && ((Address?.invalid && registerDonorCardSubmitted) || Address?.errors?.hebrewFound)
+              "
+            >
+              <input
+                type="text"
+                id="data_input_field_3"
+                placeholder="Enter location"
+                class="form-control"
+                formControlName="data_input_field_3"
+                appAddressAutocomplete
+                (onAddressChange)="onAddressChange($event)"
+              />
+
+              <ng-container
+                *ngIf="
+                  Address?.touched && ((Address?.invalid && registerDonorCardSubmitted) || Address?.errors?.hebrewFound)
+                "
+              >
+                <ng-container *ngIf="Address?.value && Address?.errors?.hebrewFound">
+                  <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div
+              [class.disabled-field]="City?.disabled"
+              appHasFocus
+              [class.is-invalid-er]="
+                City?.touched && ((City?.invalid && registerDonorCardSubmitted) || City?.errors?.hebrewFound)
+              "
+            >
+              <label class="form-label"> CITY: </label>
+
+              <input
+                type="text"
+                placeholder="Enter City"
+                class="form-control"
+                formControlName="city"
+                [attr.autocomplete]="isAutoSuggestion ? 'new-city' : null"
+              />
+
+              <ng-container
+                *ngIf="City?.touched && ((City?.invalid && registerDonorCardSubmitted) || City?.errors?.hebrewFound)"
+              >
+                <ng-container *ngIf="City?.value && City?.errors?.hebrewFound">
+                  <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+          <div class="col-md-3 col-xl-2">
+            <div
+              [class.disabled-field]="State?.disabled"
+              appHasFocus
+              [class.is-invalid-er]="State?.touched && State?.invalid && registerDonorCardSubmitted"
+            >
+              <label class="form-label"> STATE: </label>
+              <ng-select
+                bindLabel="item_id"
+                bindValue="item_id"
+                [addTag]="true"
+                [searchable]="true"
+                formControlName="state"
+                [searchFn]="customSearchFn"
+                [items]="commonDataService.stateList"
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  {{ item.item_id }}
+                </ng-template>
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="col-md-3 col-xl-2">
+            <div
+              [class.disabled-field]="Zip?.disabled"
+              appHasFocus
+              [class.is-invalid-er]="Zip?.touched && Zip?.invalid && registerDonorCardSubmitted"
+            >
+              <label class="form-label"> ZIP: </label>
+              <input
+                type="tel"
+                id="zipcode"
+                placeholder="Zip Code"
+                class="form-control"
+                formControlName="zip"
+                [validation]="zipCodeValidation"
+                [mask]="zipCodeMask"
+                [attr.autocomplete]="isAutoSuggestion ? 'new-zip' : null"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action--buttons justify-content-end mt-5 mb-5 d-flex">
+      <button type="submit" class="btn btn-primary" [disabled]="isLoading">SAVE CHANGES</button>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="isLoading" class="overlay">
+  <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+</div>
+<ng-template #profileImgField let-formGroup="formGroup">
+  <div
+    class="file-upload--row align-items-center d-flex flex-column flex-md-row justify-content-between w-100 gap-4"
+    [formGroup]="formGroup"
+  >
+    <div class="profile--upload d-flex flex-column flex-md-row align-items-center">
+      <div class="profile--pictue mb-3 mb-md-0 me-md-3">
+        <ng-container *ngIf="imageUrl">
+          <img [src]="imageUrl" alt="" class="rounded-circle" width="50" />
+        </ng-container>
+        <ng-container *ngIf="!imageUrl">
+          <img [src]="profileIcon" alt="" />
+        </ng-container>
+      </div>
+      <label for="">PROFILE:</label>
+    </div>
+
+    <div class="upload--actionst d-flex gap-2">
+      <div class="btn btn-secondary" (click)="removeImage()">Remove Image</div>
+      <div class="upload-image-profile">
+        <label for="input-file-profile">Upload image</label>
+        <input id="input-file-profile" type="file" class="btn btn-primary upload-btn" (change)="onFileChange($event)" />
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #organizationNameFieldRow let-formGroup="formGroup">
+  <div [formGroup]="formGroup">
+    <div class="form-profile row gx-3 gy-4">
+      <div class="col-md-6">
+        <label class="form-label"> ENGLISH DISPLAY NAME: </label>
+        <small>This will be the name displayed for donors when they search and donate to your organization</small>
+        <div
+          [class.disabled-field]="OrgName?.disabled"
+          appHasFocus
+          [class.is-invalid-er]="OrgName?.touched && (OrgName?.invalid || OrgName?.errors?.hebrewFound)"
+        >
+          <input
+            type="text"
+            id="businessName"
+            class="form-control"
+            placeholder="Enter Organization Name"
+            formControlName="businessName"
+            [attr.autocomplete]="isAutoSuggestion ? 'new-orgName' : null"
+          />
+
+          <ng-container *ngIf="OrgName?.touched && (OrgName?.invalid || OrgName?.errors?.hebrewFound)">
+            <ng-container *ngIf="OrgName?.value && OrgName?.errors?.hebrewFound">
+              <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label" style="font-weight: 600; font-size: 17px"> שם/נאמען: </label>
+        <small>This will be the name displayed for donors when they search and donate to your organization</small>
+        <div [class.disabled-field]="OrgYiddishName?.disabled" appHasFocus>
+          <input
+            type="text"
+            id="orgJewishName"
+            class="form-control"
+            placeholder="Enter Organization Name"
+            formControlName="orgJewishName"
+            [attr.autocomplete]="isAutoSuggestion ? 'new-orgName' : null"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #noHebrewMessage>
+  <div class="text-danger error-container">
+    <div class="val-error">Need to be English characters</div>
+  </div>
+</ng-template>

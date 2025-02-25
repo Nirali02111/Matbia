@@ -1,0 +1,11 @@
+<app-send-me-card-form-group
+  [isLoading]="isLoading"
+  [formGroup]="requestCardForm"
+  (openEditPopup)="openEditPopup()"
+  (canRequest)="onRequest()"
+>
+  <div class="send-bottom" alreadyHaveCard>
+    <p class="send-card-already">Do you have a card already?</p>
+    <a [routerLink]="getAddAdditionalCardRouterLink()" class="edit-link">ACTIVATE YOUR CARD</a>
+  </div>
+</app-send-me-card-form-group>

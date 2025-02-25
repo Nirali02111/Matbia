@@ -1,0 +1,119 @@
+<li class="item-desktop d-none d-md-flex" (click)="openScheduleDetails(null)">
+  <div class="list-to">
+    <h6>TO:</h6>
+    <p>Matbia</p>
+  </div>
+  <div class="list-from">
+    <h6>FROM:</h6>
+    <p>{{ item.description }}</p>
+  </div>
+  <div class="list-frequency">
+    <h6>FREQUENCY:</h6>
+    <p>{{ item.frequency }}</p>
+  </div>
+  <div class="list-balance">
+    <h6>AMOUNT:</h6>
+    <p>{{ item.scheduleAmount | currency }}</p>
+  </div>
+  <div class="list-deposit">
+    <h6>NEXT DEPOSIT:</h6>
+    <p>{{ item.nextScheduleDate | date : 'MM/dd/yyyy' }}</p>
+  </div>
+  <div class="list-action d-flex">
+    <button class="btn btn-icon btn-edit" (click)="onEdit($event)">
+      <span class="material-icons">edit</span>
+    </button>
+
+    <ng-container *ngIf="item.remaining !== 0">
+      <button class="btn btn-icon btn-delete" (click)="onCancelSchedule($event)">
+        <span class="material-icons">delete</span>
+      </button>
+    </ng-container>
+
+    <button class="btn-arrow fa fa-angle-right f-size" (click)="openScheduleDetails($event)"></button>
+  </div>
+</li>
+
+<li class="item-mobile d-md-none d-flex flex-nowrap align-items-center" (click)="openScheduleDetails(null)">
+  <div class="flex-fill">
+    <h6>{{ item.scheduleAmount | currency }} / {{ item.frequency }}</h6>
+    <span>{{ item.description }}&nbsp;<i class="arrow">&#8594;</i>&nbsp;Matbia</span>
+    <small>NEXT DEPOSIT: {{ item.nextScheduleDate | date : 'MM/dd/yyyy' }}</small>
+  </div>
+  <div class="w-auto" ngbDropdown (click)="$event.stopPropagation()">
+    <span id="dropdownBasic2" ngbDropdownToggle>
+      <svg xmlns="http://www.w3.org/2000/svg" width="15" height="3" viewBox="0 0 15 3">
+        <g id="Group_2427" data-name="Group 2427" transform="translate(-266 1377) rotate(-90)">
+          <circle
+            id="Ellipse_575"
+            data-name="Ellipse 575"
+            cx="1.5"
+            cy="1.5"
+            r="1.5"
+            transform="translate(1374 266)"
+            fill="currentColor"
+          />
+          <circle
+            id="Ellipse_576"
+            data-name="Ellipse 576"
+            cx="1.5"
+            cy="1.5"
+            r="1.5"
+            transform="translate(1374 272)"
+            fill="currentColor"
+          />
+          <circle
+            id="Ellipse_577"
+            data-name="Ellipse 577"
+            cx="1.5"
+            cy="1.5"
+            r="1.5"
+            transform="translate(1374 278)"
+            fill="currentColor"
+          />
+        </g>
+      </svg>
+    </span>
+
+    <div ngbDropdownMenu aria-labelledby="dropdownBasic2">
+      <button ngbDropdownItem (click)="onEdit($event)">
+        <i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14.445" height="14.442" viewBox="0 0 14.445 14.442">
+            <path
+              id="Icon_awesome-edit"
+              data-name="Icon awesome-edit"
+              d="M13.979,2.892l3.132,3.132a.339.339,0,0,1,0,.479L9.528,14.087l-3.222.358a.675.675,0,0,1-.747-.747l.358-3.222L13.5,2.892A.339.339,0,0,1,13.979,2.892ZM19.6,2.1,17.91.4a1.358,1.358,0,0,0-1.917,0L14.764,1.632a.34.34,0,0,0,0,.479L17.9,5.243a.339.339,0,0,0,.479,0L19.6,4.014a1.358,1.358,0,0,0,0-1.917Z"
+              transform="translate(-5.555 -0.007)"
+              fill="currentColor"
+            />
+          </svg>
+        </i>
+
+        Edit
+      </button>
+
+      <ng-container *ngIf="item.remaining !== 0">
+        <button ngbDropdownItem>
+          <i>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12.094"
+              height="15.55"
+              viewBox="0 0 12.094 15.55"
+              (click)="onCancelSchedule($event)"
+            >
+              <path
+                id="Icon_material-delete"
+                data-name="Icon material-delete"
+                d="M8.364,18.322a1.733,1.733,0,0,0,1.728,1.728H17a1.733,1.733,0,0,0,1.728-1.728V7.955H8.364ZM19.594,5.364H16.571L15.707,4.5H11.387l-.864.864H7.5V7.092H19.594Z"
+                transform="translate(-7.5 -4.5)"
+                fill="currentColor"
+              />
+            </svg>
+          </i>
+          Delete
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</li>

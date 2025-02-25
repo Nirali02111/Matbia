@@ -1,0 +1,302 @@
+<ng-container *ngIf="isCardAndPINLogin && tmpName !== 'activateCardPage'">
+  <app-card-login></app-card-login>
+</ng-container>
+
+<ng-container *ngIf="!isCardAndPINLogin && tmpName !== 'activateCardPage'">
+  <div class="header-section" [class.stickyheader]="isSticky">
+    <div class="navbar-white">
+      <nav class="navbar navbar-expand-lg">
+        <div class="back-arrow">
+          <a href="#">
+            <ng-template [ngTemplateOutlet]="backArrowTemp" [ngTemplateOutletContext]="{ span: 'Back' }"></ng-template>
+          </a>
+        </div>
+        <a class="navbar-brand ms-auto me-auto" href="#" [routerLink]="['/']">
+          <img src="assets/dist/img/logo.svg" alt="" />
+        </a>
+      </nav>
+    </div>
+  </div>
+  <div class="page-wrapper bg-light page-signin">
+    <div class="login--form m-auto flex-column vh-100 d-flex align-items-center">
+      <h1 class="login-heading">Login</h1>
+      <div class="card--custom m-auto w-100">
+        <ng-container *ngIf="tmpName === 'signin'">
+          <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs sign-in-tab"
+            (activeIdChange)="activeIdChange()">
+            <li [ngbNavItem]="1">
+              <button ngbNavLink>Donor</button>
+              <ng-template ngbNavContent>
+                <ng-template [ngTemplateOutlet]="allOption"></ng-template>
+              </ng-template>
+            </li>
+            <li [ngbNavItem]="2">
+              <button ngbNavLink>Organization</button>
+              <ng-template ngbNavContent>
+                <ng-template [ngTemplateOutlet]="allOption"></ng-template>
+              </ng-template>
+            </li>
+          </ul>
+
+          <ng-container *ngIf="tmpName === 'signin'">
+            <div class="loginwith-google-newl" id="donorGoogleButton" #googleSSOBtn></div>
+            <div class="seprater-or"><span>or</span></div>
+          </ng-container>
+
+          <div [ngbNavOutlet]="nav"></div>
+        </ng-container>
+        <ng-container *ngIf="tmpName !== 'signin' && tmpName !== 'activateCardPage'">
+          <div class="sign-in-tab"></div>
+          <div class="tab-content">
+            <div class="tab-pane fade show active">
+              <ng-template [ngTemplateOutlet]="allOption"></ng-template>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="tmpName == 'activateCardPage'">
+  <div class="header-section" [class.stickyheader]="isSticky">
+    <div class="navbar-white">
+      <nav class="navbar navbar-expand-lg">
+        <div class="back-arrow">
+          <a href="#">
+            <ng-template [ngTemplateOutlet]="backArrowTemp" [ngTemplateOutletContext]="{ span: 'Back' }"></ng-template>
+          </a>
+        </div>
+        <a class="navbar-brand ms-auto me-auto" href="#" [routerLink]="['/']">
+          <img src="assets/dist/img/logo.svg" alt="" />
+        </a>
+      </nav>
+    </div>
+  </div>
+  <ng-template [ngTemplateOutlet]="allOption"></ng-template>
+</ng-container>
+<ng-template #allOption>
+  <ng-container *ngIf="tmpName === 'signin'">
+    <ng-template [ngTemplateOutlet]="signinTmp"></ng-template>
+  </ng-container>
+
+  <ng-container *ngIf="tmpName === 'showForgotPassword'">
+    <ng-template [ngTemplateOutlet]="showForgotPasswordTmp"></ng-template>
+  </ng-container>
+
+  <ng-container *ngIf="tmpName === 'sendResetLink'">
+    <ng-template [ngTemplateOutlet]="sendResetLinkTmp"></ng-template>
+  </ng-container>
+
+  <ng-container *ngIf="tmpName === 'signupWithoutEmail'">
+    <ng-template [ngTemplateOutlet]="signupWithoutEmailTmp"></ng-template>
+  </ng-container>
+
+  <ng-container *ngIf="tmpName === 'activateCardPage'">
+    <ng-template [ngTemplateOutlet]="activateCardPageTmp"></ng-template>
+  </ng-container>
+
+  <div class="password-update-status" *ngIf="isSetPassword">
+    <p><img src="assets/dist/img/check-circle-green.svg" alt="Password status" />Password was successfully saved</p>
+  </div>
+</ng-template>
+
+<ng-template #signinTmp>
+  <form name="form" [formGroup]="signInFormGroup" (ngSubmit)="login()">
+    <div class="form-group">
+      <label for="matbia-signin-username" class="form-label multi-label">
+        <span>Email address</span>
+      </label>
+      <input type="text" class="form-control" id="matbia-signin-username" placeholder="name@company.com" #signInInput
+        formControlName="userName" [class.is-invalid]="isSubmitted && Username?.invalid" />
+
+      <div *ngIf="isSubmitted && Username?.invalid" class="input-group col-12">
+        <span class="error invalid-feedback" style="display: block">User name is required</span>
+      </div>
+    </div>
+    <div class="form-group mt-4 forgot-label">
+      <label for="matbia-signin-password-id" class="form-label multi-label"><span>Password</span>
+        <span class="forgot-pass" (click)="showForgotPassword()"> Forgot password? </span>
+      </label>
+
+      <input [attr.type]="passwordType" class="form-control password-field" id="matbia-signin-password-id"
+        placeholder="Password" formControlName="password" [class.is-invalid]="isSubmitted && Password?.invalid" />
+      <a class="type-toggle">
+        <ng-container *ngIf="passwordType === 'text'">
+          <i class="fa fa-eye-slash" aria-hidden="true" (click)="ShowPassword(true)" alt="show password"></i>
+        </ng-container>
+        <ng-container *ngIf="passwordType === 'password'">
+          <i class="fa fa-eye" aria-hidden="true" (click)="ShowPassword(false)" alt="hide password"></i>
+        </ng-container>
+      </a>
+    </div>
+
+    <div class="login-action">
+      <button type="submit" [disabled]="isLoading || signInFormGroup.invalid" class="btn w-100 btn-primary">
+        <span *ngIf="!isLoading">Login</span>
+      </button>
+      <div class="loader" *ngIf="isLoading">
+        <img src="assets/dist/img/rolling-loader.svg" alt="" />
+      </div>
+    </div>
+  </form>
+
+  <div class="create-account d-flex flex-column align-items-center">
+    <p>Don't have an account yet?</p>
+    <span class="signup-without-email" (click)="goToSignUpPage()"> Create account </span>
+  </div>
+</ng-template>
+
+<ng-template #showForgotPasswordTmp>
+  <div class="forgot-reset" id="forgot-reset">
+    <div class="inside-forgot">
+      <p>Enter your email and a reset link will be sent to you</p>
+      <div class="forgot-field mt-3">
+        <span class="material-icons">email</span>
+        <input type="email" placeholder="Email" [(ngModel)]="txtForgotEmail" #forgotEmail="ngModel" name="forgotEmail"
+          required #forgotEmailInput />
+        <div class="login-action reset-pass-btn">
+          <button class="btn-primary mt-3 mb-2" (click)="sendResetLink()">
+            <span *ngIf="!isLoading">Send Reset Link</span>
+          </button>
+          <div class="loader" *ngIf="isLoading">
+            <img src="assets/dist/img/rolling-loader.svg" alt="" />
+          </div>
+        </div>
+        <div class="create-account d-flex flex-column align-items-center">
+          <p>
+            Back to <a href="#" (click)="backToSignIn($event)" class="signup-without-email text-capitalize"> Sign in</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #sendResetLinkTmp>
+  <div class="forgot-reset" id="check-email">
+    <div class="inside-forgot">
+      <h3>Check Your<span> Mail</span></h3>
+      <p>We have sent a password recover instruction to your email.</p>
+      <div class="forgot-field">
+        <button class="btn-primary mt-2 mb-2" (click)="openEmail()">Open Email</button>
+        <div class="loader" *ngIf="isLoading">
+          <img src="assets/dist/img/rolling-loader.svg" alt="" />
+        </div>
+        <span>Did no receive the email? Check your spam filter, or<a href="#" (click)="tryAnotherMail($event)">
+            Try another email address</a></span>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #signupWithoutEmailTmp>
+  <div class="signup-without-email-wrap">
+    <div class="inside-complete-signup">
+      <h3>Complete <span>Sign up</span></h3>
+      <div class="field-complete-signup">
+        <form [formGroup]="signUpWithoutCardForm" (keyup.enter)="onSignUpWithoutCardFormSubmit()"
+          (ngSubmit)="onSignUpWithoutCardFormSubmit()">
+          <div class="form-group email-icon-field">
+            <label class="form-label">Enter Email address</label>
+            <span class="material-icons">email</span>
+            <input type="email" placeholder="Email address" class="form-control" formControlName="email"
+              #signUpWithEmailInput />
+          </div>
+
+          <ng-container *ngIf="EmailWithCard?.touched && EmailWithCard?.invalid">
+            <app-input-error [errors]="EmailWithCard?.errors"></app-input-error>
+          </ng-container>
+
+          <div class="form-group card-icon-field">
+            <label class="form-label">Enter Card number</label>
+            <span class="card-icon"><img src="assets/dist/img/card-image.png" width="50" /></span>
+            <app-credit-card-input formControlName="card"></app-credit-card-input>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Enter Pin number</label>
+            <ng-otp-input [config]="pinConfig" (onInputChange)="onOtpChange($event)"></ng-otp-input>
+          </div>
+          <div class="login-action signupwithcard-action">
+            <button type="submit" class="btn btn-primary mt-3 mb-2 button-loader-inside"
+              [disabled]="isLoading || signUpWithoutCardForm.invalid">
+              <app-button-loader [loading]="isLoading" label="Sign Up"></app-button-loader>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #contentModal let-modal>
+  <div class="modal-header" style="overflow: hidden"></div>
+  <div class="modal-body">
+    <div class="success-card">
+      <button type="button" class="close" aria-label="Close" (click)="modal.close()">
+        <span aria-hidden="true" style="font-size: 26px">&times;</span>
+      </button>
+
+      <div class="success-content">
+        <span class="icon">
+          <img src="assets/dist/img/success-icon.svg" alt="" />
+        </span>
+
+        <div class="text-wrap">
+          <h3>Your card was validated!</h3>
+          <div class="check-email-wrap">
+            <span>Check Your Email</span>
+            <p>
+              We've sent an email to {{ EmailWithCard?.value }}, click <br />
+              the link in the email to create your password
+            </p>
+          </div>
+        </div>
+        <button class="btn btn-primary" (click)="modal.close()">Ok</button>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #backArrowTemp let-span="span">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-left"
+    viewBox="0 0 16 16">
+    <path fill-rule="evenodd"
+      d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z" />
+  </svg>
+  <span>{{ span }}</span>
+</ng-template>
+
+<ng-template #activateCardPageTmp>
+  <section class="section-text">
+    <div class="small-container" [formGroup]="formGroup">
+      <div class="text-head text-success d-flex align-items-center gap-3">
+        <i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+            <g id="Group_3516" data-name="Group 3516" transform="translate(-749.862 -176.862)">
+              <g id="Ellipse_692" data-name="Ellipse 692" transform="translate(749.862 176.862)" fill="none"
+                stroke="#1ba74e" stroke-width="1">
+                <circle cx="15" cy="15" r="15" stroke="none" />
+                <circle cx="15" cy="15" r="14.5" fill="none" />
+              </g>
+              <path id="Path_17980" data-name="Path 17980" d="M-16939.568,5029.389l3.318,3.317,8.449-8.449"
+                transform="translate(17698.773 -4836.458)" fill="none" stroke="#1ba74e" stroke-linecap="round"
+                stroke-width="1.5" />
+            </g>
+          </svg>
+        </i>
+        Hi {{ firstName }}, Welcome to matbia
+      </div>
+      <h1>Activate you card</h1>
+
+      <div class="form-group mb-4 pb-md-3">
+        <label class="form-label" for="">ENTER YOUR CARD NUMBER:</label>
+        <input type="text" formControlName="cardNumber" class="form-control" (keydown.enter)="ValidateCard()" />
+        @if(cardNumber?.touched && cardNumber?.invalid) {
+        <app-input-error [errors]="cardNumber?.errors"></app-input-error>
+        }
+      </div>
+      <button class="btn btn-primary w-100" (click)="ValidateCard()">Validate card</button>
+    </div>
+  </section>
+</ng-template>

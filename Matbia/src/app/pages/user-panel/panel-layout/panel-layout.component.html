@@ -1,0 +1,26 @@
+<div class="page-wrapper" [class.page-banner]="!isSearchBarHide()">
+  <!-- Header -->
+  <app-header></app-header>
+
+  <div class="content-page" style="min-height: 100vh">
+    <ng-container *ngIf="(isWeb | async)?.matches; then webIn; else tabletIn"> </ng-container>
+
+    <ng-template #webIn>
+      <!-- Sidebar -->
+      <app-sidebar-menu></app-sidebar-menu>
+      <div class="content">
+        <!-- routing pages -->
+        <router-outlet></router-outlet>
+      </div>
+    </ng-template>
+    <ng-template #tabletIn>
+      <!-- Bottom bar -->
+      <!-- <app-bottom-bar></app-bottom-bar> -->
+      <app-sidebar-menu></app-sidebar-menu>
+      <div class="content">
+        <!-- routing pages -->
+        <router-outlet></router-outlet>
+      </div>
+    </ng-template>
+  </div>
+</div>

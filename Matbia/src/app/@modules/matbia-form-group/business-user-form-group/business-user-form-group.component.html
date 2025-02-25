@@ -1,0 +1,154 @@
+<div class="setup-businnes-form" (keyup.enter)="triggerRegister()" [formGroup]="formGroup">
+  <div class="inside-setup-business-form">
+    <div class="input-form input-one">
+      <div class="inside-input">
+        <div class="lbl-col">
+          <label>FI&#8204;RST NA&#8204;ME:</label>
+        </div>
+        <div class="input-col" [class.is-invalid]="FirstName?.touched && FirstName?.invalid && isSubmited">
+          <input
+            type="text"
+            placeholder="First Name"
+            formControlName="firstName"
+            autocomplete="new-firstName"
+            #firstNameElm
+          />
+        </div>
+      </div>
+    </div>
+    <div class="input-form input-one">
+      <div class="inside-input">
+        <div class="lbl-col">
+          <label>LA&#8204;ST NA&#8204;ME:</label>
+        </div>
+        <div class="input-col" [class.is-invalid]="LastName?.touched && LastName?.invalid && isSubmited">
+          <input type="text" placeholder="Last Name" formControlName="lastName" />
+        </div>
+      </div>
+    </div>
+    <div class="input-form input-one">
+      <div class="inside-input">
+        <div class="lbl-col">
+          <label>HO&#8204;ME NUM&#8204;BER:</label>
+        </div>
+        <div class="input-col" [class.is-invalid]="Phone?.touched && Phone?.invalid && isSubmited">
+          <app-phone-input [isSubmit]="false" formControlName="phone"></app-phone-input>
+        </div>
+      </div>
+      <div class="inside-input">
+        <div class="lbl-col">
+          <label>CE&#8204;LL NUM&#8204;BER:</label>
+        </div>
+        <div class="input-col" [class.is-invalid]="Cellphone?.touched && Cellphone?.invalid && isSubmited">
+          <app-phone-input [isSubmit]="false" formControlName="cellPhone"></app-phone-input>
+        </div>
+      </div>
+    </div>
+    <div class="input-form input-one">
+      <div class="inside-input">
+        <div class="lbl-col">
+          <label>EM&#8204;AIL ADD&#8204;RESS:</label>
+        </div>
+        <div class="input-col" [class.is-invalid]="Email?.touched && Email?.invalid && isSubmited">
+          <input type="email" placeholder="Email Address" formControlName="email" autocomplete="new-email" />
+        </div>
+      </div>
+    </div>
+    <div class="input-form input-one">
+      <div class="inside-input input-half">
+        <div class="inside-input">
+          <div class="lbl-col">
+            <label>DATE OF BIRTH:</label>
+          </div>
+          <div class="input-col" [class.is-invalid]="BirthDate?.touched && BirthDate?.invalid && isSubmited">
+            <input
+              type="text"
+              readonly
+              ngxDaterangepickerMd
+              formControlName="birthDate"
+              class="form-control"
+              [singleDatePicker]="true"
+              [closeOnAutoApply]="true"
+              [autoApply]="true"
+              [maxDate]="maxDate"
+              [minDate]="minDate"
+              [showDropdowns]="true"
+            />
+          </div>
+        </div>
+        <div class="inside-input">
+          <div class="lbl-col">
+            <label>SSN:</label>
+          </div>
+          <div class="input-col" [class.is-invalid]="SSN?.touched && SSN?.invalid && isSubmited">
+            <input type="tel" placeholder="XXX-XX-XXXX" mask="000-00-0000" formControlName="ssn" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="input-form input-one">
+      <div class="inside-input">
+        <div class="lbl-col">
+          <label>ADD&#8204;RESS:</label>
+        </div>
+        <div class="input-col" [class.is-invalid]="Address?.touched && Address?.invalid && isSubmited">
+          <input
+            type="text"
+            placeholder="Enter location"
+            formControlName="address"
+            appAddressAutocomplete
+            (onAddressChange)="onAddressChange($event)"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="input-form input-one">
+      <div class="inside-input">
+        <div class="lbl-col">
+          <label>ADD&#8204;RESS LINE 2:</label>
+        </div>
+        <div class="input-col">
+          <input type="text" placeholder="APT, Suite, Floor" formControlName="apt" autocomplete="new-apt" />
+        </div>
+      </div>
+    </div>
+    <div class="input-form form-two item-three">
+      <div class="inside-input">
+        <div class="lbl-col">
+          <label>CI&#8204;TY:</label>
+        </div>
+        <div class="input-col" [class.is-invalid]="City?.touched && City?.invalid && isSubmited">
+          <input type="text" placeholder="City" formControlName="city" autocomplete="new-city" />
+        </div>
+      </div>
+      <div class="inside-input row-3">
+        <div class="lbl-col">
+          <label>STA&#8204;TE:</label>
+        </div>
+        <div class="input-col" [class.is-invalid]="State?.touched && State?.invalid && isSubmited">
+          <ng-select
+            bindLabel="item_id"
+            bindValue="item_id"
+            [addTag]="true"
+            [searchable]="true"
+            [selectOnTab]="true"
+            formControlName="state"
+            [searchFn]="customSearchFn"
+            [items]="commonDataService.stateList"
+          >
+            <ng-template ng-option-tmp let-item="item">
+              {{ item.item_id }}
+            </ng-template>
+          </ng-select>
+        </div>
+        <div class="lbl-col ms-5">
+          <label>ZIP:</label>
+        </div>
+        <div class="input-col" [class.is-invalid]="Zip?.touched && Zip?.invalid && isSubmited">
+          <input type="tel" placeholder="zip" formControlName="zip" [mask]="zipCodeMask" autocomplete="new-zip" />
+        </div>
+      </div>
+    </div>
+    <div class="add-member-row"></div>
+  </div>
+</div>

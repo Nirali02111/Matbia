@@ -1,0 +1,349 @@
+<div class="signup-box small--container module-middle-align pt-5">
+  <div class="signup-box-inside">
+    <div class="section-header">
+      <h2>Sign Up</h2>
+
+      <p>
+        <ng-container *ngIf="isPersonal">
+          Please enter your info to to complete the activation of your card
+        </ng-container>
+        <ng-container *ngIf="!isPersonal">
+          Please select account type to complete the activation of your card.
+        </ng-container>
+      </p>
+    </div>
+
+    <ng-container *ngIf="isPersonal">
+      <div class="account-content--wrap m-auto pt-1">
+        <form [formGroup]="registerDonorCard" (keyup.enter)="onRegister()" (ngSubmit)="onRegister()">
+          <div
+            class="card--custom flex-wrap account-list--item mt-2 d-flex position-relative"
+            [class.animate]="IsAnimate"
+          >
+            <div class="form--details w-100">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div
+                      class="form-input"
+                      appHasFocus
+                      [class.is-invalid-er]="
+                        FirstName?.touched && (FirstName?.invalid || FirstName?.errors?.hebrewFound)
+                      "
+                    >
+                      <div class="lbl-col col-lg-lbl">
+                        <label class="lbl-text">FI&#8204;RST NA&#8204;ME:</label>
+                      </div>
+                      <div class="input-col col-lg-input">
+                        <input
+                          appAutoFocus
+                          type="text"
+                          id="data_input_field_1"
+                          class="form-control"
+                          placeholder="Enter First Name"
+                          formControlName="data_input_field_1"
+                          [attr.autocomplete]="isAutoSuggestion ? 'new-firstName' : null"
+                        />
+
+                        <ng-container
+                          *ngIf="
+                            FirstName?.touched &&
+                            ((FirstName?.invalid && registerDonorCardSubmitted) || FirstName?.errors?.hebrewFound)
+                          "
+                        >
+                          <ng-container *ngIf="FirstName?.value && FirstName?.errors?.hebrewFound">
+                            <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+                          </ng-container>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div
+                      class="form-input"
+                      appHasFocus
+                      [class.is-invalid-er]="LastName?.touched && (LastName?.invalid || LastName?.errors?.hebrewFound)"
+                    >
+                      <div class="lbl-col">
+                        <label class="lbl-text">LA&#8204;ST NA&#8204;ME:</label>
+                      </div>
+                      <div class="input-col">
+                        <input
+                          type="text"
+                          id="data_input_field_2"
+                          placeholder="Enter Last Name"
+                          class="form-control"
+                          formControlName="data_input_field_2"
+                          [attr.autocomplete]="isAutoSuggestion ? 'new-lastName' : null"
+                        />
+
+                        <ng-container
+                          *ngIf="
+                            LastName?.touched &&
+                            ((LastName?.invalid && registerDonorCardSubmitted) || LastName?.errors?.hebrewFound)
+                          "
+                        >
+                          <ng-container *ngIf="LastName?.value && LastName?.errors?.hebrewFound">
+                            <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+                          </ng-container>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-9">
+                    <div
+                      class="form-input"
+                      appHasFocus
+                      [class.is-invalid-er]="Address?.touched && (Address?.invalid || Address?.errors?.hebrewFound)"
+                    >
+                      <div class="lbl-col col-lg-lbl">
+                        <label class="lbl-text">MAILING ADD&#8204;RESS:</label>
+                      </div>
+                      <div class="input-col col-lg-input">
+                        <input
+                          type="text"
+                          id="data_input_field_3"
+                          placeholder="Enter location"
+                          class="form-control"
+                          formControlName="data_input_field_3"
+                          appAddressAutocomplete
+                          (onAddressChange)="onAddressChange($event)"
+                        />
+
+                        <ng-container
+                          *ngIf="
+                            Address?.touched &&
+                            ((Address?.invalid && registerDonorCardSubmitted) || Address?.errors?.hebrewFound)
+                          "
+                        >
+                          <ng-container *ngIf="Address?.value && Address?.errors?.hebrewFound">
+                            <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+                          </ng-container>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 col-small">
+                    <div
+                      class="form-input"
+                      appHasFocus
+                      [class.is-invalid-er]="Apt?.touched && (Apt?.invalid || Apt?.errors?.uspsError)"
+                    >
+                      <div class="lbl-col">
+                        <label class="lbl-text">APT#:</label>
+                      </div>
+                      <div class="input-col">
+                        <input
+                          type="text"
+                          id="Apt"
+                          placeholder=""
+                          class="form-control"
+                          formControlName="apt"
+                          [attr.autocomplete]="isAutoSuggestion ? 'new-apt' : null"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-input" appHasFocus [class.is-invalid-er]="City?.touched && City?.invalid">
+                      <div class="lbl-col col-lg-lbl">
+                        <label class="lbl-text">CITY:</label>
+                      </div>
+                      <div class="input-col col-lg-input">
+                        <input
+                          type="text"
+                          placeholder="Enter City"
+                          class="form-control"
+                          formControlName="city"
+                          [attr.autocomplete]="isAutoSuggestion ? 'new-city' : null"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 col-small">
+                    <div class="form-input" appHasFocus [class.is-invalid-er]="State?.touched && State?.invalid">
+                      <div class="lbl-col">
+                        <label class="lbl-text">STATE:</label>
+                      </div>
+                      <div class="input-col">
+                        <ng-select
+                          bindLabel="item_id"
+                          bindValue="item_id"
+                          [addTag]="true"
+                          [searchable]="true"
+                          formControlName="state"
+                          [searchFn]="customSearchFn"
+                          [items]="commonDataService.stateList"
+                        >
+                          <ng-template ng-option-tmp let-item="item">
+                            {{ item.item_id }}
+                          </ng-template>
+                        </ng-select>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-sm-3 col-small">
+                    <div class="form-input" appHasFocus [class.is-invalid-er]="Zip?.touched && Zip?.invalid">
+                      <div class="lbl-col">
+                        <label class="lbl-text">ZIP:</label>
+                      </div>
+                      <div class="input-col">
+                        <input
+                          type="tel"
+                          id="zipcode"
+                          placeholder="Zip Code"
+                          class="form-control"
+                          formControlName="zip"
+                          [validation]="zipCodeValidation"
+                          [mask]="zipCodeMask"
+                          [attr.autocomplete]="isAutoSuggestion ? 'new-zip' : null"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div class="form-input" appHasFocus [class.is-invalid-er]="Phone?.touched && Phone?.invalid">
+                      <div class="lbl-col col-lg-lbl">
+                        <label class="lbl-text">HOME NUMBER:</label>
+                      </div>
+                      <div class="input-col col-lg-input">
+                        <app-phone-input [isSubmit]="false" formControlName="phone"></app-phone-input>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div
+                      class="form-input"
+                      appHasFocus
+                      [class.is-invalid-er]="Cellphone?.touched && Cellphone?.invalid"
+                    >
+                      <div class="lbl-col">
+                        <label class="lbl-text">Cell PHONE:</label>
+                      </div>
+                      <div class="input-col col-lg-input">
+                        <app-phone-input [isSubmit]="false" formControlName="cellPhone"></app-phone-input>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-6">
+                    <div
+                      class="form-input"
+                      appHasFocus
+                      [class.is-invalid-er]="Email?.touched && (Email?.invalid || Email?.errors?.hebrewFound)"
+                    >
+                      <div class="lbl-col col-lg-lbl">
+                        <label class="lbl-text">EMAIL ADDRESS:</label>
+                      </div>
+                      <div class="input-col col-lg-input">
+                        <input
+                          type="email"
+                          [attr.placeholder]="isPrePaidSignup ? 'Enter Email Address' : 'Optional'"
+                          class="form-control"
+                          formControlName="email"
+                          [attr.autocomplete]="isAutoSuggestion ? 'new-email' : null"
+                        />
+
+                        <ng-container
+                          *ngIf="
+                            Email?.touched &&
+                            ((Email?.invalid && registerDonorCardSubmitted) || Email?.errors?.hebrewFound)
+                          "
+                        >
+                          <ng-container *ngIf="Email?.value && Email?.errors?.hebrewFound">
+                            <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+                          </ng-container>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                    <div class="form-input" [class.is-invalid-er]="PIN?.touched && PIN?.invalid">
+                      <div class="lbl-col col-lg-lbl create-pin">
+                        <label class="lbl-text">Create 4 Digit Pin:</label>
+                      </div>
+                      <ng-otp-input [config]="pinConfig" (onInputChange)="onOtpChange($event)"></ng-otp-input>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              ]
+            </div>
+          </div>
+
+          <div class="justify-content-end mt-4 mb-5 d-flex">
+            <div class="btn-loader-common">
+              <button type="submit" [disabled]="isLoading" class="btn btn-primary btn-loader-inside">
+                <span *ngIf="!isLoading">Continue</span>
+              </button>
+              <div *ngIf="isLoading" class="loader">
+                <img src="assets/dist/img/rolling-loader.svg" alt="" />
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="!isPersonal">
+      <div class="bussiness-box-wrap">
+        <div class="boxes-container">
+          <div class="boxes-inside">
+            <div class="bussiness-box">
+              <label><img src="assets/dist/img/personal-ac.png" alt="Personal Account" /></label>
+              <h4>Personal Account</h4>
+              <p>Create your personal account and manage your maser and more.</p>
+              <button class="btn btn-primary" (click)="isPersonal = true">CREATE PERSONAL ACCOUNT</button>
+            </div>
+          </div>
+          <div class="boxes-inside">
+            <div class="bussiness-box">
+              <label (click)="onBusinessCreate()"
+                ><img src="assets/dist/img/business-ac.png" alt="Business Account"
+              /></label>
+              <h4>Business Account</h4>
+              <p>Sign up your employees and save on taxes by paying their maser directly into their account.</p>
+              <button class="btn btn-primary" (click)="tmpBusiness(content)">CREATE BUSINESS ACCOUNT</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<!-- Tmp Modal for Business register -->
+<ng-template #content let-modal>
+  <div class="modal-header"></div>
+  <div class="modal-body">
+    <h1>Under devolvement</h1>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close()">Close</button>
+  </div>
+</ng-template>
+
+<ng-template #noHebrewMessage>
+  <div class="row text-danger error-container">
+    <div class="val-error">Hebrew characters not allowed</div>
+  </div>
+</ng-template>

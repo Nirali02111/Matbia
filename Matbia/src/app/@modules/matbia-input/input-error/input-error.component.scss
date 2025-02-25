@@ -1,0 +1,7 @@
+// .error-container .val-error:not(:first-child) {
+//   display: none;
+// }
+
+.error-container.first-err-only .val-error:not(:first-child) {
+  display: none;
+}

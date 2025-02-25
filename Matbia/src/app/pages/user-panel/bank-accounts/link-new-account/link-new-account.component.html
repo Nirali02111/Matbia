@@ -1,0 +1,197 @@
+<div class="finish-setup-content account-content--wrap small--container w-75 m-auto pt-5">
+  <div class="top-head--section">
+    <div class="d-flex justify-content-between align-items-center"></div>
+  </div>
+
+  <div class="connect-you-bank-wrap" [hidden]="isInLinking">
+    <h2>Connect Your Bank</h2>
+
+    <div class="finish-setup-content small--container m-auto setup-account-wrap">
+      <form [formGroup]="setupAccountForm">
+        <ng-container *ngIf="sectionOneVisible">
+          <div class="card--custom prefilled-info-wrap" formGroupName="nameRegisterWithBank">
+            <div class="data-row">
+              <div class="checkbox-label info-col">
+                <div class="custom-checkbox">
+                  <input
+                    type="checkbox"
+                    id="bankName"
+                    class="checkbox-custom"
+                    formControlName="confirmName"
+                    value="true"
+                  />
+
+                  <label class="tooltip-content" for="bankName"
+                    >I confirm <span class="user-name">{{ displayDonorFullName() }}</span> is the name registered on my
+                    bank account.
+                    <a data-hover="To securely link you bank account your name must match the name on your bank account"
+                      ><i class="fas fa-question-circle"></i></a
+                  ></label>
+                </div>
+              </div>
+
+              <div class="prefilled-info action-col">
+                <div
+                  class="edit-info"
+                  (click)="collapse.toggle()"
+                  [attr.aria-expanded]="!isEditNameCollapsed"
+                  aria-controls="collapseExample"
+                >
+                  <i class="fa fa-edit"></i>
+                </div>
+              </div>
+            </div>
+            <div class="user-info-row">
+              <div #collapse="ngbCollapse" [(ngbCollapse)]="isEditNameCollapsed">
+                <div class="row">
+                  <div class="col" [@shakeTrigger]="inAnimation && FirstName?.touched && FirstName?.invalid">
+                    <div class="input-box" [class.is-invalid-er]="FirstName?.touched && FirstName?.invalid">
+                      <input type="text" class="form-control" formControlName="firstName" />
+
+                      <ng-container *ngIf="FirstName?.touched && FirstName?.errors?.hebrewFound">
+                        <ng-container *ngIf="FirstName?.value && FirstName?.errors?.hebrewFound">
+                          <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                  </div>
+                  <div class="col" [@shakeTrigger]="inAnimation && LastName?.touched && LastName?.invalid">
+                    <div class="input-box" [class.is-invalid-er]="LastName?.touched && LastName?.invalid">
+                      <input type="text" class="form-control" formControlName="lastName" />
+
+                      <ng-container *ngIf="LastName?.touched && LastName?.errors?.hebrewFound">
+                        <ng-container *ngIf="LastName?.value && LastName?.errors?.hebrewFound">
+                          <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+                        </ng-container>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="confirmName?.touched && !confirmName?.valid" class="val-error test">
+            <span class="material-icons">warning</span>Need to confirm in order to connect to bank
+          </div>
+        </ng-container>
+
+        <ng-container *ngIf="sectionTwoVisible">
+          <div class="card--custom mt-4 plan-transfer" formGroupName="donateMore">
+            <div class="top-content">
+              <div class="info-col">
+                <label class="tooltip-content"
+                  >I plan to transfer more then $299.00 per month.
+                  <a
+                    data-hover="For security purpose account with higher deposit amounts need to be registered and validated using Date of Birth and Social Security Number, Tip: you can also do this step later on at any time..."
+                    ><i class="fas fa-question-circle"></i></a
+                ></label>
+              </div>
+              <div class="action-col">
+                <div class="custom-radio">
+                  <input
+                    id="toggle-yes"
+                    class="toggle toggle-left"
+                    value="1"
+                    type="radio"
+                    formControlName="needMoreTransfer"
+                  />
+                  <label for="toggle-yes" class="btn"><span>Yes</span></label>
+                  <input
+                    id="toggle-no"
+                    class="toggle toggle-right"
+                    value="0"
+                    type="radio"
+                    formControlName="needMoreTransfer"
+                  />
+                  <label for="toggle-no" class="btn"><span>No</span></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="bottom-content" [hidden]="needToMoreTransfer?.value && needToMoreTransfer?.value === '0'">
+              <div class="transfer-row">
+                <div class="date-colm">
+                  <div class="inside-colm">
+                    <label>DATE OF BIRTH:</label>
+                    <div class="date-birth">
+                      <input
+                        type="text"
+                        readonly
+                        ngxDaterangepickerMd
+                        formControlName="birthDate"
+                        class="form-control"
+                        [singleDatePicker]="true"
+                        [closeOnAutoApply]="true"
+                        [autoApply]="true"
+                        [maxDate]="maxDate"
+                        [minDate]="minDate"
+                        [showDropdowns]="true"
+                      />
+
+                      <ng-container *ngIf="BirthDate?.touched && BirthDate?.invalid">
+                        <app-input-error [errors]="BirthDate?.errors"></app-input-error>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="security-colm">
+                  <div class="inside-colm" [@shakeTrigger]="inAnimation && SSN?.touched && SSN?.invalid">
+                    <label>SOCIAL SECURITY NUMBER:</label>
+                    <div class="input-box" [class.is-invalid-er]="SSN?.touched && SSN?.invalid">
+                      <input
+                        type="tel"
+                        (focusin)="SSNhasFocus = true"
+                        (focusout)="SSNhasFocus = false"
+                        class="form-control"
+                        formControlName="ssn"
+                        mask="000-00-0000"
+                      />
+                      <ng-container *ngIf="!SSNhasFocus && SSN?.touched && SSN?.invalid">
+                        <app-input-error [errors]="SSN?.errors"></app-input-error>
+                      </ng-container>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <div class="card--custom mt-4" formGroupName="linkWith">
+          <div class="terms-note">
+            <div class="custom-checkbox">
+              <input type="checkbox" id="termsAgreed" class="checkbox-custom" formControlName="isAggree" />
+              <label for="termsAgreed">I agree to the <a (click)="openTerms($event)">terms and conditions</a> </label>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="isAggree?.touched && !isAggree?.valid" class="val-error">
+          <span class="material-icons">warning</span> Need to agree in order to connect to bank
+        </div>
+
+        <div class="btn-action" [hidden]="true">
+          <app-plaid-button
+            [userHandle]="userHandle?.value"
+            title="Connect"
+            classList="connect-btn"
+            [requestKYCFirst]="false"
+          ></app-plaid-button>
+        </div>
+
+        <app-connect-to-bank-account
+          [loading]="isLoading"
+          [isBlockPlaid]="isBlockPlaid"
+          (connectClick)="commonConnectButton($event)"
+        ></app-connect-to-bank-account>
+      </form>
+    </div>
+  </div>
+</div>
+
+<ng-template #noHebrewMessage>
+  <div class="row text-danger error-container">
+    <div class="val-error">Need to be English characters</div>
+  </div>
+</ng-template>

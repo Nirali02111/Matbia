@@ -1,0 +1,102 @@
+<div class="automatic-transfer-modal-wrap">
+  <div class="automatic-transfer-header">
+    <h4>Automatic Transfers</h4>
+    <button class="btn-close" (click)="closePopup()"></button>
+  </div>
+  <div class="automatic-transfer-body">
+    <div class="automatic-transfer-content" [formGroup]="formGroup">
+      <p>Choose frequency of automatic transfers.</p>
+      <ul>
+        <li class="transfer-col btn-threshold" [class.threshold-section-inactive]="!isThreshold">
+          <div class="radio-btn">
+            <input type="radio" id="threshold" formControlName="frequency" value="7" />
+            <label for="threshold">Threshold</label>
+            <p>
+              Your full funds will automatically be transferred when your account Funds reaches
+              {{ EnterAmount?.value || 0 | currency }}
+            </p>
+          </div>
+          <div class="transfer-type">
+            <p>AMOUNT:</p>
+            <app-amount-input formControlName="amount"></app-amount-input>
+          </div>
+        </li>
+
+        <li class="radio-btn-daily" [class.transfer-col]="isDaily">
+          <div class="radio-btn">
+            <input type="radio" id="daily" formControlName="frequency" value="1" />
+            <label for="daily">Daily</label>
+          </div>
+        </li>
+        <li [class.transfer-col]="isWeekly">
+          <div class="radio-btn">
+            <input type="radio" id="weekly" formControlName="frequency" value="2" />
+            <label for="weekly">Weekly</label>
+            <ng-container *ngIf="isWeekly">
+              <p>
+                Your full funds will automatically be transferred on every
+                <ng-container *ngIf="SelectedDay?.value">
+                  {{ displayDay() }}
+                </ng-container>
+                <ng-container *ngIf="!SelectedDay?.value"> selected day </ng-container>
+              </p>
+            </ng-container>
+          </div>
+          <ng-container *ngIf="isWeekly">
+            <div
+              class="transfer-type"
+              [class.is-invalid-er]="isSubmitted && this.isWeekly && !this.SelectedDay?.value"
+              [@shakeTrigger]="inAnimation"
+            >
+              <p>SEND ON EVERY:</p>
+              <ng-select
+                bindLabel="value"
+                bindValue="id"
+                formControlName="selectedDay"
+                [items]="daysList"
+                [selectOnTab]="true"
+                [searchable]="false"
+                [clearable]="false"
+              >
+              </ng-select>
+            </div>
+          </ng-container>
+        </li>
+        <li [class.transfer-col]="isMonthly">
+          <div class="radio-btn">
+            <input type="radio" id="monthly" formControlName="frequency" value="4" />
+            <label for="monthly">Monthly</label>
+            <ng-container *ngIf="isMonthly">
+              <p>Your full Funds will automatically be transferred on every day of month</p>
+            </ng-container>
+          </div>
+          <ng-container *ngIf="isMonthly">
+            <div
+              class="transfer-type"
+              [class.is-invalid-er]="isSubmitted && this.isMonthly && !this.ScheduleDate?.value"
+              [@shakeTrigger]="inAnimation"
+            >
+              <p>SEND ON:</p>
+              <input
+                type="text"
+                readonly
+                ngxDaterangepickerMd
+                formControlName="scheduleDate"
+                class="form-control"
+                [singleDatePicker]="true"
+                [closeOnAutoApply]="true"
+                [autoApply]="true"
+                [maxDate]="maxDate"
+                [minDate]="minDate"
+              />
+            </div>
+          </ng-container>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="automatic-transfer-footer">
+    <button class="btn btn-cancel" (click)="closePopup()">Cancel</button>
+    <button class="btn btn-primary" (click)="onSave()">SAVE</button>
+  </div>
+</div>

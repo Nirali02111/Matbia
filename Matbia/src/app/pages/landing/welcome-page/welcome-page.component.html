@@ -1,0 +1,29 @@
+<ng-container *ngIf="tmpName === 'welcomepage'">
+  <ng-template [ngTemplateOutlet]="welcomepageTmp"></ng-template>
+</ng-container>
+
+<ng-container *ngIf="tmpName === 'scenarios'">
+  <ng-template [ngTemplateOutlet]="scenariosTmp"></ng-template>
+</ng-container>
+
+<ng-template #welcomepageTmp>
+  <div [formGroup]="formGroup">
+    <h2>Welcome, Start Here.</h2>
+
+    <div class="form-group">
+      <label class="form-label">Enter your Card #, or Email address:</label>
+      <input class="form-control" type="text" formControlName="cardOrEmail" (keydown.enter)="doValidateLogin()" />
+      @if(cardOrEmail?.touched && cardOrEmail?.invalid) {
+      <app-input-error [errors]="cardOrEmail?.errors"></app-input-error>
+      }
+    </div>
+    <div class="d-flex flex-column">
+      <button class="btn btn-primary w-100" (click)="doValidateLogin()">Continue</button>
+      <button class="btn p-0 btn-default mx-auto border-0" (click)="goToSignUpPage()">Create New Account</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #scenariosTmp>
+  <app-card-email-login-scenarios></app-card-email-login-scenarios>
+</ng-template>

@@ -1,0 +1,128 @@
+<div class="d-flex flex-column h-100 w-100 h-md-auto">
+  <div class="modal-header d-flex align-items-center gap-2">
+    <a href="javascript:void(0)" (click)="closePopup()" title="Back" class="me-1">
+      <svg xmlns="http://www.w3.org/2000/svg" width="7.663" height="12.496" viewBox="0 0 7.663 12.496">
+        <path
+          id="Path_18012"
+          data-name="Path 18012"
+          d="M0,5.542,5.541,0l5.541,5.542"
+          transform="translate(1.414 11.789) rotate(-90)"
+          fill="none"
+          stroke="#454545"
+          stroke-width="2"
+        />
+      </svg>
+    </a>
+    <h4 class="modal-title text-start">Donations to {{ orgDonationHistoryObj?.organizationName }}</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="closePopup()"></button>
+  </div>
+  <div class="modal-body py-0 overflow-visible">
+    @if (isLoading) {
+    <app-matbia-skeleton-loader-component></app-matbia-skeleton-loader-component>
+    } @else {
+    <div class="w-100 border-top top-bar d-flex flex-column flex-md-row justify-content-between gap-4">
+      <div class="box-history-data flex-fill">
+        <figure>
+          <img [src]="orgDonationHistoryObj?.orgLogo" appDefaultImgOnMissing width="300" height="300" />
+        </figure>
+
+        <span>{{ orgDonationHistoryObj?.orgJewishName }}</span>
+        <h4>
+          {{ orgDonationHistoryObj?.organizationName }} @if (orgDonationHistoryObj?.organizationName === 'Toirem') { -
+          {{ campaignName }}
+          }
+        </h4>
+
+        @if (orgDonationHistoryObj) {
+        <a href="tel:{{ orgDonationHistoryObj?.phone }}" [title]="orgDonationHistoryObj?.phone">{{
+          orgDonationHistoryObj.phone
+        }}</a>
+        }
+
+        <span><strong>TAX ID:</strong>{{ orgDonationHistoryObj?.taxId }}</span>
+
+        @if (orgDonationHistoryObj?.orgEncryptedOrgId && orgDonationHistoryObj?.isDisplay) {
+        <a
+          (click)="onSendDonation($event)"
+          class="btn btn-primary d-inline-flex justify-content-center align-items-center gap-2"
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M9.67976 11.9612C9.02497 12.1982 8.3198 12.3256 7.585 12.3256C6.8502 12.3256 6.14207 12.1953 5.49024 11.9612C5.48135 11.9582 5.47542 11.9553 5.46653 11.9523C4.57767 11.6264 3.78361 11.102 3.1377 10.4294C2.07402 9.32125 1.42219 7.81907 1.42219 6.16281C1.42219 2.75845 4.18064 0 7.585 0C10.9894 0 13.7478 2.75845 13.7478 6.16281C13.7478 7.81907 13.096 9.32125 12.0323 10.4294C12.0027 10.459 11.973 10.4916 11.9434 10.5212C11.3094 11.1553 10.539 11.6501 9.68273 11.9612H9.67976ZM7.585 2.48883C7.25908 2.48883 6.99242 2.75549 6.99242 3.08141V3.49621C6.76724 3.54658 6.54206 3.62658 6.33466 3.74806C5.92282 3.99398 5.56727 4.4236 5.57023 5.04877C5.5732 5.65023 5.92578 6.02948 6.30207 6.25466C6.62799 6.45021 7.0339 6.57465 7.35686 6.66947L7.40723 6.68428C7.78055 6.79687 8.05314 6.88576 8.23684 7.00131C8.38794 7.09612 8.40868 7.16131 8.41165 7.24427C8.41461 7.39241 8.35831 7.4813 8.23684 7.55537C8.08869 7.64722 7.85462 7.70352 7.60278 7.69463C7.2739 7.68278 6.96576 7.57907 6.5628 7.44278C6.49466 7.41908 6.42355 7.39538 6.34947 7.37167C6.03837 7.26797 5.70356 7.43686 5.59986 7.745C5.49616 8.05314 5.66505 8.39091 5.97319 8.49461C6.02948 8.51239 6.0917 8.53312 6.15392 8.55683C6.39984 8.64275 6.68428 8.74053 6.98946 8.80571V9.24422C6.98946 9.57014 7.25612 9.8368 7.58204 9.8368C7.90795 9.8368 8.17462 9.57014 8.17462 9.24422V8.83534C8.41165 8.78497 8.64868 8.70201 8.86201 8.56868C9.2857 8.30498 9.60569 7.85462 9.5968 7.23538C9.58791 6.63391 9.25014 6.24577 8.86793 6.00282C8.5272 5.78949 8.10054 5.65912 7.7687 5.55838L7.74796 5.55246C7.36871 5.4369 7.09909 5.35394 6.90946 5.24135C6.75539 5.1495 6.75243 5.09617 6.75243 5.04284C6.75243 4.93321 6.79391 4.85025 6.93613 4.76729C7.09612 4.67248 7.33908 4.61618 7.57315 4.61915C7.85759 4.62211 8.17165 4.68433 8.49757 4.77322C8.8146 4.85618 9.13755 4.66952 9.22348 4.35249C9.3094 4.03546 9.11978 3.7125 8.80275 3.62658C8.61016 3.57621 8.39683 3.52584 8.17758 3.48732V3.08141C8.17758 2.75549 7.91092 2.48883 7.585 2.48883ZM1.42219 10.4294H1.89625C2.47401 11.1968 3.19992 11.8427 4.03546 12.3256H1.89625V13.2738H7.585H13.2738V12.3256H11.1345C11.9701 11.8427 12.6989 11.1968 13.2738 10.4294H13.7478C14.533 10.4294 15.17 11.0664 15.17 11.8516V13.7478C15.17 14.533 14.533 15.17 13.7478 15.17H1.42219C0.637021 15.17 0 14.533 0 13.7478V11.8516C0 11.0664 0.637021 10.4294 1.42219 10.4294Z"
+              fill="white"
+            />
+          </svg>
+          SEND A DONATION
+        </a>
+        }
+      </div>
+      <div class="box-history">
+        <span>TOTAL DONATIONS</span>
+        <h2>
+          @if (orgDonationHistoryObj?.donationsTotal) {
+          {{ orgDonationHistoryObj?.donationsTotal | currency }}
+          } @else { No recent donations }
+        </h2>
+        <ul class="d-flex flex-wrap">
+          <li>
+            <span>DONATIONS</span>
+            <h6>{{ orgDonationHistoryObj?.donationsCount }}</h6>
+          </li>
+          <li>
+            <span>LAST DONATED</span>
+            <h6>{{ orgDonationHistoryObj?.lastDonationDate | date : 'MMMM d, y' }}</h6>
+          </li>
+          <li>
+            <span>AVERAGE DONATION</span>
+            <h6>{{ orgDonationHistoryObj?.averageDonation | currency }}</h6>
+          </li>
+          <li>
+            <span>FIRST DONATED</span>
+            <h6>{{ orgDonationHistoryObj?.firstDonationDate | date : 'MMMM d, y' }}</h6>
+          </li>
+        </ul>
+      </div>
+    </div>
+    }
+  </div>
+  <div class="modal-header d-flex align-items-center gap-2 box-background">
+    <h4 class="modal-title text-start">Donations history</h4>
+    <app-date-picker-filter
+      htmlId="donationHistoryFilter"
+      [defaultSelected]="'5'"
+      (filtered)="filterChange($event)"
+      open="left"
+      [isCustomModal]="true"
+    >
+    </app-date-picker-filter>
+  </div>
+
+  <div class="modal-body box-background py-0">
+    <div class="w-100 border-top h-100 overflow-hidden">
+      <div class="table-responsive h-100 overflow-hidden">
+        <div class="table d-flex flex-column overflow-hidden h-100">
+          <div class="t-head">
+            <div class="t-row">
+              <div class="th-div">DATE</div>
+              <div class="th-div">STATUS</div>
+              <div class="th-div text-end">AMOUNT</div>
+            </div>
+          </div>
+          <div class="t-body overflow-auto">
+            @if (isLoading) {
+            <app-matbia-skeleton-loader-component></app-matbia-skeleton-loader-component>
+            } @else { @for (item of orgDonationHistoryObj?.transHistory; track $index) {
+            <div class="t-row">
+              <div class="td-div">{{ item.date | date : 'MM/dd/yyyy hh:mm a' }}</div>
+              <div class="td-div">{{ item.status }}</div>
+              <div class="td-div text-end">
+                <strong>{{ item.amount | currency }}</strong>
+              </div>
+            </div>
+            } }
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

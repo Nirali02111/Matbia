@@ -1,0 +1,25 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="staticBackdropLabel">
+      <ng-container *ngIf="isDelete"> Confirm delete </ng-container>
+      <ng-container *ngIf="!isDelete"> Confirm Edit </ng-container>
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
+  </div>
+
+  <div class="modal-body text-center">
+    <ng-container *ngIf="isDelete">
+      <p>Note: By turning the switch off the schedule will be stopped</p>
+      <h6>Do you wish to continue?</h6>
+    </ng-container>
+
+    <ng-container *ngIf="!isDelete">
+      <p>Note: Your current schedule will be deleted, and a new schedule will be created</p>
+      <h6>Do you wish to continue?</h6>
+    </ng-container>
+  </div>
+  <div class="modal-footer border-0">
+    <button class="btn btn-primary w-100" (click)="onConfirm()">Confirm</button>
+    <button class="btn btn-link w-100" (click)="closePopup()">Cancel</button>
+  </div>
+</div>

@@ -1,0 +1,13 @@
+<div class="modal_custom">
+  <div class="modal-header-custom modal__custom_header">
+    <h4>Print Receipt</h4>
+    <span class="close_trigger" (click)="closePopup()" data-dismiss="modal">&times;</span>
+  </div>
+  <div class="modal-content-custom modal__custom_content print_receipt">
+    <iframe [src]="fileUrl" width="700px" height="550px" *ngIf="fileUrl"></iframe>
+  </div>
+</div>
+
+<div *ngIf="isLoading" class="overlay">
+  <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+</div>

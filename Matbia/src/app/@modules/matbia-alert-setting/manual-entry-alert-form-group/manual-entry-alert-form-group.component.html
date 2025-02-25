@@ -1,0 +1,50 @@
+<div class="card card-alert">
+  <div class="card-body">
+    <div class="d-flex align-items-center justify-content-between w-100">
+      <h6 class="flex-fill m-0 fw-normal">Manual entry alerts</h6>
+      <div class="form-check toogle--btn d-flex justify-content-end my-0 mx-3 mx-md-4" [formGroup]="formGroup">
+        <input class="form-check-input" type="checkbox" id="manual-entry-alert-switch" formControlName="isPaused" />
+        <label class="form-check-label" for="manual-entry-alert-switch"></label>
+      </div>
+      <i
+        class="mdi mdi-arrow-d fs-4 lh-1 d-inline-flex"
+        data-bs-toggle="collapse"
+        data-bs-target="#manual-entry-alert-form-group"
+        aria-expanded="false"
+        aria-controls="manual-entry-alert-form-group"
+      ></i>
+    </div>
+
+    <div class="collapse w-100" [ngClass]="{ show: expand }" id="manual-entry-alert-form-group" [formGroup]="formGroup">
+      <!-- Date selection: Hide for now -->
+      <!-- <div class="row">
+              <div class="col-md-5">
+                <div class="start--date d-flex me-4">
+                  <label class="lbl--text">From Date:</label>
+                  <input type="text" readonly ngxDaterangepickerMd formControlName="fromDate" class="form-control"
+                    startKey="fromDate" endKey="toDate" [singleDatePicker]="true" [closeOnAutoApply]="true"
+                    [autoApply]="true" />
+                </div>
+              </div>
+              <div class="col-md-5">
+                <div class="end--date d-flex">
+                  <label class="lbl--text">To Date:</label>
+                  <input type="text" readonly ngxDaterangepickerMd formControlName="toDate" class="form-control"
+                    startKey="fromDate" endKey="toDate" [singleDatePicker]="true" [closeOnAutoApply]="true"
+                    [autoApply]="true" />
+                </div>
+              </div>
+            </div> -->
+
+      <app-select-email-and-phone
+        [isSwitchOn]="isSwitchOn"
+        [emailPhoneRequiredError]="isEmailPhoneRequiredError"
+        [formGroup]="formGroup"
+        [emailList]="emailList"
+        [phoneList]="phoneList"
+        [isManualEntry]="true"
+      >
+      </app-select-email-and-phone>
+    </div>
+  </div>
+</div>

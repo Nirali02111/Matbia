@@ -1,0 +1,224 @@
+<div class="section-fund-deposit" [formGroup]="formGroup">
+  <div class="small--container mx-auto">
+    <span class="d-flex gap-3 align-items-center link-back">
+      <a href="javascript:void(0)" (click)="$event.preventDefault(); chooseOtherOptions.emit(true)"
+        ><svg
+          id=" Component_51_4"
+          data-name="Component 51 – 4"
+          xmlns="http://www.w3.org/2000/svg"
+          width="40"
+          height="40"
+          viewBox="0 0 40 40"
+        >
+          <rect id="Rectangle_4499" data-name="Rectangle 4499" width="40" height="40" rx="10" opacity="0.08" />
+          <path
+            id="Path_445"
+            data-name="Path 445"
+            d="M2272.064,287.648l6.376,6.376,6.376-6.376"
+            transform="translate(310.275 -2258.439) rotate(90)"
+            fill="none"
+            stroke="#454545"
+            stroke-linecap="round"
+            stroke-width="1.5"
+            opacity="0.55"
+          />
+        </svg>
+      </a>
+      <h1>Deposit funds via Bank Account</h1>
+    </span>
+
+    <div class="d-flex flex-column flex-xl-row">
+      <div class="card-fund-data">
+        <div class="from-group">
+          <label>Amount</label>
+          <app-amount-input formControlName="amount" [separatorLimit]="AmountDigit"></app-amount-input>
+          <button class="btn btn-calculator btn-outline-light" (click)="openMaaserCalculator()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="12.858" height="12.851" viewBox="0 0 12.858 12.851">
+              <g id="graph-pie" transform="translate(-24.674 -24.71)">
+                <g
+                  id="Path_37387"
+                  data-name="Path 37387"
+                  transform="translate(-69.907 0)"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M101.736,24.71a.23.23,0,0,0-.229.229.219.219,0,0,0,.007.033h-.007v5.441a.23.23,0,0,0,.229.229h5.44v-.007a.218.218,0,0,0,.034.007.23.23,0,0,0,.229-.229A5.764,5.764,0,0,0,101.736,24.71Z"
+                    stroke="none"
+                  />
+                  <path
+                    d="M 102.3065719604492 25.54975509643555 L 102.3065719604492 29.8433952331543 L 106.5998992919922 29.8433952331543 C 106.462532043457 28.75631141662598 105.9715728759766 27.75017356872559 105.1855850219727 26.96416473388672 C 104.3996505737305 26.17821311950684 103.3935775756836 25.68722534179688 102.3065719604492 25.54975509643555 M 101.7358779907227 24.71039581298828 C 104.871696472168 24.74310493469238 107.4066772460938 27.27807426452637 107.4392013549805 30.41391563415527 C 107.4392013549805 30.54059600830078 107.3364181518555 30.64339447021484 107.2099075317383 30.64339447021484 C 107.1979751586914 30.64339447021484 107.1877517700195 30.63836479187012 107.1763381958008 30.63664436340332 L 107.1763381958008 30.64339447021484 L 101.7358779907227 30.64339447021484 C 101.6093521118164 30.64339447021484 101.5065765380859 30.54059600830078 101.5065765380859 30.41391563415527 L 101.5065765380859 24.97327423095703 L 101.513313293457 24.97327423095703 C 101.5115814208984 24.96185493469238 101.5065765380859 24.95164489746094 101.5065765380859 24.93987464904785 C 101.5065765380859 24.81319427490234 101.6093521118164 24.71039581298828 101.7358779907227 24.71039581298828 Z"
+                    stroke="none"
+                    fill="#5d62e0"
+                  />
+                </g>
+                <g
+                  id="Path_37388"
+                  data-name="Path 37388"
+                  transform="translate(0 -13.322)"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path
+                    d="M36.206,45.057a.229.229,0,0,0-.229-.229h-5a.229.229,0,0,1-.229-.229V39.615h-.007a.22.22,0,0,0,.007-.033.229.229,0,0,0-.229-.229c-.006,0-.01,0-.015,0v0l-.061,0a5.766,5.766,0,1,0,5.766,5.766c0-.018,0-.037,0-.055C36.2,45.061,36.206,45.059,36.206,45.057Z"
+                    stroke="none"
+                  />
+                  <path
+                    d="M 29.94570350646973 40.17668914794922 C 27.4384880065918 40.42533493041992 25.47392272949219 42.54658889770508 25.47392272949219 45.11812591552734 C 25.47392272949219 47.85628509521484 27.70157241821289 50.08393478393555 30.43973350524902 50.08393478393555 C 33.00642395019531 50.08393478393555 35.12453460693359 48.12659072875977 35.3797607421875 45.62755584716797 L 30.97443389892578 45.62755584716797 C 30.40719413757324 45.62715530395508 29.94570350646973 45.16533660888672 29.94570350646973 44.59808731079102 L 29.94570350646973 40.17668914794922 M 30.43973350524902 39.3523063659668 C 30.46015357971191 39.3523063659668 30.48040390014648 39.35369491577148 30.50082397460938 39.35386657714844 L 30.50082397460938 39.35542678833008 C 30.50618362426758 39.35508728027344 30.51068305969238 39.35231781005859 30.5162239074707 39.35231781005859 C 30.64290428161621 39.35231781005859 30.74570274353027 39.45493698120117 30.74570274353027 39.581787109375 C 30.74570274353027 39.59355545043945 30.74068260192871 39.60376739501953 30.73895263671875 39.61518478393555 L 30.74570274353027 39.61518478393555 L 30.74570274353027 44.59808731079102 C 30.74570274353027 44.72475433349609 30.84833335876465 44.82746505737305 30.97500419616699 44.82755661010742 L 35.97624206542969 44.82755661010742 C 36.10292434692383 44.82755661010742 36.20554351806641 44.93035507202148 36.20554351806641 45.05703735351562 C 36.20554351806641 45.05911636352539 36.2043342590332 45.06084442138672 36.2043342590332 45.06309509277344 C 36.20468139648438 45.08160781860352 36.20554351806641 45.09978485107422 36.20554351806641 45.11812591552734 C 36.20554351806641 48.30241775512695 33.6240234375 50.88393402099609 30.43973350524902 50.88393402099609 C 27.25544357299805 50.88393402099609 24.67392349243164 48.30241775512695 24.67392349243164 45.11812591552734 C 24.67392349243164 41.93383407592773 27.25544357299805 39.3523063659668 30.43973350524902 39.3523063659668 Z"
+                    stroke="none"
+                    fill="#5d62e0"
+                  />
+                </g>
+              </g>
+            </svg>
+            מעשר Calculator
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <div class="card-bank d-flex flex-row align-items-sm-center">
+              <span>FROM:</span>
+              <div class="d-flex flex-column flex-fill">
+                <div class="filter by-transaction w-100 mw-100">
+                  <ng-select
+                    class="w-100"
+                    bindLabel="accountNickName"
+                    bindValue="bankAccountId"
+                    formControlName="bankAccountId"
+                    [items]="linkedAccountList"
+                    [loading]="isAccountListLoading"
+                    [selectOnTab]="true"
+                    [searchable]="false"
+                    [clearable]="linkedAccountList && linkedAccountList.length > 1"
+                  >
+                    <!-- for list of option -->
+                    <ng-template ng-option-tmp let-item="item">
+                      {{ item.accountNickName }}
+                      <ng-container *ngIf="item.isDefault">
+                        <i class="ng-option-primary"> Primary </i>
+                      </ng-container>
+                    </ng-template>
+
+                    <!-- for selected -->
+                    <ng-template ng-label-tmp let-item="item">
+                      <div class="flex-fill d-flex flex-column">
+                        <h6>{{ item.bankName }}</h6>
+                        <small>{{ item.accountNickName }}</small>
+                      </div>
+                    </ng-template>
+                    <ng-container *ngIf="!inFlow">
+                      <ng-container
+                        *ngIf="isShulKiosk && isBlockBankManagement; else addNewBankAccountLinkOptionTmp"
+                      ></ng-container>
+
+                      <ng-template #addNewBankAccountLinkOptionTmp>
+                        <ng-template ng-footer-tmp>
+                          <div class="create-new" [routerLink]="getBankAccountsRouterLink()">
+                            <b>Link new bank account</b>
+                          </div>
+                        </ng-template>
+                      </ng-template>
+                    </ng-container>
+                  </ng-select>
+                </div>
+                <ng-container *ngIf="BankAccountId?.touched && BankAccountId?.invalid">
+                  <div class="ps-2">
+                    <app-input-error [errors]="BankAccountId?.errors"></app-input-error>
+                  </div>
+                </ng-container>
+              </div>
+            </div>
+            <div class="card-bank d-flex flex-row align-items-sm-center">
+              <span>TO:</span>
+              <div class="d-flex align-items-center">
+                <figure>
+                  <img src="../../../../../assets/dist/img/image-matbia.png" alt="Bank" width="" height="" />
+                </figure>
+                <div class="flex-fill d-flex flex-column">
+                  <h6>{{ displayDonorName() }}</h6>
+                  <small>${{ availableBalance }}</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <label for="date" class="form-label">SEND ON:</label>
+                <div class="send-on_div" (click)="openDatepicker()">
+                  <input
+                    type="text"
+                    readonly
+                    ngxDaterangepickerMd
+                    formControlName="transDate"
+                    class="form-control form-control-date"
+                    [singleDatePicker]="true"
+                    [closeOnAutoApply]="true"
+                    [autoApply]="true"
+                    [isInvalidDate]="isInvalidDate"
+                  />
+                </div>
+                <button class="btn btn-outline-light" (click)="goToAutoDepositsPage()">
+                  SET UP AUTOMATIC DEPOSITS
+                </button>
+              </div>
+              <div class="col-md-12">
+                <label for="note" class="form-label">NOTE:</label>
+                <textarea class="form-control" id="note" placeholder="Write a note" formControlName="note"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-bottom-bar d-flex align-items-center justify-content-end">
+          <button class="btn btn-link">Cancel</button>
+          <button class="btn btn-primary" (click)="autoDepositsContinueClicked.emit(true)">CONTINUE</button>
+        </div>
+      </div>
+      <div class="flex-fill">
+        <app-add-funds-other-method-option-links type="BANK">
+          <ng-template #timeTemp> Same Day Funding </ng-template>
+
+          <ng-template #minimumTemplate> Minimum deposit $20 </ng-template>
+
+          <ng-template #chargesTemplate> No Fees </ng-template>
+
+          <ng-template #autoDepositTemplate> Eligible For Auto-Deposits </ng-template>
+        </app-add-funds-other-method-option-links>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #relinkContentModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Important message</h5>
+  </div>
+  <div class="modal-body">
+    <div class="relink-card">
+      <div class="relink-content">
+        <div class="text-wrap">
+          <p>
+            Due to a security update from the banking system the link to your bank account has expired.
+            <b>please relink your bank account to add funds</b>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <a
+      class="btn btn-primary"
+      [routerLink]="getLinkNewAccountRouterLink()"
+      (click)="onRelinkClick(modal)"
+      [queryParams]="{ addFunds: true, reLinkBankId: BankAccountId?.value }"
+      >Relink your account</a
+    >
+  </div>
+</ng-template>

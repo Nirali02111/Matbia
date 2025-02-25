@@ -1,0 +1,24 @@
+<div class="donate-content--wrap small--container w-75 m-auto pt-5 donation-request-wrap">
+  <div class="start-funding-wrap">
+    <div class="top-head--section">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="title--bar">
+          <i class="mdi mdi-arrow-back align-middle me-2" [routerLink]="getRequestsRouterLink()"></i>
+          <h2>Donation Request</h2>
+        </div>
+      </div>
+    </div>
+    <div class="send-money--panel mt-4">
+      <app-add-funds-from-bank
+        [formGroup]="matbiaAddFundForm"
+        [orgId]="orgId"
+        [collector]="requestData?.collector || ''"
+      >
+      </app-add-funds-from-bank>
+
+      <div class="action--buttons d-flex justify-content-end align-items-center right-actions mt-4 mb-4">
+        <button class="btn btn-primary" (click)="onDonateFunds()">Send Money</button>
+      </div>
+    </div>
+  </div>
+</div>

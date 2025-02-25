@@ -1,0 +1,220 @@
+<div class="modal-header">
+  <h5 class="modal-title">Card corner {{ cornerId }} settings</h5>
+  <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close" (click)="closePopup()"></button>
+</div>
+
+<div class="modal-body">
+  <label class="form-label">SELECT A SETTING:</label>
+  <ul class="d-flex flex-wrap" [formGroup]="formGroup">
+    <li>
+      <input type="radio" id="setting-1" value="1" formControlName="amountType" />
+      <label for="setting-1">
+        <i class="icon icon-preset-amount"></i>
+        <span>Preset Amount</span>
+      </label>
+    </li>
+    <li>
+      <input type="radio" id="setting-2" value="4" formControlName="amountType" />
+      <label for="setting-2">
+        <i class="icon icon-user-cap"></i>
+        <span>User Cap</span>
+      </label>
+    </li>
+    <li>
+      <input type="radio" id="setting-3" value="3" formControlName="amountType" />
+      <label for="setting-3">
+        <i class="icon icon-digital-envelope"></i>
+        <span>Digital Envelope</span>
+      </label>
+    </li>
+    <li>
+      <input type="radio" id="setting-4" value="5" formControlName="amountType" />
+      <label for="setting-4">
+        <i class="icon icon-mystery-donation"></i>
+        <span>Mystery Donation</span>
+      </label>
+    </li>
+    <li>
+      <input type="radio" id="setting-5" value="2" formControlName="amountType" />
+      <label for="setting-5">
+        <i class="icon icon-manual-entry"></i>
+        <span>Manual Entry</span>
+      </label>
+    </li>
+  </ul>
+
+  @if (this.formGroup?.get('amountType')?.value) { @if (this.formGroup?.get('amountType')?.value === '1') {
+  <div class="setting-box text-center" [formGroup]="formGroup">
+    <span>Fast and easy</span>
+    <p class="text-center">Set a dollar amount you’ll give each time this corner is tapped.</p>
+    <label>ENTER PRE-SET AMOUNT:</label>
+    <input
+      type="text"
+      formControlName="value"
+      class="form-control"
+      [@shakeTrigger]="needToAnimate(formGroup?.get('value'))"
+      (focusout)="onPresetAmtAdd($event)"
+    />
+  </div>
+
+  } @if (this.formGroup?.get('amountType')?.value === '2') {
+
+  <div class="setting-box text-center">
+    <span>Most flexible</span>
+    <p class="text-center">
+      Tap this corner to donate however much you wish - just like you would do with a credit card.
+    </p>
+  </div>
+  } @if (this.formGroup?.get('amountType')?.value === '3') {
+
+  <div class="setting-box text-center">
+    <span>I’ll think about it</span>
+    <p class="text-center">Tapping this corner will send a donation request to your portal.</p>
+  </div>
+
+  } @if (this.formGroup?.get('amountType')?.value === '4') {
+
+  <ng-template
+    [ngTemplateOutlet]="capPerUser"
+    [ngTemplateOutletContext]="{ form: formGroup?.get('capPerUser') }"
+  ></ng-template>
+  } @if (this.formGroup?.get('amountType')?.value === '5') {
+
+  <ng-template
+    [ngTemplateOutlet]="chargeRandomAmount"
+    [ngTemplateOutletContext]="{ form: formGroup?.get('chargeRandomAmount') }"
+  ></ng-template>
+
+  } }
+</div>
+<div class="modal-footer d-flex justify-content-end align-items-center flex-row gap-5">
+  <button type="button" data-bs-dismiss="modal" class="btn btn-secondary m-0" (click)="closePopup()">Cancel</button>
+  <button type="button" class="btn btn-primary w-auto" (click)="onSubmit()">SAVE SETTINGS</button>
+</div>
+
+<ng-template #chargeRandomAmount let-form="form">
+  <div class="setting-box text-center" [formGroup]="form">
+    <span>B’yedei Shamayim</span>
+    <p class="text-center">
+      When you tap this corner, a random donation amount will be generated. Set the minimum and maximum amount.
+    </p>
+    <div class="d-flex justify-content-center">
+      <div>
+        <label>MINIMUM:</label>
+        <input
+          type="tel"
+          appAmountKeypad
+          class="form-control"
+          mask="separator.2"
+          thousandSeparator=","
+          separatorLimit="1000"
+          placeholder="0.00"
+          formControlName="minValue"
+          [@shakeTrigger]="needToAnimate(form?.get('maxValue'))"
+          (focusout)="onChangeRandomMaxAmtAdd($event, 'minValue')"
+        />
+      </div>
+      <div>
+        <hr />
+      </div>
+      <div>
+        <label>MAXIMUM:</label>
+        <input
+          type="tel"
+          appAmountKeypad
+          class="form-control"
+          mask="separator.2"
+          thousandSeparator=","
+          separatorLimit="1000"
+          placeholder="0.00"
+          formControlName="maxValue"
+          [@shakeTrigger]="needToAnimate(form?.get('maxValue'))"
+          [@shakeTrigger]="needToCheckMax(form)"
+          (focusout)="onChangeRandomMaxAmtAdd($event, 'maxValue')"
+        />
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #capPerUser let-form="form">
+  <div class="setting-box text-center" [formGroup]="form">
+    <span>For the Regulars</span>
+    <p class="text-center">Use this corner for your repeat collectors, so you can keep giving, with a limit.</p>
+    <div class="d-flex flex-wrap flex-lg-nowrap justify-content-center px-sm-5 px-md-0">
+      <div class="me-2 pe-1 mt-3 mt-sm-0">
+        <label>ATTEMPT 1:</label>
+        <input
+          class="form-control form-control-small"
+          type="tel"
+          appAmountKeypad
+          mask="separator.2"
+          thousandSeparator=","
+          separatorLimit="1000"
+          placeholder="0.00"
+          formControlName="attempt1"
+          [@shakeTrigger]="needToAnimate(form?.get('attempt1'))"
+          (focusout)="onChangeSetupCapPerUserAtpAmtAdd($event, 'attempt1')"
+        />
+      </div>
+      <div class="me-2 pe-1 mt-3 mt-sm-0">
+        <label>ATTEMPT 2:</label>
+        <input
+          class="form-control form-control-small"
+          type="tel"
+          appAmountKeypad
+          mask="separator.2"
+          thousandSeparator=","
+          separatorLimit="1000"
+          placeholder="0.00"
+          formControlName="attempt2"
+          [@shakeTrigger]="needToAnimate(form?.get('attempt2'))"
+          (focusout)="onChangeSetupCapPerUserAtpAmtAdd($event, 'attempt2')"
+        />
+      </div>
+      <div class="me-2 pe-1 mt-3 mt-sm-0">
+        <label>ATTEMPT 3:</label>
+        <input
+          class="form-control form-control-small"
+          type="tel"
+          appAmountKeypad
+          mask="separator.2"
+          thousandSeparator=","
+          separatorLimit="1000"
+          placeholder="0.00"
+          formControlName="attempt3"
+          [@shakeTrigger]="needToAnimate(form?.get('attempt3'))"
+          (focusout)="onChangeSetupCapPerUserAtpAmtAdd($event, 'attempt3')"
+        />
+      </div>
+      <div class="border-end pe-2 mt-3 mt-lg-0">
+        <label>ATTEMPT 4:</label>
+        <input
+          class="form-control form-control-small"
+          type="tel"
+          appAmountKeypad
+          mask="separator.2"
+          thousandSeparator=","
+          separatorLimit="1000"
+          placeholder="0.00"
+          formControlName="attempt4"
+          [@shakeTrigger]="needToAnimate(form?.get('attempt4'))"
+          (focusout)="onChangeSetupCapPerUserAtpAmtAdd($event, 'attempt4')"
+        />
+      </div>
+      <div class="ps-2 mt-3 mt-lg-0">
+        <label>RESET EVERY:</label>
+        <div class="position-relative">
+          <div class="position-absolute top-0 end-0 placeholder">Days</div>
+          <input
+            class="form-control form-control-small"
+            type="tel"
+            appAmountKeypad
+            formControlName="days"
+            [@shakeTrigger]="needToAnimate(form?.get('days'))"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

@@ -1,0 +1,37 @@
+<form [formGroup]="formGroup" (keyup.enter)="onSubmit()" (ngSubmit)="onSubmit()">
+  <div class="form-group email-icon-field">
+    <label class="form-label">Enter Email address</label>
+    <span class="material-icons">email</span>
+    <input
+      appAutoFocus
+      type="email"
+      placeholder="Email address"
+      class="form-control"
+      formControlName="email"
+      autocomplete="new-email"
+    />
+  </div>
+
+  <ng-container *ngIf="EmailWithCard?.touched && EmailWithCard?.invalid">
+    <app-input-error [errors]="EmailWithCard?.errors"></app-input-error>
+  </ng-container>
+
+  <div class="form-group card-icon-field">
+    <label class="form-label">Enter Card number</label>
+    <span class="card-icon"><img src="assets/dist/img/card-image.png" width="50" /></span>
+    <app-credit-card-input formControlName="card"></app-credit-card-input>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Enter Pin number</label>
+    <ng-otp-input [config]="pinConfig" (onInputChange)="onOtpChange($event)"></ng-otp-input>
+  </div>
+  <div class="login-action signupwithcard-action">
+    <button
+      type="submit"
+      class="btn btn-primary mt-3 mb-2 button-loader-inside"
+      [disabled]="isLoading || formGroup.invalid"
+    >
+      <app-button-loader [loading]="isLoading" label="Sign Up"></app-button-loader>
+    </button>
+  </div>
+</form>

@@ -1,0 +1,171 @@
+<div class="modal-header">
+  <h5 class="modal-title">
+    Maaser Calculator
+    <span placement="bottom" [ngbTooltip]="tipContent">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14">
+        <g id="Icon_ionic-ios-help-circle-outline" data-name="Icon ionic-ios-help-circle-outline" opacity="1">
+          <path
+            id="Path_1824"
+            data-name="Path 1824"
+            d="M10.375,4.317A6.055,6.055,0,1,1,6.091,6.091a6.018,6.018,0,0,1,4.284-1.774m0-.942a7,7,0,1,0,7,7,7,7,0,0,0-7-7Z"
+            transform="translate(-3.375 -3.375)"
+            fill="currentColor"
+          />
+          <path
+            id="Path_1825"
+            data-name="Path 1825"
+            d="M15.519,11.25c1.17,0,1.975.649,1.975,1.582a1.526,1.526,0,0,1-.877,1.385c-.543.315-.727.546-.727.945v.247H14.807l-.009-.268a1.3,1.3,0,0,1,.736-1.373c.527-.315.749-.515.749-.9a.757.757,0,0,0-.839-.671.789.789,0,0,0-.836.768H13.5A1.781,1.781,0,0,1,15.519,11.25ZM14.7,16.6a.67.67,0,1,1,.668.643A.654.654,0,0,1,14.7,16.6Z"
+            transform="translate(-8.497 -7.246)"
+            fill="currentColor"
+          />
+        </g>
+      </svg>
+    </span>
+  </h5>
+
+  <span class="modal-close" role="button" (click)="closeModal()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="13.423" height="13.426" viewBox="0 0 13.423 13.426">
+      <path
+        id="Icon_ionic-ios-close"
+        data-name="Icon ionic-ios-close"
+        d="M8.3,6.711l4.8-4.8A1.124,1.124,0,0,0,11.51.327l-4.8,4.8L1.92.327A1.124,1.124,0,1,0,.33,1.916l4.8,4.8-4.8,4.8A1.124,1.124,0,0,0,1.92,13.1l4.8-4.8,4.8,4.8A1.124,1.124,0,0,0,13.1,11.507Z"
+        transform="translate(0 13.426) rotate(-90)"
+        opacity="0.303"
+      />
+    </svg>
+  </span>
+</div>
+<div class="modal-body" [formGroup]="charityCalculatorForm">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="form-group">
+        <label for="earning-amount" class="form-label">Your Earning Amount:</label>
+        <app-amount-input formControlName="earningAmount"></app-amount-input>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <label class="form-label">PERCENTAGE:</label>
+      <div class="row form-radio">
+        <div class="col-md-4">
+          <input
+            type="radio"
+            (click)="customPercentage.value = ''"
+            #radioMaaser
+            id="maaserPercentage"
+            name="percentage"
+            formControlName="percentage"
+            value="10"
+          />
+          <label class="form-control" for="maaserPercentage"
+            >Maaser (10%)
+            <p class="heb-percentage">מעשר</p></label
+          >
+        </div>
+        <div class="col-md-4">
+          <input
+            type="radio"
+            (click)="customPercentage.value = ''"
+            #radioChomesh
+            id="chomeshPercentage"
+            name="percentage"
+            formControlName="percentage"
+            value="20"
+          />
+          <label class="form-control" for="chomeshPercentage"
+            >Chomesh (20%)
+            <p class="heb-percentage">חומש</p></label
+          >
+        </div>
+        <div class="col-md-4">
+          <div class="position-relative w-100" (click)="resetPercentage(radioMaaser, radioChomesh)">
+            <input
+              style="height: 84px; font-size: 20px"
+              class="form-control"
+              type="text"
+              max="100"
+              placeholder="Custom"
+              #customPercentage
+              (keypress)="checkRange($event)"
+              name="percentage"
+              formControlName="percentage"
+            />
+            <span>%</span>
+          </div>
+          @if(charityPercentage?.touched){ @if(charityPercentage?.errors?.required) {
+          <div class="val-error">field is required</div>
+          } @if(charityPercentage?.errors?.min) {
+          <div class="val-error">field is not valid</div>
+          } }
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="total-count d-flex justify-content-between align-items-center">
+        <label class="form-label m-0">TOTAL:</label>
+        <h5>{{ charityAmount | currency }}</h5>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="payer-name">Payer Name:</label>
+        <small>Record the source of this earning.</small>
+        <input
+          class="form-control"
+          type="text"
+          id="payer-name"
+          formControlName="payerName"
+          placeholder="Enter payer name"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group">
+        <label class="form-label" for="pay-period">Pay Period:</label>
+        <small>Record the pay period for this earning.</small>
+
+        <div class="position-relative">
+          <input
+            class="form-control"
+            type="text"
+            id="pay-period"
+            formControlName="payPeriod"
+            [value]="picker"
+            (click)="picker.open()"
+            placeholder="Pay period date"
+          />
+
+          <div class="position-absolute top-0 start-0 w-100 h-100 opacity-0 hidden">
+            <mat-form-field appearance="outline">
+              <mat-date-range-input [rangePicker]="picker" style="display: none">
+                <input matStartDate placeholder="Start date" style="display: none" #dateRangeStart />
+                <input
+                  matEndDate
+                  placeholder="End date"
+                  style="display: none"
+                  #dateRangeEnd
+                  (dateChange)="dateRangeChange(dateRangeStart, dateRangeEnd)"
+                />
+              </mat-date-range-input>
+
+              <mat-date-range-picker class="maaser-picker" #picker></mat-date-range-picker>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Footer Buttons -->
+  <div class="modal-footer border-0 pb-0 px-0">
+    <button class="btn btn-default" (click)="closeModal()">Cancel</button>
+    <button class="btn btn-primary" (click)="submitForm()">APPLY {{ charityAmount | currency }}</button>
+  </div>
+</div>
+
+<ng-template #tipContent
+  >Calculate your Maasros easily. Enter your earning amount and select your percentage. We will automatically calculate
+  your Masser and apply to the deposit.<br /><br />
+  You can also save some data notes to the deposit for your record.</ng-template
+>

@@ -1,0 +1,26 @@
+<div class="modal-header justify-content-end pb-0">
+  <button type="button" class="close" aria-label="Close" (click)="closePopup()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="text-wrap text-center">
+    <img src="assets/dist/img/check-circle-green.svg" alt="Check" width="60" height="60" class="mb-4" />
+    <h5 class="modal-title mb-3">
+      <ng-container *ngIf="merchantObj && merchantObj.name"> {{ merchantObj.name }} is now connected </ng-container>
+      <ng-container *ngIf="!merchantObj"> Integrated Successfully </ng-container>
+    </h5>
+    <p>
+      <ng-container *ngIf="merchantObj && merchantObj.name">
+        All future Matbia cards processed with {{ merchantObj.name }} will be transferred into your Matbia account.
+      </ng-container>
+      <ng-container *ngIf="!merchantObj">
+        All future Matbia cards processed will be transferred into your Matbia account.
+      </ng-container>
+    </p>
+  </div>
+</div>
+
+<div class="modal-footer">
+  <button class="btn btn-secondary text-center" (click)="closePopup()">DONE</button>
+</div>

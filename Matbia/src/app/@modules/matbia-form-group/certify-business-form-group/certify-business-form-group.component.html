@@ -1,0 +1,45 @@
+<div class="setup-businnes-form tab-permission">
+  <div class="inside-setup-business-form">
+    <div *ngFor="let item of availableBeneficialOwner; let i = index">
+      <div class="input-form input-one">
+        <div class="inside-input">
+          <div class="lbl-col"></div>
+          <div class="input-col">
+            <label>{{ item.member }}:</label>
+          </div>
+        </div>
+        <div class="inside-input">
+          <div class="input-col owner-field">
+            <button class="btn btn-primary" (click)="onCertifyBeneficialOwner(item)" [disabled]="isLoading">
+              <app-button-loader
+                [loading]="isLoading && certificationOn?.memberHandle === item.memberHandle"
+                label="Certify"
+              ></app-button-loader>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ng-container *ngIf="isBusinessCertify">
+      <div class="input-form input-one">
+        <div class="inside-input">
+          <div class="lbl-col"></div>
+          <div class="input-col">
+            <label>Certify Business:</label>
+          </div>
+        </div>
+        <div class="inside-input">
+          <div class="input-col owner-field">
+            <button class="btn btn-primary" (click)="onCertifyBusiness()" [disabled]="isBusinessCertificationLoading">
+              <app-button-loader
+                [loading]="isBusinessCertificationLoading"
+                label="Certify Business"
+              ></app-button-loader>
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>

@@ -1,0 +1,47 @@
+<div class="middle-content">
+  <div class="container mt-5">
+    <h3>Site map</h3>
+
+    <ul>
+      <li>
+        <a [routerLink]="['/']" href="#">Home</a>
+      </li>
+
+      <li>
+        <a [routerLink]="['/donor-guide']" href="#">Donor Guide</a>
+      </li>
+
+      <li *ngIf="!isLoggedIn()">
+        <a [routerLink]="['/signup']" href="#">Open a Donor Account</a>
+      </li>
+
+      <li *ngIf="!isLoggedIn()">
+        <a [routerLink]="['/signup']" href="#">Register Business</a>
+      </li>
+
+      <li>
+        <a [routerLink]="['/non-profits']" href="#">Non Profits</a>
+      </li>
+
+      <li>
+        <a [routerLink]="['/contact']" href="#">Contact</a>
+      </li>
+
+      <li *ngIf="!isLoggedIn()">
+        <a [routerLink]="['/auth/login']" href="#">Login</a>
+      </li>
+
+      <li>
+        <a href="#" [routerLink]="['/about-us']">About Us</a>
+      </li>
+
+      <li>
+        <a [routerLink]="['/legal']" href="#">Legal</a>
+      </li>
+
+      <li>
+        <a [routerLink]="['/privacy-and-policy']" href="#">Privacy Policy</a>
+      </li>
+    </ul>
+  </div>
+</div>

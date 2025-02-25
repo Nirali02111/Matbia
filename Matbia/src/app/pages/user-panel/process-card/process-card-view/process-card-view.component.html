@@ -1,0 +1,54 @@
+<div class="small--container w-75 m-auto pt-5 process-page">
+  <!-- Title section -->
+  <div class="top-head--section">
+    <div class="d-flex justify-content-center align-items-center">
+      <div class="title--bar">Process Card</div>
+    </div>
+  </div>
+
+  <div [formGroup]="processCardFormGroup">
+    <div class="process-card-main mt-4 mb-4">
+      <div class="process-card-inside">
+        <div class="process-card-amount">
+          <label>ENTER AMOUNT:</label>
+          <app-amount-input formControlName="amount" (keydown.enter)="onProcessCard()"></app-amount-input>
+        </div>
+        <div class="process-card-num-exp">
+          <div class="process-card-column">
+            <div class="process-cardnumber">
+              <label>CARD NUMBER:</label>
+              <app-credit-card-input
+                formControlName="cardNum"
+                (keydown.enter)="onProcessCard()"
+                (cardComplete)="focusExpInput()"
+              ></app-credit-card-input>
+            </div>
+            <div class="process-cardexp">
+              <label>EXP. DATE:</label>
+              <app-card-expiry-input
+                #expInput
+                formControlName="exp"
+                (keydown.enter)="onProcessCard()"
+              ></app-card-expiry-input>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recurring -->
+    <app-recurring-form-group
+      [formGroup]="processCardFormGroup"
+      [noteMessage]="false"
+      (keydown.enter)="onProcessCard()"
+    ></app-recurring-form-group>
+  </div>
+
+  <div class="action--buttons justify-content-center btn-for-setup-card align-items-center mt-5 d-flex">
+    <button class="btn btn-primary" (click)="onProcessCard()" [disabled]="isLoading">
+      <app-button-loader [loading]="isLoading" label="Process"></app-button-loader>
+    </button>
+  </div>
+
+  <!-- {{ processCardFormGroup.value | json }} -->
+</div>

@@ -1,0 +1,296 @@
+<div class="modal-content" [class.schedule-slideout]="!isThreshold">
+  <div class="modal-header">
+    <h4 class="modal-title mb-0">
+      @if (isThreshold) { Threshold } @else { @if (!isEditSchedule) { Recurring Deposit } @if (isEditSchedule) { Edit
+      Recurring Deposit } }
+    </h4>
+    <button class="btn-close" (click)="closePopup()"></button>
+  </div>
+  <div class="modal-body" [formGroup]="formGroup">
+    <div class="auto-recurring-deposite-content" [class.slideout-left]="openInfo">
+      <div class="form--group text-center form-amount">
+        <label class="form-check-label" for="">Amount:</label>
+        <app-amount-input formControlName="amount" [separatorLimit]="AmountDigit"></app-amount-input>
+      </div>
+
+      <div class="select-amount d-flex">
+        <div class="selection-dropdown">
+          <span class="select-from">From:</span>
+          <ng-select
+            bindLabel="accountNickName"
+            bindValue="bankAccountId"
+            formControlName="bankAccountId"
+            [items]="linkedAccountList"
+            [loading]="isAccountListLoading"
+            [selectOnTab]="true"
+            [searchable]="false"
+            [clearable]="linkedAccountList && linkedAccountList.length > 1"
+          >
+            <!-- for list of option -->
+            <ng-template ng-option-tmp let-item="item">
+              {{ item.accountNickName }}
+              <ng-container *ngIf="item.isDefault">
+                <i class="ng-option-primary"> Primary </i>
+              </ng-container>
+            </ng-template>
+
+            <!-- for selected -->
+            <ng-template ng-label-tmp let-item="item">
+              {{ item.bankName }}
+              <div>{{ item.accountOwnerName }}</div>
+            </ng-template>
+          </ng-select>
+
+          <ng-container *ngIf="BankAccountId?.touched && BankAccountId?.invalid">
+            <app-input-error [errors]="BankAccountId?.errors"></app-input-error>
+          </ng-container>
+        </div>
+        <ng-container *ngIf="isThreshold">
+          <ng-template [ngTemplateOutlet]="toAccount"></ng-template>
+        </ng-container>
+      </div>
+
+      <div class="balance-reach">
+        <ng-container *ngIf="isThreshold">
+          <div class="balance text-center">
+            <h6>WHEN FUNDS REACHES</h6>
+            <app-amount-input
+              formControlName="triggerAmount"
+              [separatorLimit]="AmountDigit"
+              class="text-center"
+            ></app-amount-input>
+          </div>
+          <p class="balance-desc text-center">
+            Your account will be auto-replenished {{ Amount?.value || 0 | currency }} when your funds reaches
+            {{ (TriggerAmount && TriggerAmount?.value) || 0 | currency }}
+          </p>
+        </ng-container>
+        <ng-container *ngIf="!isThreshold">
+          <ng-container *ngIf="isLoading">
+            <app-matbia-skeleton-loader-component
+              [count]="3"
+              [theme]="{ width: '100%', height: '100px' }"
+            ></app-matbia-skeleton-loader-component>
+          </ng-container>
+
+          <ng-container *ngIf="!isLoading">
+            <div class="balance d-flex flex-wrap" formGroupName="recurringPayment">
+              <div class="balance-repeat">
+                <h6>REPEAT:</h6>
+
+                <ng-container *ngIf="Frequency?.touched && Frequency?.invalid">
+                  <app-input-error [errors]="Frequency?.errors"></app-input-error>
+                </ng-container>
+
+                <ng-container *ngIf="transactionRecurrences && transactionRecurrences.length !== 0">
+                  <ng-container *ngFor="let recurringItem of transactionRecurrences">
+                    <div class="form-check">
+                      <input
+                        type="radio"
+                        class="form-check-input"
+                        [id]="recurringItem.name"
+                        formControlName="frequency"
+                        [value]="recurringItem.id"
+                      />
+                      <label [for]="recurringItem.name" class="form-check-label">
+                        {{ recurringItem.name }}
+                      </label>
+                    </div>
+                  </ng-container>
+                </ng-container>
+              </div>
+
+              <ng-template [ngTemplateOutlet]="recurringDate"></ng-template>
+            </div>
+            <p class="balance-desc">
+              Your account will be auto-replenished
+              <ng-container *ngIf="isWeekly || isBiWeekly"> every {{ displaySelectedDay() }} </ng-container>
+              starting {{ TransDate?.value.endDate | date : 'MM/dd/yyyy' }}
+            </p>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer border-0 pt-0">
+    <span class="link-previw d-md-none" (click)="schedulePreview(previewScheduleModal)">PREVIEW SCHEDULE</span>
+
+    <ng-container *ngIf="isThreshold">
+      <button class="btn btn-primary w-100" (click)="onSaveThreshold()">SAVE</button>
+      <button class="btn btn-default d-md-none w-100" (click)="closePopup()">Cancel</button>
+    </ng-container>
+
+    <ng-container *ngIf="!isThreshold">
+      <ng-container *ngIf="!isEditSchedule">
+        <button class="btn btn-primary w-100" (click)="onSave()">SAVE</button>
+        <button class="btn btn-default d-md-none w-100" (click)="closePopup()">Cancel</button>
+      </ng-container>
+
+      <ng-container *ngIf="isEditSchedule">
+        <button class="btn btn-primary w-100" (click)="onUpdateSchedule()">SAVE</button>
+        <button class="btn btn-default d-md-none w-100" (click)="closePopup()">Cancel</button>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>
+
+<ng-container *ngIf="!isThreshold">
+  <div class="schedule-preview-slideout" [class.slideout-open]="openInfo">
+    <div class="schedule-preview-title d-flex align-items-center justify-content-center position-relative">
+      <button class="schedule-btn" (click)="togglePreviewPanel()">
+        <img src="assets/dist/img/icon-recurring-btn.svg" alt="" [class.d-none]="openInfo" />
+        <img src="assets/dist/img/icon-recurring-close.svg" alt="" [class.d-none]="!openInfo" />
+      </button>
+      <h3>Schedule Preview</h3>
+    </div>
+    <ng-template [ngTemplateOutlet]="previewSchedule"></ng-template>
+  </div>
+</ng-container>
+
+<ng-template #toAccount>
+  <div class="selection-dropdown">
+    <span class="select-from">To:</span>
+    <ng-select
+      [items]="toMatbia"
+      bindValue="id"
+      bindLabel="label"
+      [disabled]="true"
+      [(ngModel)]="toMatbiaSelect"
+    ></ng-select>
+  </div>
+</ng-template>
+
+<ng-template #recurringDate>
+  <div class="balance-select d-flex">
+    <div class="balance-day">
+      <ng-container *ngIf="isWeekly || isBiWeekly">
+        <h6>SEND ON EVERY:</h6>
+        <div class="position-relative">
+          <ng-select
+            bindLabel="value"
+            bindValue="id"
+            [items]="daysList"
+            [ngModel]="selectedDay"
+            (ngModelChange)="changeSelected($event)"
+            [selectOnTab]="true"
+            [searchable]="false"
+            [clearable]="false"
+          >
+          </ng-select>
+        </div>
+      </ng-container>
+    </div>
+    <div class="balance-date mb-0" [formGroup]="formGroup">
+      <h6>
+        <ng-container *ngIf="isEditSchedule">Next Schedule Date</ng-container>
+        <ng-container *ngIf="!isEditSchedule">START DATE</ng-container>
+      </h6>
+
+      <input
+        type="text"
+        readonly
+        ngxDaterangepickerMd
+        formControlName="transDate"
+        class="form-control w-100"
+        [singleDatePicker]="true"
+        [closeOnAutoApply]="true"
+        [autoApply]="true"
+        [showDropdowns]="true"
+        [isInvalidDate]="isInvalidDate"
+        (datesUpdated)="datesUpdated($event)"
+      />
+
+      <div
+        class="auto-recurring-deposite-count pt-4 position-relative"
+        formGroupName="recurringPayment"
+        [class.hide-count]="isAlwaysRecurring"
+      >
+        <input type="text" class="form-control w-100" formControlName="count" mask="separator.0" separatorLimit="100" />
+        <span class="set-count" [class.set-count-error]="RecurringCount?.touched && RecurringCount?.invalid"
+          >count</span
+        >
+        <ng-container *ngIf="RecurringCount?.touched && RecurringCount?.invalid">
+          <app-input-error [errors]="RecurringCount?.errors"></app-input-error>
+        </ng-container>
+      </div>
+
+      <div class="form--group form-check custom--checbox pt-4 ps-0 mb-0" formGroupName="recurringPayment">
+        <input
+          type="checkbox"
+          class="form-check-input w-100"
+          alt=""
+          formControlName="alwaysRecurring"
+          id="alert-email"
+        />
+        <label class="form-check-label" for="alert-email">Always</label>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #previewScheduleModal>
+  <div class="modal-header">
+    <span class="cursor-pointer" (click)="backToRecurreingPopup()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="8.834" height="15.547" viewBox="0 0 8.834 15.547">
+        <path
+          id="Path_459"
+          data-name="Path 459"
+          d="M0,6.713,6.713,0l6.713,6.713"
+          transform="translate(1.061 14.486) rotate(-90)"
+          fill="none"
+          stroke="#b2b2b2"
+          stroke-linecap="round"
+          stroke-width="1.5"
+        />
+      </svg>
+    </span>
+    <h4 _ngcontent-ng-c2607620404="" class="modal-title mb-0">Schedule Preview</h4>
+  </div>
+  <div class="modal-body">
+    <ng-template [ngTemplateOutlet]="previewSchedule"></ng-template>
+  </div>
+  <div class="modal-footer border-0">
+    <button class="btn btn-light w-100" (click)="closePopup()">Return</button>
+  </div>
+</ng-template>
+
+<ng-template #previewSchedule>
+  <ul class="schedule-preview p-0 list-unstyled mb-0">
+    @if (isAlwaysRecurring) {
+    <li class="d-flex justify-content-center">
+      <div class="text-end">
+        <h5 class="schedule-title">No preview available</h5>
+      </div>
+    </li>
+    } @else { @for (item of previewListData; track $index) {
+    <ng-template [ngTemplateOutlet]="previewItem" [ngTemplateOutletContext]="{ item: item }"></ng-template>
+    } }
+  </ul>
+</ng-template>
+
+<ng-template #previewItem let-item="item">
+  <li class="d-flex justify-content-between">
+    <span class="schedule-price">{{ item.amount | currency }}</span>
+    <div class="text-end">
+      <h5 class="schedule-title">
+        {{ item.date | hebrewCalenderDate }}
+      </h5>
+      <span class="schedule-date">{{ item.dateString }}</span>
+    </div>
+  </li>
+</ng-template>
+
+<ng-template #setMaxSwitchTmp>
+  <h6 class="d-flex align-items-center justify-content-between">
+    SET MAX.
+    <div class="form-check toogle--btn" [formGroup]="formGroup">
+      <input
+        class="form-check-input d-none"
+        type="checkbox"
+        id="flexSwitchCheckDefault"
+        formControlName="setMaxSwitch"
+      />
+      <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+    </div>
+  </h6>
+</ng-template>

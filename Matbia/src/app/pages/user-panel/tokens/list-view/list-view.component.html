@@ -1,0 +1,185 @@
+@if(!todisplayNoTokenPage){
+<div class="token-page p-3 p-md-4">
+  <div class="token-head d-flex flex-column gap-2 gap-md-0 flex-md-row align-items-md-center">
+    <div class="d-flex gap-2 gap-sm-0 flex-column flex-sm-row align-items-sm-center flex-fill">
+      <figure>
+        <img src="assets/dist/img/icon-logo.png" alt="" />
+      </figure>
+      <div class="flex-fill">
+        <ul class="d-flex flex-column gap-2 gap-sm-0 flex-sm-row flex-wrap">
+          <li>
+            <span>Total Tokens({{ totalTokens }})</span>
+            <h6>${{ totals }}</h6>
+          </li>
+          <li>
+            <span>Generated({{ totalGenerated }})</span>
+            <h6>${{ generated }}</h6>
+          </li>
+          <li>
+            <span>Processed({{ totalProcessed }})</span>
+            <h6>${{ processed }}</h6>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <a class="btn btn-primary text-uppercase" [routerLink]="getGenerateTokensRouterLink()">+ Generate new token</a>
+  </div>
+  <div class="token-filter d-flex flex-wrap gap-1 gap-md-3">
+    <div class="form-group">
+      <app-search-input placeholder="Search" [debounceTime]="500" (changed)="onSearch($event)"> </app-search-input>
+    </div>
+    <div>
+      <button
+        class="btn btn-secondary dropdown-toggle"
+        type="button"
+        id="dropdownMenuButton1"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+        (click)="$event.stopPropagation()"
+      >
+        Filter
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1" (click)="$event.stopPropagation()">
+        <div *ngFor="let option of filterOptionsList" class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            [id]="option.label"
+            [value]="option.label"
+            (change)="onSelectStatus(option)"
+            [(ngModel)]="option.isChecked"
+          />
+          <label class="form-check-label" [for]="option.label">{{ option.id }}</label>
+        </div>
+      </div>
+    </div>
+    <div (click)="selectMultiple()">
+      <a href="javascript:void(0)" class="btn btn-secondary btn-secondary-small"
+        ><span><img src="assets/dist/img/icon-list.jpg" alt="refersh" /></span>SELECT MULTIPLE</a
+      >
+    </div>
+  </div>
+  <div
+    class="token-action d-flex flex-column-reverse flex-xxl-row align-items-xxl-center justify-content-xxl-between gap-3 gap-xxl-0"
+    *ngIf="isActions"
+  >
+    <div class="d-flex">
+      <div class="form-check m-0 d-flex align-items-center gap-2">
+        <input
+          class="form-check-input position-relative start-0"
+          type="checkbox"
+          value="option11"
+          id="inlineCheckbox11"
+        />
+        <label class="form-check-label label" for="inlineCheckbox11">
+          <span>{{ this.selectedTokens }}</span> tokens selected | Total: <span>${{ totalAmount }}</span>
+        </label>
+      </div>
+    </div>
+    <div class="d-flex flex-wrap align-items-center gap-1 gap-xxl-2">
+      <span class="span">ACTIONS:</span>
+      <button [class.disabled]="hasNonGeneratedStatus" class="btn btn-outline-primary" style="display: none">
+        <span><img src="assets/dist/img/icon-chat.svg" alt="refersh" /></span>SEND SMS
+      </button>
+      <button [class.disabled]="hasNonGeneratedStatus" class="btn btn-outline-primary" style="display: none">
+        <span><img src="assets/dist/img/icon-email.svg" alt="refersh" /></span>SEND EMAIL
+      </button>
+      <button [class.disabled]="hasNonGeneratedStatus" class="btn btn-outline-primary" (click)="print()">
+        <span><img src="assets/dist/img/icon-printer.svg" alt="refersh" /></span>PRINT
+      </button>
+      <button [class.disabled]="hasNonGeneratedStatus" class="btn btn-outline-primary" (click)="downloadCsv()">
+        <span><img src="assets/dist/img/icon-download.svg" alt="refersh" /></span>DOWNLOAD CSV
+      </button>
+      <button
+        [class.disabled]="hasNonGeneratedStatus"
+        class="btn btn-outline-danger"
+        (click)="cancelModal()"
+        *ngIf="!isRedeemedContainsInSelectedItems()"
+      >
+        <span><img src="assets/dist/img/icon-cancel.svg" alt="refersh" /></span>CANCEL TOKENS
+      </button>
+
+      <a style="cursor: pointer" (click)="cancelSelection()">
+        <span class="me-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="13.423" height="13.426" viewBox="0 0 13.423 13.426">
+            <path
+              id="Icon_ionic-ios-close"
+              data-name="Icon ionic-ios-close"
+              d="M19.589,18l4.8-4.8A1.124,1.124,0,0,0,22.8,11.616l-4.8,4.8-4.8-4.8A1.124,1.124,0,1,0,11.616,13.2l4.8,4.8-4.8,4.8A1.124,1.124,0,0,0,13.2,24.384l4.8-4.8,4.8,4.8A1.124,1.124,0,1,0,24.384,22.8Z"
+              transform="translate(-11.289 24.711) rotate(-90)"
+              opacity="0.204"
+            />
+          </svg> </span
+        >Cancel selection</a
+      >
+    </div>
+  </div>
+
+  <div class="table-responsive table-responsive-token">
+    <div class="table table-token">
+      <div class="t-head">
+        <div class="t-row">
+          <div class="th-div">TOKEN #</div>
+          <div class="th-div">AMOUNT</div>
+          <div class="th-div th-date">GENERATED DATE & TIME</div>
+          <div class="th-div">STATUS</div>
+          <div class="th-div">EXPIRATION DATE</div>
+          <div class="th-div">BOOK SOURCE</div>
+          <div class="th-div th-action"></div>
+        </div>
+      </div>
+      <ng-container *ngIf="isLoading">
+        <app-matbia-skeleton-loader-component></app-matbia-skeleton-loader-component>
+      </ng-container>
+      <ng-container *ngIf="!isLoading">
+        <div class="t-body">
+          <ng-container *ngFor="let item of rows$ | async">
+            <app-token-row-item
+              [item]="item"
+              [isSelectMultiple]="isSelectMultiple"
+              (checkboxChange)="onCheckboxChange($event.row, $event.isChecked)"
+              (refresh)="refresh()"
+            >
+            </app-token-row-item>
+          </ng-container>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+  <div class="d-flex justify-content-between p-2 pagination-wrap">
+    <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="gridService.pageSize">
+      <option [ngValue]="10">10</option>
+      <option [ngValue]="50">50</option>
+      <option [ngValue]="100">100</option>
+    </select>
+
+    <ng-container *ngIf="(total$ | async)! && gridService.pageSize && (total$ | async)! > gridService.pageSize">
+      <ngb-pagination
+        [collectionSize]="(total$ | async)!"
+        [(page)]="gridService.page"
+        [pageSize]="gridService.pageSize"
+        [maxSize]="5"
+        [boundaryLinks]="true"
+      >
+      </ngb-pagination>
+    </ng-container>
+  </div>
+</div>
+}
+<app-tokens-pdf [tokenData]="selectedRows"> </app-tokens-pdf>
+@if(todisplayNoTokenPage){
+<div class="token-page token-page-empty text-center d-flex align-items-center justify-content-center">
+  <div>
+    <h2>You don't have any tokens yet...</h2>
+    <figure>
+      <img src="assets/dist/img/image-empty-token.png" alt="" width="" height="" />
+    </figure>
+    <button
+      class="btn btn-primary d-flex align-items-center justify-content-center"
+      [routerLink]="getGenerateTokensRouterLink()"
+    >
+      <span class="material-icons">add</span> GENERATE YOUR FIRST TOKEN
+    </button>
+  </div>
+</div>
+}

@@ -1,0 +1,60 @@
+<ng-container *ngIf="(tableHeaders$ | async)?.length !== 0; else noRecordsTmp">
+  <div class="query-report-table p-2 table-responsive">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th
+              scope="col"
+              appSortableHeader
+              [sortable]="header"
+              (sort)="onSort($event)"
+              *ngFor="let header of tableHeaders$ | async"
+            >
+              {{ header }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of rows$ | async">
+            <td *ngFor="let header of tableHeaders$ | async">{{ item[header] }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="d-flex justify-content-between p-2 pagination-wrap">
+      <select class="form-select" style="width: auto" name="pageSize" [(ngModel)]="reportFilter.pageSize">
+        <option [ngValue]="20">20</option>
+        <option [ngValue]="50">50</option>
+        <option [ngValue]="100">100</option>
+      </select>
+
+      <ng-container *ngIf="(total$ | async)! && reportFilter.pageSize && (total$ | async)! > reportFilter.pageSize">
+        <ngb-pagination
+          [collectionSize]="(total$ | async)!"
+          [(page)]="reportFilter.page"
+          [pageSize]="reportFilter.pageSize"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+        >
+        </ngb-pagination>
+      </ng-container>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #noRecordsTmp>
+  <div class="query-report-table p-2 table-responsive" *ngIf="initialize$ | async">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <tbody>
+          <tr>
+            <td colspan="15" style="text-align: center">No data found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-template>

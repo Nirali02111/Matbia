@@ -1,0 +1,22 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title">
+      <ng-container *ngIf="isBatch"> Batch Closed! </ng-container>
+      <ng-container *ngIf="!isBatch"> Funds Redeemed! </ng-container>
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="modal-inner">
+      <img src="assets/dist/img/icon-checked.png" alt="Check" class="icon-checked" />
+      <h4>{{ amount | currency }}</h4>
+      <span
+        >will be available in your bank account ending <br />
+        in {{ accoNum | displayLast }} in 2-3 Business days.</span
+      >
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="closePopup()">DONE</button>
+  </div>
+</div>

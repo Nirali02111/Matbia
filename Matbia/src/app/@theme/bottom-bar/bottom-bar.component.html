@@ -1,0 +1,146 @@
+<div class="ipad-view">
+  <ul class="side-nav"></ul>
+
+  <div class="bottom-bar">
+    <ul>
+      <li
+        class="side-nav-item grey-out"
+        [routerLinkActive]="'menuitem-active'"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <a href="#" [routerLink]="getDashboardRouterLink()" class="side-nav-link">
+          <i class="icon-dashboard"></i>
+          <span> Overview </span>
+        </a>
+      </li>
+
+      <ng-container *appPersonalAccessControl>
+        <ng-template [ngTemplateOutlet]="personalOptions"></ng-template>
+      </ng-container>
+
+      <ng-container *appBusinessAccessControl>
+        <ng-template [ngTemplateOutlet]="businessOptions"></ng-template
+      ></ng-container>
+
+      <ng-container *appOrganizationAccessControl>
+        <ng-template [ngTemplateOutlet]="businessOptions"></ng-template>
+      </ng-container>
+
+      <ng-container *appBusinessDonorAccessControl>
+        <ng-template [ngTemplateOutlet]="personalOptions"></ng-template>
+      </ng-container>
+    </ul>
+  </div>
+</div>
+
+<ng-template #personalOptions>
+  <li class="side-nav-item grey-out" [routerLinkActive]="'menuitem-active'">
+    <a href="#" [routerLink]="getDonateRouterLink()" class="side-nav-link">
+      <i class="icon-donate"></i>
+      <span> Donate </span>
+    </a>
+  </li>
+
+  @if (isDevEnv) {
+  <li class="side-nav-item grey-out" [routerLinkActive]="'menuitem-active'" [routerLinkActiveOptions]="{ exact: true }">
+    <a href="#" [routerLink]="getTokenListRouterLink()" class="side-nav-link">
+      <i class="icon-transaction"></i>
+      <span> Token list </span>
+    </a>
+  </li>
+  }
+
+  <li class="side-nav-item grey-out" [routerLinkActive]="'menuitem-active'">
+    <a href="#" [routerLink]="getTransactionsRouterLink()" class="side-nav-link">
+      <i class="icon-transaction"></i>
+      <span> ACTIVITY </span>
+    </a>
+  </li>
+  <li class="side-nav-item grey-out" [routerLinkActive]="'menuitem-active'">
+    <a (click)="goToAddFundsRouterLink($event)" class="side-nav-link">
+      <i class="icon-add"></i>
+      <span> Add funds </span>
+    </a>
+  </li>
+</ng-template>
+
+<ng-template #businessOptions>
+  <li class="side-nav-item grey-out icon-process-card" [routerLinkActive]="'menuitem-active'">
+    <a href="#" [routerLink]="getProcessCardRouterLink()" class="side-nav-link">
+      <i class="mdi mdi-cc-card"></i>
+      <span> Process card </span>
+    </a>
+  </li>
+
+  <li class="side-nav-item grey-out icon-process-card" [routerLinkActive]="'menuitem-active'">
+    <a href="#" [routerLink]="getProcessTokenListRouterLink()" class="side-nav-link">
+      <i class="mdi mdi-cc-card"></i>
+      <span> Process Token </span>
+    </a>
+  </li>
+
+  <li class="side-nav-item grey-out" [routerLinkActive]="'menuitem-active'">
+    <a href="#" [routerLink]="getTransactionsRouterLink()" class="side-nav-link">
+      <i class="icon-transaction"></i>
+      <span> ACTIVITY </span>
+    </a>
+  </li>
+
+  @if (!isBatchVisible) {
+  <li class="side-nav-item grey-out" [routerLinkActive]="'menuitem-active'">
+    <a href="#" [routerLink]="getWithdrawFundsRouterLink()" class="side-nav-link">
+      <i class="icon-add"></i>
+      <span> Withdraw funds </span>
+    </a>
+  </li>
+  } @if (isBatchVisible) {
+
+  <li class="side-nav-item grey-out" [routerLinkActive]="'menuitem-active'">
+    <a href="#" [routerLink]="getBatchClosingOptionsRouterLink()" class="side-nav-link">
+      <i
+        ><svg xmlns="http://www.w3.org/2000/svg" width="17.435" height="17.321" viewBox="0 0 17.435 17.321">
+          <g id="Group_2885" data-name="Group 2885" transform="translate(-63 -479.702)">
+            <path
+              id="Icon_ionic-ios-settings"
+              data-name="Icon ionic-ios-settings"
+              d="M11.791,8.473a1.022,1.022,0,0,1,.656-.954,4.052,4.052,0,0,0-.49-1.181,1.037,1.037,0,0,1-.416.089,1.02,1.02,0,0,1-.933-1.436,4.042,4.042,0,0,0-1.18-.49,1.022,1.022,0,0,1-1.908,0,4.054,4.054,0,0,0-1.182.49A1.02,1.02,0,0,1,5.4,6.426a1,1,0,0,1-.416-.089A4.142,4.142,0,0,0,4.5,7.521a1.022,1.022,0,0,1,0,1.908,4.052,4.052,0,0,0,.49,1.181A1.021,1.021,0,0,1,6.34,11.957a4.078,4.078,0,0,0,1.182.49,1.02,1.02,0,0,1,1.9,0,4.054,4.054,0,0,0,1.182-.49,1.022,1.022,0,0,1,1.347-1.347,4.076,4.076,0,0,0,.49-1.181A1.027,1.027,0,0,1,11.791,8.473Zm-3.3,1.653a1.655,1.655,0,1,1,1.656-1.655A1.655,1.655,0,0,1,8.492,10.126Z"
+              transform="translate(63.244 479.832)"
+              fill="#cfd0e6"
+            />
+            <g id="Group_2884" data-name="Group 2884" transform="translate(-613 -44.211)">
+              <path
+                id="Path_596"
+                data-name="Path 596"
+                d="M3452.171,1710.878a.633.633,0,0,1,.119.011.641.641,0,0,1,.115.036.692.692,0,0,1,.106.055.564.564,0,0,1,.093.077.617.617,0,0,1,.18.433.61.61,0,0,1-.011.122.783.783,0,0,1-.036.115.658.658,0,0,1-.055.106.765.765,0,0,1-.078.093.615.615,0,0,1-.945-.095.51.51,0,0,1-.056-.1.622.622,0,0,1-.035-.117.511.511,0,0,1-.011-.118.612.612,0,0,1,.614-.615Z"
+                transform="translate(-2760.801 -1174.474)"
+                fill="#cfd0e6"
+              />
+              <path
+                id="Path_597"
+                data-name="Path 597"
+                d="M3603.9,2032.606a.614.614,0,1,1,.4.768A.613.613,0,0,1,3603.9,2032.606Z"
+                transform="translate(-2912.139 -1497.83)"
+                fill="#cfd0e6"
+              />
+              <path
+                id="Path_598"
+                data-name="Path 598"
+                d="M3660.895,2384.006a.614.614,0,1,1-.6-.622.614.614,0,0,1,.6.624Z"
+                transform="translate(-2967.578 -1851.29)"
+                fill="#cfd0e6"
+              />
+              <path
+                id="Path_600"
+                data-name="Path 600"
+                d="M1165.736,1154.379l-5.011-.53a.188.188,0,0,1-.1-.318l1.809-1.809a7.436,7.436,0,1,0-.423,10.908.614.614,0,1,1,.813.921,8.665,8.665,0,1,1,.479-12.7l1.809-1.809a.188.188,0,0,1,.318.1l.525,5.017A.188.188,0,0,1,1165.736,1154.379Z"
+                transform="translate(-472.524 -624.406)"
+                fill="#cfd0e6"
+              />
+            </g>
+          </g></svg
+      ></i>
+      <span> Batch Closing options </span>
+    </a>
+  </li>
+  }
+</ng-template>

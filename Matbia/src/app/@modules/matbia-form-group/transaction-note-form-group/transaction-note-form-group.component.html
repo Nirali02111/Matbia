@@ -1,0 +1,21 @@
+<div class="row mt-3 separate-note" [formGroup]="formGroup">
+    <div class="col-md-12">
+        <div class="card--custom recurring--section">
+            <div class="recurring--content">
+                <div class="transfer_now_amount">
+                    <div class="input_text_wrap">
+                        <div class="input--group">
+                            <label>ADD NOTE:</label>
+                            <textarea class="form_control textarea-input" placeholder="Type Here..."
+                                formControlName="note"></textarea>
+                        </div>
+                    </div>
+                    <div class="note-content" *ngIf="noteMessage">
+                        Transfer may take up to 2-4 business days<br />
+                        depending on your bank.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

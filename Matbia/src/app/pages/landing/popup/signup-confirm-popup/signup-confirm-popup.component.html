@@ -1,0 +1,36 @@
+<div class="modal-content check-your-mail">
+  <div class="modal-header" style="overflow: hidden">
+    <a href="/" class="navbar-brand ms-auto me-auto"><img src="assets/dist/img/logo.svg" alt="" /></a>
+    <h2>Check Your <span>Mail</span></h2>
+    <button type="button" class="close" aria-label="Close" (click)="onClose()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <ng-container *ngIf="!isResend">
+      <p class="email-sent">
+        We've sent an email to {{ email }}, click <br />
+        the link in the email to create your password
+      </p>
+
+      <div class="btn-group justify-content-center d-flex">
+        <button type="button" class="btn btn-email w-100" (click)="openEmail()">Open Email</button>
+      </div>
+      <p>
+        Did not receive the email? Check your spam filter, or
+        <a href="" (click)="tryAnotherMail($event)">Try another email address</a>
+      </p>
+    </ng-container>
+
+    <ng-container *ngIf="isResend">
+      <p>Email was sent</p>
+      <div class="btn-group justify-content-center d-flex mt-4">
+        <button type="button" class="btn btn-primary" (click)="onClose()">Close</button>
+      </div>
+    </ng-container>
+  </div>
+
+  <div *ngIf="isLoading" class="overlay">
+    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+  </div>
+</div>

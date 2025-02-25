@@ -1,0 +1,117 @@
+<div class="modal-content">
+  <div class="modal-header p-0" style="overflow: hidden">
+    <ng-container *ngIf="!isValidate">
+      <div class="bg-header">
+        <img src="assets/dist/img/modal-card-bg.png" alt="" />
+      </div>
+      <h5 class="modal-title">Activate your Card</h5>
+    </ng-container>
+  </div>
+  <div class="modal-body">
+    <ng-template *ngIf="isValidate; then hasValidated; else activatedForm"></ng-template>
+  </div>
+</div>
+
+<ng-template #activatedForm>
+  <div class="active-card-form">
+    <ngb-alert *ngIf="alertMessage" type="warning" (closed)="alertMessage = ''" class="mt-2" role="alert">
+      <span> {{ alertMessage }} </span>
+    </ngb-alert>
+
+    <h4>Enter your card info</h4>
+    <form [formGroup]="activateCardForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <div class="lbl-col">
+          <label>CARD NUMBER:</label>
+        </div>
+        <div class="input-col">
+          <app-credit-card-input formControlName="card" [cardMask]="cardMask"></app-credit-card-input>
+        </div>
+      </div>
+
+      <div class="btn-group justify-content-end d-flex mt-4">
+        <button type="submit" [disabled]="activateCardForm.invalid || isLoading" class="btn btn-primary">
+          <span class="btn-text" *ngIf="!isLoading">VALIDATE CARD</span>
+          <span class="btn-loader preloader" *ngIf="isLoading"
+            ><img src="assets/dist/img/rolling-loader.svg" alt=""
+          /></span>
+        </button>
+      </div>
+    </form>
+
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onClose()">
+      <span aria-hidden="true" style="font-size: 26px">&times;</span>
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #hasValidated>
+  <div class="email-exist-wrap" *ngIf="isEmailExists">
+    <div class="email-logo">
+      <img src="assets/dist/img/logo.svg" alt="logo" />
+    </div>
+    <div class="email-exist-label">
+      <h3>Email already Exists</h3>
+      <p>You can add additional card to your account By logging in, on the card settings page</p>
+    </div>
+    <div class="email-exist-action">
+      <button class="btn btn-cancel" (click)="onClose()">Cancel</button>
+      <button class="btn btn-primary" (click)="goToAuth()">Sign in</button>
+    </div>
+  </div>
+
+  <div class="success-card" *ngIf="!isEmailExists">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onClose()">
+      <span aria-hidden="true" style="font-size: 26px">&times;</span>
+    </button>
+    <div class="success-content">
+      <span class="icon">
+        <img src="assets/dist/img/success-icon.svg" alt="" />
+      </span>
+
+      <div class="text-wrap">
+        <h3>
+          <ng-container *ngIf="!isProfileInComplete"> Your card was validated! </ng-container>
+          <ng-container *ngIf="isProfileInComplete"> Your email was validated </ng-container>
+        </h3>
+
+        <ng-container *ngIf="isEmailAndCardExists">
+          <p>Email and card both Exists</p>
+        </ng-container>
+
+        <ng-container *ngIf="!isEmailAndCardExists && !isEmailExists">
+          <p *ngIf="isAllowForPIN">Let’s complete your setup</p>
+          <ng-container *ngIf="!isAllowForPIN">
+            <ng-template [ngTemplateOutlet]="checkEmailTemp"></ng-template>
+          </ng-container>
+        </ng-container>
+      </div>
+
+      <ng-container *ngIf="isEmailAndCardExists">
+        <ng-container *ngIf="isAllowForPIN">
+          <button class="btn btn-primary" (click)="goToCardLoginPage()">Go To Login</button>
+        </ng-container>
+        <ng-container *ngIf="!isAllowForPIN">
+          <button class="btn btn-primary" (click)="goToAuth()">Go To Login</button>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="!isEmailAndCardExists && !isEmailExists">
+        <button class="btn btn-primary" (click)="goToSetup()">
+          <ng-container *ngIf="isAllowForPIN">GO TO NEXT STEP</ng-container>
+          <ng-container *ngIf="!isAllowForPIN">Close</ng-container>
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #checkEmailTemp>
+  <div class="check-email-wrap">
+    <span>Check Your Email</span>
+    <p>
+      We've sent an email to {{ Email?.value }}, click <br />
+      the link in the email to create your password
+    </p>
+  </div>
+</ng-template>

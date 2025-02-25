@@ -1,0 +1,110 @@
+<ng-container *ngIf="tmpName === 'withEmailNoPassword'">
+  <ng-template [ngTemplateOutlet]="withEmailNoPasswordTmp"></ng-template>
+</ng-container>
+<ng-container *ngIf="tmpName === 'noEmail&NoPassword'">
+  <ng-template [ngTemplateOutlet]="withNoEmailNoPasswordTmp"></ng-template>
+</ng-container>
+
+<ng-template #withEmailNoPasswordTmp>
+  <section class="section-text">
+    <div class="small-container">
+      <form [formGroup]="formGroup" (ngSubmit)="setUpPassword()">
+        <span class="back-link" (click)="goBackToCardLoginPage()">{{ card }}</span>
+
+        <h5 [ngClass]="{ 'mb-0': !isEmail, 'mb-6': isEmail }">
+          We found your account associated with {{ hasOtherEmailValue | emailMask }}
+        </h5>
+        @if(!isEmail){
+        <h1 class="mb-22">Setup online account</h1>
+        <p class="para mb-4 d-inline-block w-100">Please create login credentials to access this account.</p>
+        }
+
+        <div class="form-group">
+          <label class="form-label">{{ emailText }}</label>
+          <input type="text" class="form-control" formControlName="email" #signUpWithEmailInput />
+          <ng-container *ngIf="Email?.touched && Email?.invalid">
+            <app-input-error [errors]="Email?.errors"></app-input-error>
+          </ng-container>
+        </div>
+        <a *ngIf="isRegisterNewEmail" class="link mb-4" href="javascript:void(0)" (click)="registerWithNewEmail()"
+          >Register with a different email address</a
+        >
+        <div class="form-group mb-4 pb-md-3">
+          <label class="form-label">ENTER CARD PIN:</label>
+          <ng-otp-input [config]="pinConfig" (onInputChange)="onOtpChange($event)"></ng-otp-input>
+          <ng-container *ngIf="Pin?.touched && Pin?.invalid">
+            <app-input-error [errors]="Pin?.errors"></app-input-error>
+          </ng-container>
+        </div>
+
+        <button class="btn btn-primary w-100" type="submit">
+          <i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="19.2" height="19.189" viewBox="0 0 19.2 19.189">
+              <g id="key-outline" transform="translate(-17.64 -17.64)">
+                <path
+                  id="Path_37363"
+                  data-name="Path 37363"
+                  d="M25.6,23.4a4.887,4.887,0,0,0,.177,1.618c-1.865,2.189-6.789,7.974-7.248,8.416a.873.873,0,0,0-.29.649,1.444,1.444,0,0,0,.415.922c.286.3,1.506,1.428,1.731,1.212.666-.649.8-.822,1.073-1.09.411-.4-.043-1.225.1-1.558a.631.631,0,0,1,.541-.45,8.087,8.087,0,0,1,1.025.13,1.082,1.082,0,0,0,.822-.4.91.91,0,0,0,.376-.675c.009-.389-.554-.9-.134-1.315s1.025.268,1.471.216a1.634,1.634,0,0,0,1.043-.935c.056-.264-.506-.943-.42-1.328a.9.9,0,0,1,.493-.476c.2-.043,1.082.3,1.281.255a3.042,3.042,0,0,0,.753-.45,4.873,4.873,0,0,0,2.064.407,5.157,5.157,0,1,0,0-10.305A5.185,5.185,0,0,0,25.6,23.4Zm7.871-1a1.385,1.385,0,1,1-1.385-1.385A1.385,1.385,0,0,1,33.471,22.394Z"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-linejoin="round"
+                  stroke-width="1.2"
+                />
+              </g>
+            </svg>
+          </i>
+          Setup password
+        </button>
+      </form>
+    </div>
+  </section>
+</ng-template>
+<ng-template #withNoEmailNoPasswordTmp>
+  <section class="section-text">
+    <div class="small-container">
+      <form [formGroup]="formGroup" (ngSubmit)="setUpPassword()">
+        <span class="back-link" (click)="goBackToCardLoginPage()">{{ card }}</span>
+        <p class="alert alert-warning">
+          There is no email address on this account yet.Please create login credentials to access this account.
+        </p>
+
+        <h1 class="mb-22">Setup online account</h1>
+        <div class="form-group">
+          <label class="form-label">ENTER EMAIL ADDRESS</label>
+          <input type="text" class="form-control" formControlName="email" #signUpWithEmailInput />
+          <ng-container *ngIf="Email?.touched && Email?.invalid">
+            <app-input-error [errors]="Email?.errors"></app-input-error>
+          </ng-container>
+        </div>
+        <a *ngIf="isRegisterNewEmail" class="link mb-4" href="javascript:void(0)" (click)="registerWithNewEmail()"
+          >Register with a different email address</a
+        >
+        <div class="form-group mb-4 pb-md-3">
+          <label class="form-label">ENTER CARD PIN:</label>
+          <ng-otp-input [config]="pinConfig" (onInputChange)="onOtpChange($event)"></ng-otp-input>
+          <ng-container *ngIf="Pin?.touched && Pin?.invalid">
+            <app-input-error [errors]="Pin?.errors"></app-input-error>
+          </ng-container>
+        </div>
+        <button class="btn btn-primary w-100" type="submit">
+          <i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="19.2" height="19.189" viewBox="0 0 19.2 19.189">
+              <g id="key-outline" transform="translate(-17.64 -17.64)">
+                <path
+                  id="Path_37363"
+                  data-name="Path 37363"
+                  d="M25.6,23.4a4.887,4.887,0,0,0,.177,1.618c-1.865,2.189-6.789,7.974-7.248,8.416a.873.873,0,0,0-.29.649,1.444,1.444,0,0,0,.415.922c.286.3,1.506,1.428,1.731,1.212.666-.649.8-.822,1.073-1.09.411-.4-.043-1.225.1-1.558a.631.631,0,0,1,.541-.45,8.087,8.087,0,0,1,1.025.13,1.082,1.082,0,0,0,.822-.4.91.91,0,0,0,.376-.675c.009-.389-.554-.9-.134-1.315s1.025.268,1.471.216a1.634,1.634,0,0,0,1.043-.935c.056-.264-.506-.943-.42-1.328a.9.9,0,0,1,.493-.476c.2-.043,1.082.3,1.281.255a3.042,3.042,0,0,0,.753-.45,4.873,4.873,0,0,0,2.064.407,5.157,5.157,0,1,0,0-10.305A5.185,5.185,0,0,0,25.6,23.4Zm7.871-1a1.385,1.385,0,1,1-1.385-1.385A1.385,1.385,0,0,1,33.471,22.394Z"
+                  fill="none"
+                  stroke="#fff"
+                  stroke-linejoin="round"
+                  stroke-width="1.2"
+                />
+              </g>
+            </svg>
+          </i>
+          Setup password
+        </button>
+      </form>
+    </div>
+  </section>
+</ng-template>

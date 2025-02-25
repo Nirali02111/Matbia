@@ -1,0 +1,87 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="staticBackdropLabel">Set Reminder</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="time-wrap">
+      <div class="time-sec" [formGroup]="formGroup">
+        <div class="custom-control custom-radio">
+          <input
+            type="radio"
+            formControlName="option"
+            id="tomorrowRadio"
+            class="custom-control-input"
+            value="nextDay"
+          />
+          <label class="custom-control-label" for="tomorrowRadio">Tomorrow</label>
+        </div>
+
+        <div class="custom-control custom-radio">
+          <input
+            type="radio"
+            formControlName="option"
+            id="nextWeekRadio"
+            class="custom-control-input"
+            value="nextWeek"
+          />
+          <label class="custom-control-label" for="nextWeekRadio">Next Week</label>
+        </div>
+
+        <div class="custom-control custom-radio">
+          <input
+            type="radio"
+            formControlName="option"
+            id="nextMonthRadio"
+            class="custom-control-input"
+            value="nextMonth"
+          />
+          <label class="custom-control-label" for="nextMonthRadio">Next Month</label>
+        </div>
+
+        <div class="custom-control custom-radio">
+          <input type="radio" formControlName="option" id="customRadio" class="custom-control-input" value="custom" />
+          <label class="custom-control-label" for="customRadio">Custom</label>
+        </div>
+      </div>
+
+      <div class="calender-sec d-flex gap-3 gap-md-0 flex-md-wrap" [formGroup]="formGroup">
+        <div class="form-group">
+          <label for="" class="lbl--text">Date</label>
+          <input
+            type="text"
+            readonly
+            opens="left"
+            ngxDaterangepickerMd
+            formControlName="snoozeDate"
+            class="form-control"
+            [singleDatePicker]="true"
+            [closeOnAutoApply]="true"
+            [autoApply]="true"
+            (datesUpdated)="datesUpdated()"
+          />
+          <a class="ngx-daterangepicker-action" (click)="openDatepicker()">
+            <span class="calender-icon" style="pointer-events: none"><i class="far fa-calendar-alt"></i></span>
+          </a>
+        </div>
+
+        <div class="form-group set-reminder-time-group">
+          <label for="" class="lbl--text">Time</label>
+          <input readonly [ngxTimepicker]="timePicker" class="form-control" formControlName="time" />
+          <ngx-material-timepicker #timePicker> </ngx-material-timepicker>
+        </div>
+      </div>
+    </div>
+
+    <div class="note--input" style="display: none">
+      <label class="lbl--text">Add Note</label>
+      <textarea name="" id="" cols="30" rows="3"> Type Here...</textarea>
+    </div>
+  </div>
+  <div class="modal-footer gap-md-0 gap-3 border-0 pt-0 justify-content-end flex-md-row-reverse">
+    <button type="button" class="btn btn-primary m-0" (click)="onScheduleReminder()">Schedule Reminder</button>
+    <button type="button" class="btn btn-default p-md-0 h-auto border-0 m-md-0 me-md-3" (click)="closePopup()">
+      Cancel
+    </button>
+  </div>
+</div>

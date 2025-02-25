@@ -1,0 +1,26 @@
+<div class="additioncard-main-wrap">
+  <div class="additional-content">
+    <div class="active-card-header">
+      <img src="assets/dist/img/modal-card-bg.png" alt="" />
+      <h4>Activate your Card</h4>
+    </div>
+    <div class="active-card-body">
+      <form [formGroup]="activateCardForm" (ngSubmit)="activateCardForm.valid && onValidate()">
+        <div class="active-card-form">
+          <h4 class="card-title">Enter your card info</h4>
+          <div class="form-group">
+            <div class="lbl-col"><label>CARD NUMBER:</label></div>
+            <div class="input-col">
+              <app-credit-card-input formControlName="card" #cardNumber></app-credit-card-input>
+            </div>
+          </div>
+          <div class="btn-group">
+            <button type="submit" [disabled]="activateCardForm.invalid" class="btn btn-primary">
+              <app-button-loader [loading]="isLoading" label="VALIDATE CARD"></app-button-loader>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

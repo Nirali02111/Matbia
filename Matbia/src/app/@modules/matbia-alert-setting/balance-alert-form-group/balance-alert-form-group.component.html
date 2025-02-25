@@ -1,0 +1,54 @@
+<div class="card card-alert">
+  <div class="card-body">
+    <div class="d-flex align-items-center justify-content-between w-100">
+      <h6 class="flex-fill m-0 fw-normal">{{ isDeposit() ? 'Deposit Alert' : 'Low Funds Alert' }}</h6>
+      <div class="form-check toogle--btn d-flex justify-content-end my-0 mx-3 mx-md-4" [formGroup]="formGroup">
+        @if(isDeposit()){
+        <input class="form-check-input" type="checkbox" id="deposit-alert-switch" checked disabled />
+        <label class="form-check-label" for="deposit-alert-switch"></label>
+        } @else {
+        <input class="form-check-input" type="checkbox" id="balance-alert-switch" formControlName="isPaused" />
+        <label class="form-check-label" for="balance-alert-switch"></label>
+        }
+      </div>
+      <i
+        class="mdi mdi-arrow-d fs-4 lh-1 d-inline-flex"
+        data-bs-toggle="collapse"
+        [attr.data-bs-target]="'#' + Id"
+        aria-expanded="false"
+        [attr.aria-controls]="Id"
+      ></i>
+    </div>
+    <div class="collapse w-100" [ngClass]="{ show: expand }" [id]="Id" [formGroup]="formGroup">
+      <div class="card-body">
+        <div class="alert--wrap mt-2" style="border-top: 1px #d6d6d6 solid;">
+      @if (!isDeposit()) {
+      <div class="row alert--details" style="margin-top: 18px;">
+        <div class="col-md-12">
+          <div class="d-flex" style="width: 100%">
+            <div class="amount--div justify-content-between">
+              <label class="lbl--text" style="margin-top: 14px;">Send alerts if funds is lower than:</label>
+              <div class="input--group">
+                <i class="fas fa-dollar-sign dollar--icon"></i>
+                <app-amount-input formControlName="minAccountBalance"></app-amount-input>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+      <app-select-email-and-phone
+        [isSwitchOn]="isSwitchOn"
+        [isDeposit]="isDeposit()"
+        [emailPhoneRequiredError]="isEmailPhoneRequiredError"
+        [formGroup]="formGroup"
+        [emailList]="emailList"
+        [phoneList]="phoneList"
+      >
+      </app-select-email-and-phone>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

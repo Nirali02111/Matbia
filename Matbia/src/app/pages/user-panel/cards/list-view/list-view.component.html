@@ -1,0 +1,42 @@
+<div class="account-card small--container w-75 m-auto pt-5">
+  <!-- Title section -->
+  <div class="d-flex flex-column flex-xl-row align-items-center justify-content-between mb-3">
+    <h4 class="title m-xl-0">Cards</h4>
+
+    <div class="add-additional-card-link">
+      <ng-container *ngIf="isAdditionalCard">
+        <a class="btn btn-card" (click)="redirectToValidateCard()"
+          ><span class="material-icons">add</span> ADD ADDITIONAL CARD</a
+        >
+      </ng-container>
+
+      <ng-container *ngIf="!isAdditionalCard">
+        <a class="btn btn-card" [routerLink]="getAddAdditionalRouterLink()"
+          ><span class="material-icons">power_settings_new</span> Activate Card</a
+        >
+      </ng-container>
+
+      <a class="btn btn-card" [routerLink]="getCardRequestRouterLink()"
+        ><span class="material-icons">add</span> Request Additional Card</a
+      >
+    </div>
+  </div>
+  <ng-container *ngIf="isLoading">
+    <app-matbia-skeleton-loader-component></app-matbia-skeleton-loader-component>
+  </ng-container>
+
+  <ng-container *ngIf="!isLoading">
+    <!-- list View -->
+    <div class="row row-card">
+      <ng-container *ngFor="let item of listCards">
+        <app-list-item class="col-md-6" [item]="item" (reload)="getCardsList()"></app-list-item>
+      </ng-container>
+
+      <div class="col-md-6">
+        <a [routerLink]="getCardRequestRouterLink()" class="card-link d-flex align-items-center justify-content-center">
+          <span class="material-icons">add</span> Request Additional Card
+        </a>
+      </div>
+    </div>
+  </ng-container>
+</div>

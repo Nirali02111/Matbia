@@ -1,0 +1,33 @@
+<div class="usps-modal-inside">
+  <div class="usps-info">
+    <ng-container *ngIf="isDifferentResponse">
+      <h4>USPS Found this</h4>
+      <h5>
+        {{ address }} <br />
+        {{ city }} {{ state }} {{ zip }}
+      </h5>
+    </ng-container>
+
+    <ng-container *ngIf="!isDifferentResponse">
+      <h4>USPS</h4>
+      <h5>
+        Did not find this
+        <ng-container *ngIf="isAPT">APT#</ng-container>
+        <ng-container *ngIf="isAddress">Address</ng-container>
+      </h5>
+    </ng-container>
+
+    <h5>Do you want to proceed ?</h5>
+  </div>
+  <div class="action--buttons justify-content-end mt-5 mb-5 d-flex">
+    <ng-container *ngIf="isDifferentResponse">
+      <button type="button" class="btn btn-cancel" (click)="onCloseNew()">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="onContinueNew()">Continue</button>
+    </ng-container>
+
+    <ng-container *ngIf="!isDifferentResponse">
+      <button type="button" class="btn btn-cancel" (click)="onClose()">Cancel</button>
+      <button type="button" class="btn btn-primary" (click)="onContinue()">Continue</button>
+    </ng-container>
+  </div>
+</div>

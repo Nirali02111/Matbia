@@ -1,0 +1,122 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <ng-container *ngIf="!isDeposit">
+      <h5 class="modal-title">
+        <ng-container *ngIf="isRecurring">Confirm Recurring Donation</ng-container>
+        <ng-container *ngIf="!isRecurring">Confirm Donation</ng-container>
+      </h5>
+    </ng-container>
+    <ng-container *ngIf="isDeposit">
+      <h5 class="modal-title">Confirm Deposit</h5>
+    </ng-container>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
+  </div>
+  <div class="modal-body">
+    <ng-container *ngIf="isDeposit">
+      <p>
+        <ng-container *ngIf="isRecurring">
+          <ng-container *ngIf="isAutoReplenish">
+            <ng-template [ngTemplateOutlet]="msgForAutoReplenishDepositTmp"></ng-template>
+          </ng-container>
+
+          <ng-container *ngIf="!isAutoReplenish">
+            <ng-template [ngTemplateOutlet]="msgForRecurringDepositTmp"></ng-template>
+          </ng-container>
+        </ng-container>
+
+        <ng-container *ngIf="!isRecurring">
+          <ng-template [ngTemplateOutlet]="msgForDepositTmp"></ng-template>
+        </ng-container>
+      </p>
+    </ng-container>
+    <ng-container *ngIf="!isDeposit">
+      <ng-template [ngTemplateOutlet]="msgForDonationTmp"></ng-template>
+    </ng-container>
+  </div>
+  <p class="add-funds-confirm-terms-and-condition">
+    <span>
+      By submitting you agree to our
+      <a (click)="openTerms($event)"> <u>Terms & Conditions</u></a>
+    </span>
+  </p>
+
+  <div class="modal-footer" [class.auto-replenish-confirm-footer]="isAutoReplenish">
+    <button type="button" class="btn btn-primary" (click)="onConfirmClick()">
+      <ng-container *ngIf="isDeposit">
+        <ng-container *ngIf="isAutoReplenish"> CONFIRM </ng-container>
+        <ng-container *ngIf="!isAutoReplenish">AGREE & SUBMIT</ng-container>
+      </ng-container>
+      <ng-container *ngIf="!isDeposit"> CONFIRM </ng-container>
+    </button>
+    <button type="button" class="btn btn-default d-md-none" data-bs-dismiss="modal" (click)="closePopup()">
+      Cancel
+    </button>
+  </div>
+</div>
+
+<ng-template #msgForDepositTmp>
+  <div class="modal-inner">
+    <span class="small-head">Your request to Deposit</span>
+    <h4>{{ amount | currency }}</h4>
+    <span class="deposit-msg-span">On {{ getCurrentTime() | date : 'MM/dd/yyyy hh:mm a' }}</span>
+    <span class="deposit-msg-span"
+      >From your {{ bankName }} {{ accountType }} account ending in {{ accountNumber }}</span
+    >
+  </div>
+</ng-template>
+
+<ng-template #msgForRecurringDepositTmp>
+  <div class="modal-inner">
+    <span class="small-head">You have scheduled a recurring deposit of</span>
+    <h4>{{ amount | currency }}</h4>
+    <span class="deposit-msg-span">{{ frequency }} for {{ count }}</span>
+    <span class="deposit-msg-span">{{ getPluralize() }} for a total of {{ count * amount | currency }}</span>
+    <span class="deposit-msg-span"
+      >From your {{ bankName }} {{ accountType }} account ending in {{ accountNumber }}</span
+    >
+  </div>
+</ng-template>
+
+<ng-template #msgForAutoReplenishDepositTmp>
+  <span>We are processing your request to </span>
+  <span>auto replenish the amount of </span><strong> {{ replenishAmount | currency }}</strong>
+  <span>when your account funds is</span><strong> {{ triggerAmount | currency }}</strong>
+  <span class="deposit-msg-span">From your {{ bankName }} {{ accountType }} account ending in {{ accountNumber }}</span>
+</ng-template>
+
+<ng-template #msgForDonationTmp>
+  <ng-container *ngIf="isRecurring">
+    <ng-template [ngTemplateOutlet]="msgForRecurringDonationTmp"></ng-template>
+  </ng-container>
+  <ng-container *ngIf="!isRecurring">
+    <div class="modal-inner">
+      <span class="small-head">Your donation amount</span>
+      <h4>{{ amount | currency }}</h4>
+      <span>Your donation will be sent to {{ organization }}</span>
+    </div>
+  </ng-container>
+</ng-template>
+
+<ng-template #msgForRecurringDonationTmp>
+  <div class="modal-inner">
+    <span class="small-head">Your donation amount</span>
+    <h4>{{ amount | currency }}</h4>
+    <p class="transaction-frequency">
+      {{ frequency }},
+      <ng-container *ngIf="count === -1">Always</ng-container>
+      <ng-container *ngIf="count !== -1">{{ count }} times </ng-container>
+      <span class="transaction-estimate">Total: {{ totalAmount | currency }}</span>
+    </p>
+    <br />
+
+    <span class="deposit-msg-span">Your donation will be sent from your Matbia account to: </span>
+    <span class="deposit-msg-span"
+      ><b class="donate-highlight">{{ organization }}</b></span
+    >
+    <span class="deposit-msg-span">
+      {{ frequency }}, starting {{ startDate | date : 'MM/dd/yyyy' }},<br />
+      <ng-container *ngIf="count === -1"> Always </ng-container>
+      <ng-container *ngIf="count !== -1"> {{ count }} times, till {{ endDate | date : 'MM/dd/yyyy' }} </ng-container>
+    </span>
+  </div>
+</ng-template>

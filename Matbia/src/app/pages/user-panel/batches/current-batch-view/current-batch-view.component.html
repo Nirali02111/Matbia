@@ -1,0 +1,80 @@
+<div class="batch-view p-5">
+  <div class="table-wrapper">
+    <div class="top-header--content row">
+      <div class="col-md-8">
+        <div class="balance-card balance-amt mw-100">
+          <div class="colm">
+            <h6 class="amount-text small-amount">OPENED ON:</h6>
+            <p class="lbl--text">05/23/2023 12:14 PM</p>
+          </div>
+          <div class="colm">
+            <h6 class="amount-text small-amount">DONATIONS: (84)</h6>
+            <p class="lbl--text">$595.85</p>
+          </div>
+          <div class="colm">
+            <h6 class="amount-text small-amount">CREDITS: (3)</h6>
+            <p class="lbl--text">-$9.39</p>
+          </div>
+          <div class="colm">
+            <h6 class="amount-text small-amount">MATBIA FEES:</h6>
+            <p class="lbl--text">-$9.39</p>
+          </div>
+          <div class="colm">
+            <h6 class="amount-text small-amount">PROCESSING FEES:</h6>
+            <p class="lbl--text">-$9.39</p>
+          </div>
+          <div class="colm">
+            <h6 class="amount-text small-amount">TOTAL:</h6>
+            <p class="lbl--text">$580.01</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="balance-card mw-100 d-flex align-items-center flex-wrap balance-batch justify-content-between">
+          <div class="">
+            <h5 class="amount-text small-amount">$456.90</h5>
+            <p class="lbl--text">SELECTED TO BATCH:</p>
+          </div>
+          <button class="btn btn-primary" (click)="openCloseCurrentBatchPopup()">Close currenT BaTch</button>
+        </div>
+      </div>
+    </div>
+    <div class="table-filters batch-filter">
+      <div class="right-filers mt-0 d-flex justify-content-between flex-wrap">
+        <div class="d-flex">
+          <div class="field-search">
+            <input type="text" placeholder="Search batches" class="form-control" />
+          </div>
+          <button class="btn-filter">
+            Filter
+            <span class="count">2</span>
+          </button>
+          <div class="by-showing filter">
+            <app-date-picker-filter (filtered)="filterChange($event)" open="left" [isCustomModal]="true">
+            </app-date-picker-filter>
+          </div>
+        </div>
+        <button class="btn-print"><i class="mdi mdi-print f-size"></i> Print</button>
+      </div>
+    </div>
+    <div class="table">
+      <div class="t-head">
+        <div class="t-row">
+          <div class="th-div div-18 time-div">Date & Time</div>
+          <div class="th-div div-16 donor-div">DONOR</div>
+          <div class="th-div div-12 types-div">Type</div>
+          <div class="th-div div-12 status-div">STATUS</div>
+          <div class="th-div div-12 amount-div">AMOUNT</div>
+          <div class="th-div div-12 fee-div">Fee</div>
+          <div class="th-div div-12 balance-div">Funds</div>
+          <div class="th-div action-div"></div>
+        </div>
+        <div class="t-body">
+          <ng-container *ngFor="let item of dummyData">
+            <app-current-batch-row-item></app-current-batch-row-item>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

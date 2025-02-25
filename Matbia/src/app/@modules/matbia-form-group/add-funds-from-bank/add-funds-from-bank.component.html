@@ -1,0 +1,343 @@
+<!-- New design -->
+<ng-container *ngIf="IsDonate?.value">
+  <div class="send-money--panel add-funds-tabs donate-send" [formGroup]="formGroup">
+    <div
+      class="justify-content-md-center d-flex flex-row flex-md-column align-items-center text-center donate-details pb-2 pb-md-0 mb-4"
+    >
+      <ng-template [ngTemplateOutlet]="OrgDetails"></ng-template>
+    </div>
+
+    <ng-container *ngIf="organization && !organization.isPasswordSet">
+      <div class="donate-org d-none d-md-flex align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="21.5" height="21.5" viewBox="0 0 21.5 21.5">
+          <g
+            id="Icon_ionic-md-information-circle-outline"
+            data-name="Icon ionic-md-information-circle-outline"
+            transform="translate(-3.375 -3.375)"
+          >
+            <path
+              id="Path_17626"
+              data-name="Path 17626"
+              d="M14.125,5.546A8.576,8.576,0,1,1,8.057,8.057a8.544,8.544,0,0,1,6.068-2.512m0-2.171a10.75,10.75,0,1,0,10.75,10.75,10.748,10.748,0,0,0-10.75-10.75Z"
+              fill="#efa228"
+            />
+            <path
+              id="Path_17627"
+              data-name="Path 17627"
+              d="M18.694,21.438H16.523v-6.46h2.171Zm0-8.579H16.523V10.688h2.171Z"
+              transform="translate(-3.484 -1.938)"
+              fill="#efa228"
+            />
+          </g>
+        </svg>
+        <p>
+          This organization is not electronically linked and has no bank connected. We will mail a check for your
+          donation to {{ displayOrgDetails() }}.
+        </p>
+      </div>
+    </ng-container>
+    <div class="donate-amount position-relative mb-4">
+      <div class="panel--title">
+        <h6 class="mb-0">Amount:</h6>
+      </div>
+      <app-amount-input formControlName="amount" [separatorLimit]="AmountDigit"></app-amount-input>
+
+      <div class="d-flex align-items-center justify-content-between" style="padding-top: 5px; flex-direction: column">
+        <a
+          class="token-text"
+          style="background-color: #5d62e014; border-radius: 7px; padding: 3px; color: #5d62e0"
+          [routerLink]="getAddFundsRouterLink()"
+          >+ Add Funds</a
+        >
+      </div>
+
+      <p class="donate-balance text-end mb-0">
+        Available funds:
+        <ng-container *ngIf="isBalanceDetailsLoading">
+          <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+        </ng-container>
+        <ng-container *ngIf="!isBalanceDetailsLoading">
+          <ng-container *ngIf="balanceDetails?.availableBalanceInclFunding">
+            <span>{{ balanceDetails?.availableBalanceInclFunding | currency }}</span>
+          </ng-container>
+        </ng-container>
+      </p>
+    </div>
+
+    <div class="donate-recurring">
+      <app-recurring-form-group
+        [formGroup]="formGroup"
+        [noteMessage]="false"
+        [showAlwaysRecurringOption]="showAlwaysRecurringOption"
+      ></app-recurring-form-group>
+    </div>
+  </div>
+</ng-container>
+<!-- New design End-->
+
+<ng-container *ngIf="!IsDonate?.value">
+  <div class="send-money--panel add-funds-tabs mt-4" [formGroup]="formGroup">
+    <div class="row">
+      <div class="col-md-7 enter--amount">
+        <div class="card--custom">
+          <div class="form--group panel--title">
+            <label class="form-check-label" for="">Enter Amount:</label>
+            <app-amount-input formControlName="amount" [separatorLimit]="AmountDigit"></app-amount-input>
+          </div>
+
+          <div class="form--grouppay-from mt-4 mb-3 pb-2">
+            <div class="inside_content d-flex justify-content-between align-items-center">
+              <label class="form-check-label" for="">Pay from:</label>
+              <div class="select--wrap d-flex align-items-center">
+                <div class="filter by-transaction">
+                  <ng-select
+                    bindLabel="accountNickName"
+                    bindValue="bankAccountId"
+                    formControlName="bankAccountId"
+                    [items]="linkedAccountList"
+                    [loading]="isAccountListLoading"
+                    [selectOnTab]="true"
+                    [searchable]="false"
+                    [clearable]="linkedAccountList && linkedAccountList.length > 1"
+                  >
+                    <!-- for list of option -->
+                    <ng-template ng-option-tmp let-item="item">
+                      {{ item.accountNickName }}
+                      <ng-container *ngIf="item.isDefault">
+                        <i class="ng-option-primary"> Primary </i>
+                      </ng-container>
+                    </ng-template>
+
+                    <!-- for selected -->
+                    <ng-template ng-label-tmp let-item="item">
+                      {{ item.accountNickName }}
+                    </ng-template>
+                    <ng-container *ngIf="!inFlow">
+                      <ng-container
+                        *ngIf="isShulKiosk && isBlockBankManagement; else addNewBankAccountLinkOptionTmp"
+                      ></ng-container>
+
+                      <ng-template #addNewBankAccountLinkOptionTmp>
+                        <ng-template ng-footer-tmp>
+                          <div class="create-new" [routerLink]="getLinkNewAccountRouterLink()">
+                            <b>Link new bank account</b>
+                          </div>
+                        </ng-template>
+                      </ng-template>
+                    </ng-container>
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+            <ng-container *ngIf="BankAccountId?.touched && BankAccountId?.invalid">
+              <app-input-error [errors]="BankAccountId?.errors"></app-input-error>
+            </ng-container>
+          </div>
+
+          <div class="form--group-send-on-transaction mb-1">
+            <div class="inside_content d-flex justify-content-between align-items-center">
+              <label class="form-check-label" for="">Send On:</label>
+              <div class="select--wrap d-flex align-items-center">
+                <div class="send-on_div">
+                  <input
+                    type="text"
+                    readonly
+                    ngxDaterangepickerMd
+                    formControlName="transDate"
+                    class="form-control"
+                    [singleDatePicker]="true"
+                    [closeOnAutoApply]="true"
+                    [autoApply]="true"
+                    [isInvalidDate]="isInvalidDate"
+                  />
+
+                  <a class="ngx-daterangepicker-action" (click)="openDatepicker()">
+                    <span class="calender-icon" style="pointer-events: none"><i class="far fa-calendar-alt"></i></span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <ng-container *ngIf="TransDate?.touched && TransDate?.invalid">
+              <app-input-error [errors]="TransDate?.errors"></app-input-error>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-5 send--amount">
+        <div class="card--custom h-100">
+          <div class="panel--title d-flex justify-content-between">
+            <h6>Send To:</h6>
+            <div class="action--link" style="display: none">
+              <a href="#">Change</a>
+            </div>
+          </div>
+          <div class="mt-4 d-flex align-items-center position-relative">
+            <ng-template [ngTemplateOutlet]="DonorDetails"></ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Immediate funding section: only Display from Portal -->
+    <ng-container *ngIf="!inFlow">
+      <ng-container *ngIf="!IsDonate?.value">
+        <ng-container *ngIf="immediateFundingSection">
+          <div class="row mt-3 separate-funding immediate-funding" [formGroup]="formGroup">
+            <div class="col-md-12">
+              <div class="card--custom recurring--section" [class.immediate-both-token-empty]="bothTokenMissing">
+                <div class="recurring--content">
+                  <div class="transfer_now_amount">
+                    <div class="input_text_wrap">
+                      <div class="form--group form-check custom--checbox imme-wrap-checkbox">
+                        <ng-container *ngIf="!bothTokenMissing">
+                          <input
+                            type="checkbox"
+                            class="form-check-input"
+                            alt=""
+                            id="Imme-check"
+                            formControlName="isImmediateFunding"
+                          />
+                          <label class="form-check-label" for="Imme-check"
+                            >SWITCH TO IMMEDIATE FUNDING
+                            <ng-template [ngTemplateOutlet]="fundingTooltipTmp"></ng-template>
+                          </label>
+                        </ng-container>
+
+                        <ng-container *ngIf="bothTokenMissing">
+                          <span
+                            >SWITCH TO IMMEDIATE FUNDING
+                            <ng-template [ngTemplateOutlet]="fundingTooltipTmp"></ng-template>
+                          </span>
+
+                          <div class="relink-label">
+                            <sup>You will need to relink your bank with username & password</sup>
+                          </div>
+                        </ng-container>
+                      </div>
+                    </div>
+
+                    <ng-container *ngIf="bothTokenMissing">
+                      <a
+                        class="btn btn-primary btn-relink"
+                        [routerLink]="getLinkNewAccountRouterLink()"
+                        [queryParams]="{ addFunds: true, reLinkBankId: BankAccountId?.value }"
+                        >RELINK</a
+                      >
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </ng-container>
+    </ng-container>
+
+    <app-transaction-note-form-group [formGroup]="formGroup" [noteMessage]="false"></app-transaction-note-form-group>
+
+    <div class="row mt-3 separate-automatic-deposits">
+      <div class="col-md-12">
+        <div class="card--custom">
+          <div class="automatic-deposits--content">
+            <div class="input_text_wrap">
+              <div class="input--group">
+                <label>Automatic deposits:</label>
+              </div>
+            </div>
+            <div class="button_wrap">
+              <button class="btn btn-primary" (click)="autoDepositsClicked.emit(true)">
+                Set up Automatic deposits
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #OrgDetails>
+  <img
+    style="object-fit: cover"
+    [src]="organization?.orgLogo || profileIcon"
+    appDefaultImgOnMissing
+    class="me-3 me-md-0 mb-0 mb-md-4 rounded-circle"
+    width="40"
+    height="40"
+    alt=""
+  />
+
+  <div class="donate-info-sendto text-start text-md-center">
+    <span class="sendto-tax d-none w-100 d-md-inline-block"
+      ><strong>{{ organization?.businessName }} </strong>
+    </span>
+    <h6>
+      {{ displayOrgDetails() }}
+      @if (campaignName?.value != null) {
+      <span>-</span>
+      {{ campaignName }}
+      }
+    </h6>
+    <h5>{{ organization?.orgJewishName }}</h5>
+    <span class="sendto-address">{{ addressFieldsValues }}</span>
+    <span class="sendto-tax"><strong class="d-md-inline-block d-none">PHONE #:</strong> {{ organization?.phone }}</span>
+    <span class="sendto-tax"><strong>TAX ID:</strong> {{ organization?.taxId }}</span>
+    <ng-container *ngIf="collector">
+      <span class="sendto-tax"><strong>Collector:</strong> {{ collector }}</span>
+    </ng-container>
+  </div>
+</ng-template>
+
+<ng-template #DonorDetails>
+  <img [src]="profileIcon" class="me-3 rounded-circle" width="40" alt="" />
+  <div class="name--title w-100">
+    <h6>{{ displayDonorName() }}</h6>
+    <a *ngIf="emailId()" [attr.href]="'mailto:' + emailId()">{{ emailId() }}</a>
+  </div>
+</ng-template>
+
+<ng-template #fundingTooltipTmp>
+  <a class="funding-tooltip-link" [ngbTooltip]="fundingTipContent" tooltipClass="funding-tooltip-class">
+    <i class="fas fa-question-circle"></i
+  ></a>
+</ng-template>
+
+<ng-template #fundingTipContent>
+  <ng-container *ngIf="!bothTokenMissing">
+    By selecting this feature, funds will be available immediately after deposit
+  </ng-container>
+  <ng-container *ngIf="bothTokenMissing">
+    How this works: Plaid has a sophisticated mechanism for scoring ACH deposits. A score higher than 9 will be
+    available immediately. Linking your bank manually (without username & password) has a lower Plaid ACH score, so your
+    deposit might not be available immediately.
+  </ng-container>
+</ng-template>
+
+<ng-template #relinkContentModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Important message</h5>
+  </div>
+  <div class="modal-body">
+    <div class="relink-card">
+      <div class="relink-content">
+        <div class="text-wrap">
+          <p>
+            Due to a security update from the banking system the link to your bank account has expired.
+            <b>please relink your bank account to add funds</b>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <a
+      class="btn btn-primary"
+      [routerLink]="getLinkNewAccountRouterLink()"
+      (click)="onRelinkClick(modal)"
+      [queryParams]="{ addFunds: true, reLinkBankId: BankAccountId?.value }"
+      >Relink your account</a
+    >
+  </div>
+</ng-template>

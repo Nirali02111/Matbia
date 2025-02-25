@@ -1,0 +1,82 @@
+<div class="table-listing--wrap" [formGroup]="formGroup">
+  <div class="tbl--row">
+    <div class="tbl--col first-colm">
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" alt="" formControlName="isSendEmail" [id]="EmailCheckboxId" />
+        <label class="form-check-label" [for]="EmailCheckboxId">SEND EMAIL</label>
+      </div>
+    </div>
+
+    <ng-container *ngFor="let item of emailList">
+      <div class="tbl--col email-colm">
+        <div class="form-check">
+          <label class="form-check-label">{{ item.email }}</label>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="tbl--col edit-link d-none d-md-flex">
+      <a [routerLink]="isSwitchOn ? getProfileRouterLink() : null" class="link--text">Edit Email</a>
+    </div>
+
+    <a class="icon-link d-md-none" [routerLink]="getProfileRouterLink()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14.445" height="14.442" viewBox="0 0 14.445 14.442">
+        <path
+          id="Icon_awesome-edit"
+          data-name="Icon awesome-edit"
+          d="M13.979,2.892l3.132,3.132a.339.339,0,0,1,0,.479L9.528,14.087l-3.222.358a.675.675,0,0,1-.747-.747l.358-3.222L13.5,2.892A.339.339,0,0,1,13.979,2.892ZM19.6,2.1,17.91.4a1.358,1.358,0,0,0-1.917,0L14.764,1.632a.34.34,0,0,0,0,.479L17.9,5.243a.339.339,0,0,0,.479,0L19.6,4.014a1.358,1.358,0,0,0,0-1.917Z"
+          transform="translate(-5.555 -0.007)"
+          fill="#c2c2c2"
+        />
+      </svg>
+    </a>
+  </div>
+  <div class="tbl--row">
+    <div class="tbl--col first-colm">
+      <div class="form-check">
+        <input type="checkbox" class="form-check-input" alt="" formControlName="isSendSMS" [id]="SMSCheckboxId" />
+        <label class="form-check-label" [for]="SMSCheckboxId">SEND TEXT MESSAGE</label>
+      </div>
+    </div>
+    <div class="tbl--col email-colm">
+      <ng-container *ngFor="let item of phoneList">
+        <div class="form-check">
+          <input
+            type="radio"
+            class="form-check-input"
+            alt=""
+            formControlName="entityPhoneId"
+            [value]="item.entityPhoneId"
+          />
+          <label class="form-check-label"
+            >{{ item.phone | mask : '000-000-0000' }} <span class="entity-phone-id">{{ item.label }}</span>
+          </label>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="EntityPhoneId?.touched && EntityPhoneId?.invalid">
+        <div class="form-check">
+          <app-input-error [errors]="EntityPhoneId?.errors"></app-input-error>
+        </div>
+      </ng-container>
+    </div>
+    <div class="tbl--col edit-link d-none d-md-flex">
+      <a [routerLink]="isSwitchOn ? getProfileRouterLink() : null" class="link--text">Edit Phone Number</a>
+    </div>
+
+    <a class="icon-link d-md-none" [routerLink]="getProfileRouterLink()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14.445" height="14.442" viewBox="0 0 14.445 14.442">
+        <path
+          id="Icon_awesome-edit"
+          data-name="Icon awesome-edit"
+          d="M13.979,2.892l3.132,3.132a.339.339,0,0,1,0,.479L9.528,14.087l-3.222.358a.675.675,0,0,1-.747-.747l.358-3.222L13.5,2.892A.339.339,0,0,1,13.979,2.892ZM19.6,2.1,17.91.4a1.358,1.358,0,0,0-1.917,0L14.764,1.632a.34.34,0,0,0,0,.479L17.9,5.243a.339.339,0,0,0,.479,0L19.6,4.014a1.358,1.358,0,0,0,0-1.917Z"
+          transform="translate(-5.555 -0.007)"
+          fill="#c2c2c2"
+        />
+      </svg>
+    </a>
+  </div>
+  @if(emailPhoneRequiredError && !IsSendEmail?.value && !IsSendSMS?.value && isPaused?.value){
+  <div><span class="val-error">Please select a alert delivery method</span></div>
+  }
+</div>

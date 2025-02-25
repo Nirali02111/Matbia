@@ -1,0 +1,24 @@
+<div class="t-row">
+  <div class="td-div">
+    {{ item.tokenNumber }}
+  </div>
+  <div class="td-div">
+    <span class="fw-medium">{{ item.donorName }}</span>
+  </div>
+  <div class="td-div">
+    <div
+      class="badge"
+      [class.badge-success]="isGenerated"
+      [class.badge-warning]="iExpired"
+      [class.badge-danger]="isVoided"
+    >
+      @if (iExpired) { To be reviewed } @else {
+      {{ item.status }}
+      }
+    </div>
+  </div>
+  <div class="td-div">
+    <span class="fw-medium">{{ item.tokenAmount | currency }}</span>
+  </div>
+  <div class="td-div"></div>
+</div>

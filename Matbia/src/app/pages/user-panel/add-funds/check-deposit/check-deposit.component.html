@@ -1,0 +1,615 @@
+@if (!displayDepositMethods()) { @if(displaySuccess()) {
+<ng-template [ngTemplateOutlet]="successTmp"></ng-template>
+} @else {
+<ng-template [ngTemplateOutlet]="page"></ng-template>
+} } @else {
+<app-choose-deposite-method></app-choose-deposite-method>
+}
+
+<ng-template #page>
+  <div class="section-fund-deposit">
+    <div class="small--container mx-auto">
+      <span class="d-flex gap-3 align-items-center link-back">
+        <a href="javascript:void(0)" (click)="$event.preventDefault(); displayDepositMethods.set(true)"
+          ><svg
+            id=" Component_51_4"
+            data-name="Component 51 – 4"
+            xmlns="http://www.w3.org/2000/svg"
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+          >
+            <rect id="Rectangle_4499" data-name="Rectangle 4499" width="40" height="40" rx="10" opacity="0.08" />
+            <path
+              id="Path_445"
+              data-name="Path 445"
+              d="M2272.064,287.648l6.376,6.376,6.376-6.376"
+              transform="translate(310.275 -2258.439) rotate(90)"
+              fill="none"
+              stroke="#454545"
+              stroke-linecap="round"
+              stroke-width="1.5"
+              opacity="0.55"
+            />
+          </svg>
+        </a>
+        <h1>Deposit funds via Check</h1>
+      </span>
+
+      <div class="d-flex flex-column flex-xl-row">
+        <div class="card-fund-data">
+          <div class="from-group" [formGroup]="formGroup">
+            <label>Amount</label>
+            <app-amount-input formControlName="amount" [separatorLimit]="AmountDigit"></app-amount-input>
+            <button class="btn btn-calculator btn-outline-light" (click)="openMaaserCalculator()">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12.858" height="12.851" viewBox="0 0 12.858 12.851">
+                <g id="graph-pie" transform="translate(-24.674 -24.71)">
+                  <g
+                    id="Path_37387"
+                    data-name="Path 37387"
+                    transform="translate(-69.907 0)"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M101.736,24.71a.23.23,0,0,0-.229.229.219.219,0,0,0,.007.033h-.007v5.441a.23.23,0,0,0,.229.229h5.44v-.007a.218.218,0,0,0,.034.007.23.23,0,0,0,.229-.229A5.764,5.764,0,0,0,101.736,24.71Z"
+                      stroke="none"
+                    />
+                    <path
+                      d="M 102.3065719604492 25.54975509643555 L 102.3065719604492 29.8433952331543 L 106.5998992919922 29.8433952331543 C 106.462532043457 28.75631141662598 105.9715728759766 27.75017356872559 105.1855850219727 26.96416473388672 C 104.3996505737305 26.17821311950684 103.3935775756836 25.68722534179688 102.3065719604492 25.54975509643555 M 101.7358779907227 24.71039581298828 C 104.871696472168 24.74310493469238 107.4066772460938 27.27807426452637 107.4392013549805 30.41391563415527 C 107.4392013549805 30.54059600830078 107.3364181518555 30.64339447021484 107.2099075317383 30.64339447021484 C 107.1979751586914 30.64339447021484 107.1877517700195 30.63836479187012 107.1763381958008 30.63664436340332 L 107.1763381958008 30.64339447021484 L 101.7358779907227 30.64339447021484 C 101.6093521118164 30.64339447021484 101.5065765380859 30.54059600830078 101.5065765380859 30.41391563415527 L 101.5065765380859 24.97327423095703 L 101.513313293457 24.97327423095703 C 101.5115814208984 24.96185493469238 101.5065765380859 24.95164489746094 101.5065765380859 24.93987464904785 C 101.5065765380859 24.81319427490234 101.6093521118164 24.71039581298828 101.7358779907227 24.71039581298828 Z"
+                      stroke="none"
+                      fill="#5d62e0"
+                    />
+                  </g>
+                  <g
+                    id="Path_37388"
+                    data-name="Path 37388"
+                    transform="translate(0 -13.322)"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M36.206,45.057a.229.229,0,0,0-.229-.229h-5a.229.229,0,0,1-.229-.229V39.615h-.007a.22.22,0,0,0,.007-.033.229.229,0,0,0-.229-.229c-.006,0-.01,0-.015,0v0l-.061,0a5.766,5.766,0,1,0,5.766,5.766c0-.018,0-.037,0-.055C36.2,45.061,36.206,45.059,36.206,45.057Z"
+                      stroke="none"
+                    />
+                    <path
+                      d="M 29.94570350646973 40.17668914794922 C 27.4384880065918 40.42533493041992 25.47392272949219 42.54658889770508 25.47392272949219 45.11812591552734 C 25.47392272949219 47.85628509521484 27.70157241821289 50.08393478393555 30.43973350524902 50.08393478393555 C 33.00642395019531 50.08393478393555 35.12453460693359 48.12659072875977 35.3797607421875 45.62755584716797 L 30.97443389892578 45.62755584716797 C 30.40719413757324 45.62715530395508 29.94570350646973 45.16533660888672 29.94570350646973 44.59808731079102 L 29.94570350646973 40.17668914794922 M 30.43973350524902 39.3523063659668 C 30.46015357971191 39.3523063659668 30.48040390014648 39.35369491577148 30.50082397460938 39.35386657714844 L 30.50082397460938 39.35542678833008 C 30.50618362426758 39.35508728027344 30.51068305969238 39.35231781005859 30.5162239074707 39.35231781005859 C 30.64290428161621 39.35231781005859 30.74570274353027 39.45493698120117 30.74570274353027 39.581787109375 C 30.74570274353027 39.59355545043945 30.74068260192871 39.60376739501953 30.73895263671875 39.61518478393555 L 30.74570274353027 39.61518478393555 L 30.74570274353027 44.59808731079102 C 30.74570274353027 44.72475433349609 30.84833335876465 44.82746505737305 30.97500419616699 44.82755661010742 L 35.97624206542969 44.82755661010742 C 36.10292434692383 44.82755661010742 36.20554351806641 44.93035507202148 36.20554351806641 45.05703735351562 C 36.20554351806641 45.05911636352539 36.2043342590332 45.06084442138672 36.2043342590332 45.06309509277344 C 36.20468139648438 45.08160781860352 36.20554351806641 45.09978485107422 36.20554351806641 45.11812591552734 C 36.20554351806641 48.30241775512695 33.6240234375 50.88393402099609 30.43973350524902 50.88393402099609 C 27.25544357299805 50.88393402099609 24.67392349243164 48.30241775512695 24.67392349243164 45.11812591552734 C 24.67392349243164 41.93383407592773 27.25544357299805 39.3523063659668 30.43973350524902 39.3523063659668 Z"
+                      stroke="none"
+                      fill="#5d62e0"
+                    />
+                  </g>
+                </g>
+              </svg>
+              מעשר Calculator
+            </button>
+          </div>
+
+          <ul ngbNav #nav="ngbNav" [(activeId)]="active" (navChange)="onNavChange()" class="nav-tabs">
+            <li class="w-100" [ngbNavItem]="1">
+              <a href="javascript:void(0)" ngbNavLink>
+                <svg xmlns="http://www.w3.org/2000/svg" width="19.061" height="14.296" viewBox="0 0 19.061 14.296">
+                  <g id="camera-fill" opacity="1">
+                    <g id="Group_3461" data-name="Group 3461" transform="translate(0 0)">
+                      <path
+                        id="Path_37343"
+                        data-name="Path 37343"
+                        d="M71.957,74.978A2.978,2.978,0,1,1,68.978,72a2.978,2.978,0,0,1,2.978,2.978Z"
+                        transform="translate(-59.448 -67.235)"
+                        fill="currentColor"
+                      />
+                      <path
+                        id="Path_37344"
+                        data-name="Path 37344"
+                        d="M2.383,26.383A2.383,2.383,0,0,0,0,28.765v7.148A2.383,2.383,0,0,0,2.383,38.3h14.3a2.383,2.383,0,0,0,2.383-2.383V28.765a2.383,2.383,0,0,0-2.383-2.383h-1.4a2.382,2.382,0,0,1-1.684-.7l-.987-.987a2.383,2.383,0,0,0-1.685-.7H8.134a2.382,2.382,0,0,0-1.684.7l-.987.987a2.383,2.383,0,0,1-1.685.7Zm.6,2.383a.6.6,0,1,1,.6-.6A.6.6,0,0,1,2.978,28.765ZM13.7,31.744a4.17,4.17,0,1,1-4.17-4.17A4.17,4.17,0,0,1,13.7,31.744Z"
+                        transform="translate(0 -24)"
+                        fill="currentColor"
+                      />
+                    </g>
+                  </g>
+                </svg>
+                Upload images
+              </a>
+              <ng-template ngbNavContent>
+                <ng-template [ngTemplateOutlet]="commonTmp"></ng-template>
+
+                <div class="card" [formGroup]="formGroup">
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-12">
+                        <label for="note" class="form-label">CHECK NUMBER: *</label>
+                        <input type="number" class="form-control" formControlName="refId" placeholder="CHECK NUMBER" />
+
+                        @if(RefIdField?.touched && RefIdField?.invalid) {
+                        <app-input-error [errors]="RefIdField?.errors"></app-input-error>
+                        }
+                      </div>
+                      <div class="col-md-12">
+                        <label class="form-label">FRONT OF CHECK:</label>
+                        <input
+                          class="d-none"
+                          type="file"
+                          id="front-check"
+                          (change)="onFileChange($event)"
+                          accept=".jpg, jpeg, .png, .xls, .xlsx, .docx, .doc, .pdf"
+                        />
+
+                        <label class="image-upload" for="front-check" [class.have-check-image]="frontImageUrl()">
+                          @if(frontImageUrl()) {
+                          <span>Change Image</span>
+                          } @else {
+                          <span>UPLOAD IMAGE</span>
+                          } @if(frontImageUrl()) {
+                          <img [src]="frontImageUrl()" alt="" />
+                          }
+                        </label>
+
+                        @if(FrontImageField?.touched && FrontImageField?.invalid) {
+                        <app-input-error [errors]="FrontImageField?.errors"></app-input-error>
+                        }
+                      </div>
+
+                      <div class="col-md-12">
+                        <label class="form-label">BACK OF CHECK:</label>
+                        <input
+                          class="d-none"
+                          type="file"
+                          id="back-check"
+                          (change)="onFileChange($event, false)"
+                          accept=".jpg, jpeg, .png, .xls, .xlsx, .docx, .doc, .pdf"
+                        />
+
+                        <label class="image-upload" for="back-check" [class.have-check-image]="backImageUrl()">
+                          @if(backImageUrl()) {
+                          <span>Change Image</span>
+                          } @else {
+                          <span>UPLOAD IMAGE</span>
+                          } @if(backImageUrl()) {
+                          <img [src]="backImageUrl()" alt="" />
+                          }
+                        </label>
+
+                        @if(BackImageField?.touched && BackImageField?.invalid) {
+                        <app-input-error [errors]="BackImageField?.errors"></app-input-error>
+                        }
+                      </div>
+
+                      <div class="col-md-12">
+                        <label for="note" class="form-label">NOTE:</label>
+                        <textarea
+                          type="text"
+                          class="form-control"
+                          id="note"
+                          formControlName="note"
+                          placeholder="Write a note"
+                        ></textarea>
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-check">
+                          <input
+                            id="third-party"
+                            type="checkbox"
+                            class="form-check-input"
+                            alt=""
+                            formControlName="isThirdPartyDeposit"
+                          />
+                          <label for="third-party" class="form-check-label">This is a third-party deposit</label>
+                        </div>
+                      </div>
+                      @if(IsThirdPartyDeposit?.value) {
+
+                      <div class="col-md-12">
+                        <label for="payername" class="form-label">PAYER NAME</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="payername"
+                          formControlName="payername"
+                          placeholder="Enter payer name"
+                        />
+                        @if(Payername?.touched && Payername?.invalid) {
+                        <app-input-error [errors]="Payername?.errors"></app-input-error>
+                        }
+                      </div>
+                      <div class="col-md-12">
+                        <label class="form-label" for="address"> ADDRESS: </label>
+                        <input
+                          type="text"
+                          id="address"
+                          placeholder="Street address"
+                          class="form-control"
+                          formControlName="address"
+                          appAddressAutocomplete
+                          (onAddressChange)="onAddressChange($event)"
+                        />
+                        @if(Address?.touched && Address?.invalid) {
+                        <app-input-error [errors]="Address?.errors"></app-input-error>
+                        }
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label"> CITY: </label>
+                        <input
+                          type="text"
+                          placeholder="Enter City"
+                          class="form-control"
+                          formControlName="city"
+                          [attr.autocomplete]="isAutoSuggestion ? 'new-city' : null"
+                        />
+                        @if(City?.touched && City?.invalid) {
+                        <app-input-error [errors]="City?.errors"></app-input-error>
+                        }
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label"> STATE: </label>
+                        <ng-select
+                          class="ng-select-state"
+                          bindLabel="item_id"
+                          bindValue="item_id"
+                          [addTag]="true"
+                          [searchable]="true"
+                          formControlName="state"
+                          [searchFn]="customSearchFn"
+                          [items]="commonDataService.stateList"
+                        >
+                          <ng-template ng-option-tmp let-item="item">
+                            {{ item.item_id }}
+                          </ng-template>
+                        </ng-select>
+                        @if(State?.touched && State?.invalid) {
+                        <app-input-error [errors]="State?.errors"></app-input-error>
+                        }
+                      </div>
+
+                      <div class="col-md-3">
+                        <label class="form-label"> ZIP: </label>
+                        <input
+                          type="tel"
+                          id="zipcode"
+                          placeholder="Zip Code"
+                          class="form-control"
+                          formControlName="zip"
+                          [validation]="zipCodeValidation"
+                          [mask]="zipCodeMask"
+                          [attr.autocomplete]="isAutoSuggestion ? 'new-zip' : null"
+                        />
+                        @if(Zip?.touched && Zip?.invalid) {
+                        <app-input-error [errors]="Zip?.errors"></app-input-error>
+                        }
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">EMAIL ADDRESS:</label>
+                        <input
+                          type="email"
+                          placeholder="Enter Email Address"
+                          class="form-control"
+                          formControlName="email"
+                          [attr.autocomplete]="isAutoSuggestion ? 'new-email' : null"
+                        />
+                        @if(Email?.touched && Email?.invalid) {
+                        <app-input-error [errors]="Email?.errors"></app-input-error>
+                        }
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label"> PHONE NUMBER:</label>
+                        <app-phone-input [isSubmit]="false" formControlName="phone"></app-phone-input>
+                        @if(Phone?.touched && Phone?.invalid) {
+                        <app-input-error [errors]="Phone?.errors"></app-input-error>
+                        }
+                      </div>
+
+                      }
+                    </div>
+                  </div>
+                </div>
+              </ng-template>
+            </li>
+            <li class="w-100" [ngbNavItem]="2">
+              <a href="javascript:void(0)" ngbNavLink>
+                <svg
+                  id="mail-open"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16.901"
+                  height="14.379"
+                  viewBox="0 0 16.901 14.379"
+                >
+                  <path
+                    id="Path_37345"
+                    data-name="Path 37345"
+                    d="M27.879,27.732l-6.586-3.254a1.551,1.551,0,0,0-1.366,0l-6.586,3.254a2.1,2.1,0,0,0-1.182,1.889v6.965A2.128,2.128,0,0,0,14.3,38.7H26.923a2.128,2.128,0,0,0,2.138-2.113V29.622a2.1,2.1,0,0,0-1.182-1.889Zm-7.405-2.174a.31.31,0,0,1,.273,0l6.39,3.156-6.489,3.207a.31.31,0,0,1-.273,0l-6.391-3.157Z"
+                    transform="translate(-12.16 -24.32)"
+                    fill="currentColor"
+                  />
+                </svg>
+                Send by mail
+              </a>
+              <ng-template ngbNavContent>
+                <div class="card">
+                  <div class="card-body">
+                    <div class="row" [formGroup]="formGroup">
+                      <div class="col-md-12">
+                        <label for="note" class="form-label">CHECK NUMBER: *</label>
+                        <input
+                          style="-webkit-appearance: none; margin: 0"
+                          type="number"
+                          class="form-control"
+                          formControlName="refId"
+                          placeholder="CHECK NUMBER"
+                        />
+
+                        @if(RefIdField?.touched && RefIdField?.invalid) {
+                        <app-input-error [errors]="RefIdField?.errors"></app-input-error>
+                        }
+                      </div>
+
+                      <div class="col-md-12">
+                        <label for="note" class="form-label">NOTE:</label>
+                        <input type="text" class="form-control" formControlName="note" placeholder="Write a note" />
+                      </div>
+                      <div class="col-md-12">
+                        <div class="form-check">
+                          <input
+                            id="third-party"
+                            type="checkbox"
+                            class="form-check-input"
+                            alt=""
+                            formControlName="isThirdPartyDeposit"
+                          />
+                          <label for="third-party" class="form-check-label">This is a third-party deposit</label>
+                        </div>
+                      </div>
+                      @if(IsThirdPartyDeposit?.value) {
+
+                      <div class="col-md-12">
+                        <label for="payername" class="form-label">PAYER NAME</label>
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="payername"
+                          formControlName="payername"
+                          placeholder="Enter payer name"
+                        />
+                        @if(Payername?.touched && Payername?.invalid) {
+                        <app-input-error [errors]="Payername?.errors"></app-input-error>
+                        }
+                      </div>
+                      <div class="col-md-12">
+                        <label class="form-label" for="address"> ADDRESS: </label>
+                        <input
+                          type="text"
+                          id="address"
+                          placeholder="Street address"
+                          class="form-control"
+                          formControlName="address"
+                          appAddressAutocomplete
+                          (onAddressChange)="onAddressChange($event)"
+                        />
+                        @if(Address?.touched && Address?.invalid) {
+                        <app-input-error [errors]="Address?.errors"></app-input-error>
+                        }
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label"> CITY: </label>
+                        <input
+                          type="text"
+                          placeholder="Enter City"
+                          class="form-control"
+                          formControlName="city"
+                          [attr.autocomplete]="isAutoSuggestion ? 'new-city' : null"
+                        />
+                        @if(City?.touched && City?.invalid) {
+                        <app-input-error [errors]="City?.errors"></app-input-error>
+                        }
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label"> STATE: </label>
+                        <ng-select
+                          class="ng-select-state"
+                          bindLabel="item_id"
+                          bindValue="item_id"
+                          [addTag]="true"
+                          [searchable]="true"
+                          formControlName="state"
+                          [searchFn]="customSearchFn"
+                          [items]="commonDataService.stateList"
+                        >
+                          <ng-template ng-option-tmp let-item="item">
+                            {{ item.item_id }}
+                          </ng-template>
+                        </ng-select>
+                        @if(State?.touched && State?.invalid) {
+                        <app-input-error [errors]="State?.errors"></app-input-error>
+                        }
+                      </div>
+
+                      <div class="col-md-3">
+                        <label class="form-label"> ZIP: </label>
+                        <input
+                          type="tel"
+                          id="zipcode"
+                          placeholder="Zip Code"
+                          class="form-control"
+                          formControlName="zip"
+                          [validation]="zipCodeValidation"
+                          [mask]="zipCodeMask"
+                          [attr.autocomplete]="isAutoSuggestion ? 'new-zip' : null"
+                        />
+                        @if(Zip?.touched && Zip?.invalid) {
+                        <app-input-error [errors]="Zip?.errors"></app-input-error>
+                        }
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label">EMAIL ADDRESS:</label>
+                        <input
+                          type="email"
+                          placeholder="Enter Email Address"
+                          class="form-control"
+                          formControlName="email"
+                          [attr.autocomplete]="isAutoSuggestion ? 'new-email' : null"
+                        />
+                        @if(Email?.touched && Email?.invalid) {
+                        <app-input-error [errors]="Email?.errors"></app-input-error>
+                        }
+                      </div>
+                      <div class="col-md-6">
+                        <label class="form-label"> PHONE NUMBER:</label>
+                        <app-phone-input [isSubmit]="false" formControlName="phone"></app-phone-input>
+                        @if(Phone?.touched && Phone?.invalid) {
+                        <app-input-error [errors]="Phone?.errors"></app-input-error>
+                        }
+                      </div>
+
+                      }
+                    </div>
+                  </div>
+                </div>
+
+                <ng-template [ngTemplateOutlet]="commonTmp"></ng-template>
+              </ng-template>
+            </li>
+          </ul>
+
+          <div [ngbNavOutlet]="nav"></div>
+
+          <div
+            class="card-bottom-bar text-sm-start text-center d-flex flex-sm-row flex-column align-items-sm-center justify-content-sm-end"
+          >
+            <small class="mb-4 mb-sm-0">
+              By submitting you agree to our <a (click)="onOpenTermAndCondition($event)">Terms & Conditions.</a>
+            </small>
+            <div class="d-flex flex-column flex-sm-row">
+              <button class="btn btn-link">Cancel</button>
+              <button class="btn btn-primary" (click)="onSubmit()">SUBMIT</button>
+            </div>
+          </div>
+        </div>
+        <div class="flex-fill">
+          <app-add-funds-other-method-option-links type="CHECK">
+            <ng-template #timeTemp> Funded in 1-2 business days </ng-template>
+
+            <ng-template #completedTemp> Completes in 7 business days </ng-template>
+
+            <ng-template #minimumTemplate> Minimum deposit $50 </ng-template>
+          </app-add-funds-other-method-option-links>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #successTmp>
+  <div class="section-fund-deposit confirmation-message">
+    <div class="small--container mx-auto">
+      <div class="d-flex gap-3 align-items-center link-back">
+        <h1>Confirmation</h1>
+      </div>
+
+      <div class="d-flex flex-column flex-xl-row">
+        <div class="card-fund-data">
+          <ng-template [ngTemplateOutlet]="commonTmp"></ng-template>
+        </div>
+        <div class="flex-fill">
+          <div class="card card-confirm text-center">
+            <div class="card-body">
+              <span>Check by mail</span>
+              <i>
+                <svg
+                  id="Group_2836"
+                  data-name="Group 2836"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="46"
+                  height="46"
+                  viewBox="0 0 46 46"
+                >
+                  <rect
+                    id="Rectangle_4464"
+                    data-name="Rectangle 4464"
+                    width="46"
+                    height="46"
+                    rx="14"
+                    fill="#7a7ee1"
+                    opacity="0.18"
+                  />
+                  <path
+                    id="Union_56"
+                    data-name="Union 56"
+                    d="M1.856,23.9A1.858,1.858,0,0,1,0,22.047V10.566A1.839,1.839,0,0,1,.509,9.295l0-.006.031-.025A1.769,1.769,0,0,1,.865,9l.286-.229v.4l.456.371,7.674,6.219,2.291-1.854a1.989,1.989,0,0,1,2.425,0l2.291,1.854,7.037-5.707h0l.943-.764.222-.182V8.828L24.712,9a1.78,1.78,0,0,1,.317.256l0,0h0a1.843,1.843,0,0,1,.537,1.3v11.48A1.857,1.857,0,0,1,23.714,23.9ZM12.11,14.576,1.661,23.027a1.065,1.065,0,0,0,.195.02H23.714a.907.907,0,0,0,.194-.02L13.459,14.576a1.148,1.148,0,0,0-1.348,0ZM.857,10.566v11.48a.991.991,0,0,0,.105.445L8.6,16.314.962,10.121A.991.991,0,0,0,.857,10.566Zm16.112,5.748,7.639,6.178a.993.993,0,0,0,.106-.445V10.566a.991.991,0,0,0-.105-.445Zm-.68-1.275h0L14,13.188a1.982,1.982,0,0,0-2.425,0L9.281,15.039,1.714,8.906V6.881a.544.544,0,0,1,.543-.543H4.184L11.571.408A2.01,2.01,0,0,1,14,.408l7.389,5.93h2a.544.544,0,0,1,.544.543V8.844l-7.641,6.2h0ZM7.637,11.783A2.063,2.063,0,0,0,8.508,12v.486h.5v-.521a.989.989,0,0,0,.911-.947c0-.467-.248-.744-.855-.957A2.223,2.223,0,0,1,8.6,9.844a.266.266,0,0,1-.144-.221c0-.086.043-.287.44-.287a1.652,1.652,0,0,1,.7.158l.036.016.149-.578a1.887,1.887,0,0,0-.743-.17V8.313h-.5V8.8a.953.953,0,0,0-.866.91c0,.441.276.721.922.938.39.133.542.258.542.447A.267.267,0,0,1,9,11.328a.686.686,0,0,1-.354.082,1.8,1.8,0,0,1-.85-.227Zm4.235-.967a.3.3,0,0,0,.307.3h5.733a.3.3,0,1,0,0-.592H12.178A.3.3,0,0,0,11.872,10.816Zm0-1.623a.3.3,0,0,0,.307.3h5.733a.3.3,0,1,0,0-.592H12.178A.3.3,0,0,0,11.872,9.193Zm8.149-2.855-6.557-5.26a1.17,1.17,0,0,0-1.357,0L5.55,6.338Z"
+                    transform="translate(10.731 9.1)"
+                    fill="#7579cd"
+                    stroke="rgba(0,0,0,0)"
+                    stroke-width="1"
+                  />
+                </svg>
+              </i>
+              <h2>{{ AmountField?.value | currency }}</h2>
+              <small class="mb-1"
+                >CHECK NUMBER: <strong>{{ RefIdField?.value }}</strong></small
+              >
+              <small
+                >REFERENCE NUMBER: <strong>{{ refNumber() }}</strong></small
+              >
+              <p>Deposit will be funded 1-2 business days after receipt of Check.</p>
+              <button class="btn btn-outline-light" [routerLink]="getDashboardRouterLink()">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #commonTmp>
+  <div class="card card-info">
+    <div class="card-body">
+      @if(active === 2 || displaySuccess()){
+      <div class="card-head">
+        <h4>Mailing instructions</h4>
+      </div>
+
+      }
+
+      <h5>MAKE CHECK PAYABLE TO:</h5>
+      <div app-copy-data-action-button toCopy="Matbia Charities">
+        <ng-template #displayTemplate>
+          <p>Matbia Charities</p>
+        </ng-template>
+      </div>
+      <hr />
+      <h5>WRITE YOUR MATBIA ACCOUNT NUMBER IN CHECK MEMO:</h5>
+      <div app-account-hash defaultLabel="Your Account #"></div>
+
+      @if(displaySuccess()) {
+      <ng-template [ngTemplateOutlet]="checkSampleImgTmp"></ng-template>
+
+      <ng-template [ngTemplateOutlet]="mailToTmp"></ng-template>
+      } @else { @if(active === 2){
+      <ng-template [ngTemplateOutlet]="mailToTmp"></ng-template>
+      } @if(active === 1){
+      <ng-template [ngTemplateOutlet]="checkSampleImgTmp"></ng-template>
+      } }
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #mailToTmp>
+  <hr />
+  <h5>MAIL TO:</h5>
+
+  <div app-copy-data-action-button toCopy="Matbia Inc. 5314 16 ave #298 Brooklyn NY 11204">
+    <ng-template #displayTemplate>
+      <address>
+        <p>Matbia Inc.</p>
+        <p>
+          5314 16 ave #298 <br />
+          Brooklyn NY 11204
+        </p>
+      </address>
+    </ng-template>
+  </div>
+</ng-template>
+
+<ng-template #checkSampleImgTmp>
+  <figure>
+    <img src="assets/dist/img/check-sample-img.png" alt="" />
+  </figure>
+</ng-template>

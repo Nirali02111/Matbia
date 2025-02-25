@@ -1,0 +1,373 @@
+<ng-container *ngIf="!isGenerated">
+  <ng-template [ngTemplateOutlet]="generateTmp"></ng-template>
+</ng-container>
+
+<ng-container *ngIf="isGenerated">
+  <ng-template [ngTemplateOutlet]="successTmp"></ng-template>
+</ng-container>
+
+<ng-template #generateTmp>
+  <div class="token-page px-lg-3 py-3 py-md-4">
+    <div class="small--container w-100 m-auto">
+      <a href="javascript:void(0)" class="link-back d-flex align-items-center mb-4">
+        <span class="m-0">Generate Tokens</span>
+      </a>
+
+      <div class="tokan-wrap d-flex flex-column flex-xl-row flex-xl-nowrap gap-4">
+        <div class="tokan-list flex-fill" [formGroup]="formGroup">
+          <div
+            class="token-item d-flex align-items-center justify-content-between"
+            *ngFor="let item of Tokens?.controls; let i = index"
+            formArrayName="tokens"
+            [class.active]="isActive(Tokens, i)"
+          >
+            <div class="input d-flex align-items-center" [formGroupName]="i">
+              $
+              <app-amount-input formControlName="tokenAmount" placeholder="0.00"></app-amount-input>
+            </div>
+            <div class="number d-flex align-items-center" [formGroupName]="i">
+              <i class="plus" (click)="onIncrease(i, item.get('tokenCount')?.value)"></i>
+              <input type="text" formControlName="tokenCount" />
+              <i class="minus" (click)="onDecrease(i, item.get('tokenCount')?.value)"></i>
+            </div>
+
+            <ng-container *ngIf="item.get('tokenCount')?.touched && item.get('tokenCount')?.invalid">
+              <app-input-error [errors]="item.get('tokenCount')?.errors"></app-input-error>
+            </ng-container>
+          </div>
+
+          <div
+            class="token-item token-item-empty gap-2 gap-lg-0 d-flex flex-column flex-lg-row align-items-lg-center justify-content-lg-between"
+            [ngClass]="{ 'cursor-pointer': isPresetAmountHovering }"
+          >
+            <div class="d-flex align-items-center" (click)="onAddToken()">
+              <i class="icon icon-add"></i>
+              <div class="input d-flex align-items-center me-auto">
+                $
+                <input type="text" value="0" />
+              </div>
+            </div>
+
+            <!-- added dynamic amount logic -->
+            <div class="d-flex flex-wrap flex-sm-nowrap gap-2" *ngFor="let amount of amounts">
+              <a
+                [class.amount-active]="amount.isActive"
+                (click)="setActiveAmount(amount)"
+                (mouseenter)="(isPresetAmountHovering)"
+                (mouseleave)="(!isPresetAmountHovering)"
+              >
+                {{ amount.displayVal }}
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <ng-template [ngTemplateOutlet]="infoTmp"></ng-template>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<ng-template #tooltipContent>
+  As of now deposits that are still pending or funding can't be used to generate Tokens.<br /><br />We're working to
+  help you generate tokens even with Funds that are still funding. Stay on the lookout.
+</ng-template>
+
+<ng-template #infoTmp>
+  <div class="token-data-sub mb-2 mb-md-4" [formGroup]="formGroup">
+    <span class="text-center d-inline-block w-100">TOTAL:</span>
+    <h2 class="text-center">{{ TokensTotal | currency }}</h2>
+
+    <ul class="token-list-item">
+      <li>
+        <label class="d-inline-block w-100 mb-1">
+          Available Funds:
+          <span [ngbTooltip]="tooltipContent" placement="bottom-left" tooltipClass="funds-tooltip">
+            <svg xmlns="http://www.w3.org/2000/svg" width="10.5" height="10.5" viewBox="0 0 10.5 10.5">
+              <g
+                id="Icon_ionic-ios-help-circle-outline"
+                data-name="Icon ionic-ios-help-circle-outline"
+                transform="translate(-3.375 -3.375)"
+              >
+                <path
+                  id="Path_1824"
+                  data-name="Path 1824"
+                  d="M8.625,4.082a4.541,4.541,0,1,1-3.213,1.33,4.513,4.513,0,0,1,3.213-1.33m0-.707a5.25,5.25,0,1,0,5.25,5.25,5.249,5.249,0,0,0-5.25-5.25Z"
+                  transform="translate(0 0)"
+                  fill="#c1c1c1"
+                />
+                <path
+                  id="Path_1825"
+                  data-name="Path 1825"
+                  d="M15.133,11.25c.947,0,1.6.525,1.6,1.28a1.235,1.235,0,0,1-.709,1.121c-.439.255-.588.442-.588.765v.2h-.876L14.55,14.4a1.051,1.051,0,0,1,.6-1.111c.427-.255.606-.416.606-.729a.613.613,0,0,0-.679-.543.639.639,0,0,0-.676.621h-.9A1.441,1.441,0,0,1,15.133,11.25Zm-.664,4.326a.542.542,0,1,1,.54.52A.529.529,0,0,1,14.469,15.576Z"
+                  transform="translate(-6.49 -5.048)"
+                  fill="#c1c1c1"
+                />
+              </g>
+            </svg>
+          </span>
+        </label>
+        <div class="d-flex align-items-center justify-content-between">
+          <span class="token-text" [ngClass]="{ 'text-danger': TokensTotal > availableBalance }">{{
+            availableBalance | currency
+          }}</span>
+          <a class="text-uppercase" [routerLink]="getAddFundsRouterLink()">+ Add Funds</a>
+        </div>
+      </li>
+      <li>
+        <label>Expires:</label>
+
+        <input
+          type="text"
+          readonly
+          opens="left"
+          ngxDaterangepickerMd
+          formControlName="expDate"
+          [locale]="locale"
+          startKey="startDate"
+          endKey="endDate"
+          [closeOnAutoApply]="true"
+          [ranges]="ranges"
+          [autoApply]="true"
+          [minDate]="minDate"
+          [singleDatePicker]="true"
+          [showRangeLabelOnInput]="true"
+          [linkedCalendars]="true"
+          [alwaysShowCalendars]="true"
+          [isInvalidDate]="isInvalidDate"
+          (datesUpdated)="onDatesUpdated($event)"
+          (rangeClicked)="onRangeSelect()"
+        />
+      </li>
+      <li>
+        <label>Setting for after expiration:</label>
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="token-text">{{ settingsToken }}</span>
+          <i class="d-flex me-2" (click)="goToTokenSettingsPage()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16.882" height="16.882" viewBox="0 0 16.882 16.882">
+              <path
+                id="Icon_ionic-ios-settings"
+                data-name="Icon ionic-ios-settings"
+                d="M19.989,12.939a2.172,2.172,0,0,1,1.394-2.026A8.608,8.608,0,0,0,20.34,8.4a2.2,2.2,0,0,1-.884.189,2.167,2.167,0,0,1-1.983-3.05A8.586,8.586,0,0,0,14.968,4.5a2.171,2.171,0,0,1-4.054,0A8.612,8.612,0,0,0,8.4,5.542a2.167,2.167,0,0,1-1.983,3.05A2.13,2.13,0,0,1,5.538,8.4,8.8,8.8,0,0,0,4.5,10.917a2.171,2.171,0,0,1,0,4.052,8.608,8.608,0,0,0,1.042,2.51,2.168,2.168,0,0,1,2.862,2.861,8.663,8.663,0,0,0,2.51,1.042,2.167,2.167,0,0,1,4.045,0,8.612,8.612,0,0,0,2.51-1.042,2.171,2.171,0,0,1,2.862-2.861,8.658,8.658,0,0,0,1.042-2.51A2.182,2.182,0,0,1,19.989,12.939Zm-7.008,3.512A3.516,3.516,0,1,1,16.5,12.935,3.516,3.516,0,0,1,12.981,16.451Z"
+                transform="translate(-4.5 -4.5)"
+                fill="#454545"
+                opacity="0.35"
+              />
+            </svg>
+          </i>
+        </div>
+      </li>
+    </ul>
+    <button
+      class="btn btn-primary w-100 text-uppercase"
+      [disabled]="TokensTotal > availableBalance"
+      (click)="onSubmit()"
+    >
+      Generate Token
+    </button>
+  </div>
+</ng-template>
+
+<ng-template #successTmp>
+  <div class="token-page token-success d-flex align-items-center text-center p-3 p-md-4">
+    <div class="d-flex flex-column w-100">
+      <h6 class="d-inline-block w-100">Tokens Generated!</h6>
+      <i class="icon d-inline-block w-100">
+        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60">
+          <g id="Group_2226" data-name="Group 2226" transform="translate(-920.299 -440.549)">
+            <g
+              id="Ellipse_366"
+              data-name="Ellipse 366"
+              transform="translate(920.299 500.549) rotate(-90)"
+              fill="none"
+              stroke="#55ac36"
+              stroke-linecap="round"
+              stroke-width="2"
+            >
+              <circle cx="30" cy="30" r="30" stroke="none" />
+              <circle cx="30" cy="30" r="29" fill="none" />
+            </g>
+            <path
+              id="Path_974"
+              data-name="Path 974"
+              d="M-19519.574-13377.049l5.984,5.983,16.518-16.521"
+              transform="translate(20459.621 13850.875)"
+              fill="none"
+              stroke="#55ac36"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="3"
+            />
+          </g>
+        </svg>
+      </i>
+      <span>TOTAL TOKENS:</span>
+      <h2>{{ TokensTotal | currency }}</h2>
+
+      <ul class="list-price d-flex justify-content-center flex-wrap gap-1 gap-sm-3">
+        <ng-container *ngFor="let item of TokensValue">
+          <li>
+            <h5>{{ item.tokenAmount | currency }}</h5>
+            <span>QTY: {{ item.tokenCount }}</span>
+          </li>
+        </ng-container>
+      </ul>
+
+      <span class="share-token mx-auto">SHARE TOKENS</span>
+      <ul class="list-share d-flex flex-wrap justify-content-center mx-auto">
+        <li>
+          <p class="apikey-hash-tag action-copy" [class.copied]="isCopyAction">
+            <a
+              [class.disabled]="isDisableActions"
+              appAllowCopyData
+              [toCopy]="displayValue()"
+              (click)="onClicked($event)"
+              ><i class="icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17.768" height="17.768" viewBox="0 0 17.768 17.768">
+                  <g id="copy_outline" transform="translate(-23.4 -23.4)" opacity="0.55">
+                    <path
+                      id="Path_18068"
+                      data-name="Path 18068"
+                      d="M37.347,34.125h1.381a1.841,1.841,0,0,0,1.841-1.841V25.841A1.841,1.841,0,0,0,38.727,24H32.284a1.841,1.841,0,0,0-1.841,1.841v1.381m-4.6,3.222h6.443a1.841,1.841,0,0,1,1.841,1.841v6.443a1.841,1.841,0,0,1-1.841,1.841H25.841A1.841,1.841,0,0,1,24,38.727V32.284A1.841,1.841,0,0,1,25.841,30.443Z"
+                      fill="none"
+                      stroke="#616161"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.2"
+                    />
+                  </g>
+                </svg>
+              </i>
+              Copy</a
+            >
+          </p>
+        </li>
+        <li>
+          <a [class.disabled]="isDisableActions" (click)="sendSms()">
+            <i class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17.725" height="16.541" viewBox="0 0 17.725 16.541">
+                <g id="chat" transform="translate(0 -12)">
+                  <g id="Group_3105" data-name="Group 3105" transform="translate(0 12)">
+                    <path
+                      id="Path_18070"
+                      data-name="Path 18070"
+                      d="M2.967,24.068a1.108,1.108,0,0,1,.318.887,12.153,12.153,0,0,1-.441,2.216,13.082,13.082,0,0,0,2.918-.989,1.108,1.108,0,0,1,.787-.082,8.929,8.929,0,0,0,2.314.3c4.427,0,7.755-3.11,7.755-6.647s-3.328-6.647-7.755-6.647-7.755,3.111-7.755,6.647A6.088,6.088,0,0,0,2.967,24.068Zm-.546,4.326q-.394.078-.79.143a.288.288,0,0,1-.3-.4q.148-.348.27-.706l0-.011a11.572,11.572,0,0,0,.58-2.569A7.2,7.2,0,0,1,0,19.755C0,15.472,3.968,12,8.862,12s8.862,3.472,8.862,7.755-3.968,7.755-8.862,7.755a10.037,10.037,0,0,1-2.6-.339A15.143,15.143,0,0,1,2.421,28.394Z"
+                      transform="translate(0 -12)"
+                      fill="#a4a4a4"
+                    />
+                  </g>
+                </g>
+              </svg>
+            </i>
+            Send SMS
+          </a>
+        </li>
+        <li>
+          <a [class.disabled]="isDisableActions" (click)="sendEmail()">
+            <i class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17.399" height="12.428" viewBox="0 0 17.399 12.428">
+                <g id="email" transform="translate(-12 -36)" opacity="0.55">
+                  <path
+                    id="Path_18069"
+                    data-name="Path 18069"
+                    d="M28.157,36H13.243A1.243,1.243,0,0,0,12,37.243v9.943a1.243,1.243,0,0,0,1.243,1.243H28.157A1.243,1.243,0,0,0,29.4,47.185V37.243A1.243,1.243,0,0,0,28.157,36ZM26.79,37.243,20.7,41.456l-6.09-4.213ZM13.243,47.185V37.808l7.1,4.915a.621.621,0,0,0,.708,0l7.1-4.915v9.377Z"
+                    fill="#616161"
+                  />
+                </g>
+              </svg>
+            </i>
+            Send Email
+          </a>
+        </li>
+        <li>
+          <a (click)="downloadCsv()">
+            <i class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14.201" height="17.916" viewBox="0 0 14.201 17.916">
+                <g id="Group_3335" data-name="Group 3335" transform="translate(-1611.201 -928.379)" opacity="0.55">
+                  <path
+                    id="Icon_awesome-file-csv"
+                    data-name="Icon awesome-file-csv"
+                    d="M4.511,9.867a.282.282,0,0,1-.282.282H3.947a.564.564,0,0,0-.564.564V11.84a.564.564,0,0,0,.564.564h.282a.282.282,0,0,1,.282.282v.564a.282.282,0,0,1-.282.282H3.947A1.691,1.691,0,0,1,2.255,11.84V10.713A1.691,1.691,0,0,1,3.947,9.021h.282a.282.282,0,0,1,.282.282Zm1.56,3.665H5.638a.282.282,0,0,1-.282-.282v-.564a.282.282,0,0,1,.282-.282h.432c.21,0,.367-.123.367-.233a.187.187,0,0,0-.075-.135l-.771-.661a1.308,1.308,0,0,1-.47-.992A1.434,1.434,0,0,1,6.616,9.022h.432A.282.282,0,0,1,7.33,9.3v.564a.282.282,0,0,1-.282.282H6.615c-.21,0-.367.123-.367.233a.187.187,0,0,0,.075.135l.771.661a1.308,1.308,0,0,1,.47.992,1.433,1.433,0,0,1-1.494,1.361ZM9.021,9.3v.733a3.841,3.841,0,0,0,.564,2,3.84,3.84,0,0,0,.564-2V9.3a.282.282,0,0,1,.282-.282h.564a.282.282,0,0,1,.282.282v.733A4.847,4.847,0,0,1,10,13.352a.564.564,0,0,1-.826,0,4.847,4.847,0,0,1-1.278-3.316V9.3a.282.282,0,0,1,.282-.282h.564A.282.282,0,0,1,9.021,9.3Z"
+                    transform="translate(1611.604 927.979)"
+                    fill="#616161"
+                  />
+                  <g id="document-clean_outline" transform="translate(1571.801 904.979)">
+                    <path
+                      id="Path_37206"
+                      data-name="Path 37206"
+                      d="M47.429,24H40V40.716H53V29.572M47.429,24h.929L53,28.643v.929M47.429,24v3.715a2,2,0,0,0,1.857,1.857H53"
+                      fill="none"
+                      stroke="#616161"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="1.2"
+                    />
+                  </g>
+                </g>
+              </svg>
+            </i>
+            Download CSV
+          </a>
+        </li>
+        <li>
+          <a (click)="print()">
+            <i class="icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="19.931" height="17.439" viewBox="0 0 19.931 17.439">
+                <g id="printer" transform="translate(0 -12)" opacity="0.55">
+                  <g id="Group_3106" data-name="Group 3106" transform="translate(0 12)">
+                    <path
+                      id="Path_18071"
+                      data-name="Path 18071"
+                      d="M24.623,85.246A.623.623,0,1,0,24,84.623.623.623,0,0,0,24.623,85.246Z"
+                      transform="translate(-21.509 -76.526)"
+                      fill="#616161"
+                    />
+                    <path
+                      id="Path_18072"
+                      data-name="Path 18072"
+                      d="M6.228,12a2.491,2.491,0,0,0-2.491,2.491v2.491H2.491A2.491,2.491,0,0,0,0,19.474v3.737A2.491,2.491,0,0,0,2.491,25.7H3.737v1.246a2.491,2.491,0,0,0,2.491,2.491H13.7a2.491,2.491,0,0,0,2.491-2.491V25.7h1.246a2.491,2.491,0,0,0,2.491-2.491V19.474a2.491,2.491,0,0,0-2.491-2.491H16.194V14.491A2.491,2.491,0,0,0,13.7,12ZM4.983,14.491a1.246,1.246,0,0,1,1.246-1.246H13.7a1.246,1.246,0,0,1,1.246,1.246v2.491H4.983ZM6.228,20.72a2.491,2.491,0,0,0-2.491,2.491v1.246H2.491a1.246,1.246,0,0,1-1.246-1.246V19.474a1.246,1.246,0,0,1,1.246-1.246H17.439a1.246,1.246,0,0,1,1.246,1.246v3.737a1.246,1.246,0,0,1-1.246,1.246H16.194V23.211A2.491,2.491,0,0,0,13.7,20.72Zm8.72,2.491v3.737A1.246,1.246,0,0,1,13.7,28.194H6.228a1.246,1.246,0,0,1-1.246-1.246V23.211a1.246,1.246,0,0,1,1.246-1.246H13.7A1.246,1.246,0,0,1,14.948,23.211Z"
+                      transform="translate(0 -12)"
+                      fill="#616161"
+                    />
+                  </g>
+                </g>
+              </svg>
+            </i>
+            Print
+          </a>
+        </li>
+      </ul>
+      <button type="button" class="btn btn-secondary mx-auto" [routerLink]="getTokenListRouterLink()">DONE</button>
+      <a class="mx-auto link" [routerLink]="getGenerateTokensRouterLink()">GENERATE MORE</a>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #generateTokenModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Confirm Generate Tokens</h5>
+    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close" (click)="modal.close()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="modal-inner px-xl-4">
+      <span class="small-head">You're generating tokens in amount of</span>
+      <h4>{{ TokensTotal | currency }}</h4>
+      <span>The above amount will be deducted from your account.</span>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="doGenerate(modal)">CONFIRM</button>
+    <button type="button" data-bs-dismiss="modal" class="btn btn-secondary" (click)="modal.close()">Cancel</button>
+  </div>
+</ng-template>
+
+<div>
+  <app-tokens-pdf [tokenData]="tokens"> </app-tokens-pdf>
+</div>
+
+<ng-template #newLi>
+  <li>
+    <button class="custom" [class.active]="clickCustomButton && !rangeSelected" type="button" (click)="onCustomRange()">
+      Custom
+    </button>
+  </li>
+</ng-template>

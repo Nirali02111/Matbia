@@ -1,0 +1,26 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title">Link via Processor Token</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
+  </div>
+  <div class="modal-body">
+    <form class="row g-3">
+      <div class="col-md-12">
+        <label for="AccountNumber" class="form-label">Account Number*</label>
+        <input autofocus type="text" id="AccountNumber" class="form-control" placeholder="Account Number" />
+      </div>
+
+      <div class="col-md-12">
+        <label for="ProcessorToken" class="form-label">Processor Token*</label>
+        <input autofocus type="text" id="ProcessorToken" class="form-control" placeholder="Processor Token" />
+      </div>
+
+      <div class="col-md-12 justify-content-end">
+        <button type="button" class="btn btn-primary" (click)="closePopup()">Link Bank Account</button>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="closePopup()">Close</button>
+  </div>
+</div>

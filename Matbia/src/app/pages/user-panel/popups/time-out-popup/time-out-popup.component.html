@@ -1,0 +1,13 @@
+<div class="modal-content">
+  <div class="modal-body">
+    <h3>Your session is about to time out</h3>
+    <p>You've been inactive for a while. For your security, we'll automatically sign you out in:</p>
+    <h2 class="countDown-timer">0:{{ start }}</h2>
+    <p>You may choose "Stay logged in" to continue, or sign out if you're done.</p>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn btn-link" (click)="onTimeOut()">Sign out</button>
+    <button type="button" class="btn btn-primary" (click)="onStayLogin()">Stay logged in</button>
+  </div>
+</div>

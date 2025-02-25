@@ -1,0 +1,24 @@
+<div class="account-content--wrap small--container w-75 m-auto pt-5 redeems-funds">
+  <!-- Title section -->
+  <div class="top-head--section">
+    <div class="d-flex justify-content-center align-items-center">
+      <div class="title--bar">
+        <h2>Redeem Funds</h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="send-money--panel add-funds-tabs mt-4">
+    <app-redeem-funds-form-group
+      [formGroup]="redeemFormGroup"
+      (noBankAccountLinked)="openRedeemDonationPopup()"
+      (setupAutomaticTransfer)="onSetUpAutomaticTransfer()"
+      (needRelink)="onRelink()"
+    >
+    </app-redeem-funds-form-group>
+
+    <div class="redeem-action">
+      <button class="btn btn-primary" (click)="onRedeem()">REDEEM</button>
+    </div>
+  </div>
+</div>

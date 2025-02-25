@@ -1,0 +1,42 @@
+/* To learn more about this file see: https://angular.io/config/tsconfig. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "outDir": "./dist/out-tsc",
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": true,
+    "declaration": false,
+    "experimentalDecorators": true,
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "es2020",
+    "lib": ["es2018", "dom"],
+    "paths": {
+      "tslib": ["./node_modules/tslib"],
+      "@matbia/*": ["src/app/@modules/*"],
+      "@services/*": ["src/app/services/*"],
+      "@commons/*": ["src/app/commons/*"],
+      "@enum/*": ["src/app/enum/*"]
+    },
+    "useDefineForClassFields": false,
+    "typeRoots": ["node_modules/@types"]
+  },
+  "angularCompilerOptions": {
+    "extendedDiagnostics": {
+      "checks": {
+        "optionalChainNotNullable": "suppress"
+      }
+    },
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true,
+    "allowSyntheticDefaultImports": true
+  }
+}

@@ -1,0 +1,74 @@
+<div class="modal-header">
+  <h4 class="modal-title">Edit your address</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="closePopup()"></button>
+</div>
+<div class="modal-body">
+  <form class="form" [formGroup]="editAddressForm" [@shakeTrigger]="editAddressForm?.invalid && IsAnimate">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group" [class.is-invalid-er]="FirstName?.touched && FirstName?.invalid && isSubmitted">
+          <label class="form-label">FIRST NAME:</label>
+          <input type="text" class="form-control" formControlName="firstName" />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group" [class.is-invalid-er]="LastName?.touched && LastName?.invalid && isSubmitted">
+          <label class="form-label">Last NAME:</label>
+          <input type="text" class="form-control" formControlName="lastName" />
+        </div>
+      </div>
+      <div class="col-md-9">
+        <div class="form-group" [class.is-invalid-er]="Address?.touched && Address?.invalid && isSubmitted">
+          <label class="form-label">MAILING ADDRESS:</label>
+          <input
+            type="text"
+            class="form-control"
+            formControlName="mailingAddress"
+            appAddressAutocomplete
+            (onAddressChange)="onAddressChange($event)"
+          />
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group" [class.is-invalid-er]="Apt?.touched && Apt?.invalid && isSubmitted">
+          <label class="form-label">APT#:</label>
+          <input type="text" class="form-control" formControlName="apt" />
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group" [class.is-invalid-er]="City?.touched && City?.invalid && isSubmitted">
+          <label class="form-label">CITY:</label>
+          <input type="text" class="form-control" formControlName="city" />
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group" [class.is-invalid-er]="State?.touched && State?.invalid && isSubmitted">
+          <label class="form-label">STATE:</label>
+          <ng-select
+            bindLabel="item_id"
+            bindValue="item_id"
+            [addTag]="true"
+            [searchable]="true"
+            formControlName="state"
+            [searchFn]="commonDataService.customSearchFn"
+            [items]="commonDataService.stateList"
+          >
+            <ng-template ng-option-tmp let-item="item">
+              {{ item.item_id }}
+            </ng-template>
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group" [class.is-invalid-er]="Zip?.touched && Zip?.invalid && isSubmitted">
+          <label class="form-label">ZIP:</label>
+          <input type="text" class="form-control" formControlName="zip" />
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer pt-0 border-0">
+  <button type="button" class="btn btn-default" (click)="closePopup()">Cancel</button>
+  <button type="button" class="btn btn-primary" (click)="onSaveAddress()">SAVE ADDRESS</button>
+</div>

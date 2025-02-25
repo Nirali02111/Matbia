@@ -1,0 +1,20 @@
+<div class="t-row">
+  <div class="td-div date-div">
+    <p>{{ item.createdDate | date : 'MM/dd/yyyy hh:mm a' }}</p>
+  </div>
+  <div class="td-div batch-div">{{ item.batchNum }}</div>
+  <div class="td-div types-div" [class.refund]="isRefund">{{ item.type }}</div>
+
+  <div class="td-div status-div">{{ item.transStatus }}</div>
+
+  <div class="td-div from-div">{{ item.toBank }}</div>
+
+  <div class="td-div donation-div">{{ item.donationAmount | currency }}</div>
+  <div class="td-div matbia-fee-div">{{ item.totalMatbiaFee | currency }}</div>
+
+  <div class="td-div total-div">{{ item.totalAmount | currency }}</div>
+
+  <div class="td-div">
+    <button class="btn-arrow fas fa-chevron-down" (click)="viewTransaction()"></button>
+  </div>
+</div>

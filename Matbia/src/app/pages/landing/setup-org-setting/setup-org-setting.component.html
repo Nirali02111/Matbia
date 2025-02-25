@@ -1,0 +1,78 @@
+<div class="finish-setup-content small--container m-auto setup-card-setting setupcard-page">
+  <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs setup-card-item-tab">
+    <li [ngbNavItem]="1" [disabled]="active !== 1">
+      <div class="setup-tabs-item item-conect-bank">
+        <a ngbNavLink [class.finished]="isConnectBankDone">CONNECT YOUR BANK</a>
+      </div>
+      <ng-template ngbNavContent>
+        <div class="connect-you-bank-wrap" [hidden]="isInLinking">
+          <h2>Connect Your Bank</h2>
+
+          <div class="finish-setup-content small--container m-auto setup-account-wrap">
+            <form [formGroup]="setupAccountForm">
+              <div class="card--custom mt-4" formGroupName="linkWith">
+                <div class="terms-note">
+                  <div class="custom-checkbox">
+                    <input type="checkbox" id="termsAgreed" class="checkbox-custom" formControlName="isAgree" />
+                    <label for="termsAgreed"
+                      >I agree to the <a (click)="openTerms($event)">terms and conditions</a>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="isAgree?.touched && !isAgree?.valid" class="val-error">
+                <span class="material-icons">warning</span> Need to agree in order to connect to bank
+              </div>
+
+              <div class="btn-action" [hidden]="true">
+                <app-plaid-button
+                  [userHandle]="userHandle?.value"
+                  title="Connect"
+                  (linked)="onLinked($event)"
+                  classList="connect-btn"
+                  [requestKYCFirst]="false"
+                ></app-plaid-button>
+              </div>
+
+              <app-connect-to-bank-account
+                [loading]="isLoadingConnect"
+                [isBlockPlaid]="isBlockPlaid"
+                (connectClick)="commonConnectButton($event)"
+              ></app-connect-to-bank-account>
+
+              <button class="btn btn-skip" (click)="onSkipConnectBank()">SKIP FOR NOW</button>
+            </form>
+          </div>
+        </div>
+      </ng-template>
+    </li>
+    <li [ngbNavItem]="2" [disabled]="active !== 2">
+      <div class="setup-tabs-item item-start-funding">
+        <a ngbNavLink>REDEEM FUNDS</a>
+      </div>
+      <ng-template ngbNavContent>
+        <div class="start-funding-wrap">
+          <h2>Redeem Funds</h2>
+
+          <div class="send-money--panel add-funds-tabs mt-4">
+            <app-redeem-funds-form-group
+              [formGroup]="redeemFormGroup"
+              (setupAutomaticTransfer)="onSetUpAutomaticTransfer()"
+            ></app-redeem-funds-form-group>
+          </div>
+
+          <div class="action--buttons justify-content-between btn-for-setup-card align-items-center mt-5 d-flex">
+            <button class="btn btn-blue-dark" (click)="onSkipRedeemFunds()">SKIP THIS STEP</button>
+            <button class="btn btn-primary" (click)="onRedeem()">CONTINUE</button>
+          </div>
+        </div>
+      </ng-template>
+    </li>
+  </ul>
+
+  <div [ngbNavOutlet]="nav" class="setup-card-content-wrap"></div>
+</div>
+
+<div *ngIf="isLoading" class="overlay">
+  <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+</div>

@@ -1,0 +1,324 @@
+<div class="account-list--panel mb-3">
+  @if(showCardNumberExpDate){
+  <div class="item-collapse-panel" [formGroup]="formGroup">
+    <div class="row flex-wrap">
+      <div class="col-md-4 pe-3">
+        <label class="lbl--text"> Card number: </label>
+        <app-credit-card-input formControlName="cardNumber"></app-credit-card-input>
+      </div>
+      <div class="col-md-3">
+        <label class="lbl--text"> EXP. DATE: </label>
+        <div class="field-display-read">{{ formattedExpDate }}</div>
+      </div>
+      <div class="col-md-3">
+        <label class="lbl--text"> PIN NUMBER: </label>
+        <div class="field-display-read">{{ CVV?.value }}</div>
+      </div>
+
+      @if(changePinSettingButton){
+      <div class="col-md-2 text-end">
+        <button class="btn-pin" (click)="openCardPinPopup()"><span class="material-icons">edit</span>CHANGE PIN</button>
+      </div>
+      }
+    </div>
+
+    <div class="cards-action-button mt-4">
+      @if (allowReplaceCard) {
+      <button class="btn replace-card" (click)="openCardReplaceModal()">
+        <span><img src="assets/dist/img/replace-card.png" alt="" /></span>REPLACE LOST OR STOLEN CARD
+      </button>
+      } @if (allowLockUnlock) { @if (isCardLock()) {
+      <button class="btn lock-card bg-blue" (click)="unLockCard()">
+        <span class="material-icons">lock_open</span>UNLOCK CARD
+      </button>
+      } @else {
+      <button class="btn lock-card" (click)="openCardLockModal()">
+        <span class="material-icons">lock</span>LOCK CARD
+      </button>
+      } }
+    </div>
+  </div>
+  }
+</div>
+
+<ng-template [ngTemplateOutlet]="displayInfoSection"></ng-template>
+
+<div class="account-list--panel" [formGroup]="formGroup">
+  <div
+    class="item-collapse-panel flex-wrap account-list--item flex-wrap position-relative"
+    [class.slideout-left]="openInfo"
+  >
+    <label class="fw-medium mb-1">4 corners setting</label>
+    <p class="pt-0 mb-3 pb-2">Customize the amounts and settings for the 4 corners of your card</p>
+    <div class="card-box d-flex flex-wrap" [class.card-expire-box]="isCardExpired || isEndWithnine">
+      <!-- Corner 1 -->
+      <div class="card-item">
+        <ng-template
+          [ngTemplateOutlet]="newValueDisplayCorner"
+          [ngTemplateOutletContext]="{ form: formGroup?.get('corner1'), corner: 1 }"
+        ></ng-template>
+
+        <div class="card-image">
+          <a href="javascript:void(0)" title="Edit" (click)="openCornerDetails(1)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14.445" height="14.442" viewBox="0 0 14.445 14.442">
+              <path
+                id="Icon_awesome-edit"
+                data-name="Icon awesome-edit"
+                d="M13.979,2.892l3.132,3.132a.339.339,0,0,1,0,.479L9.528,14.087l-3.222.358a.675.675,0,0,1-.747-.747l.358-3.222L13.5,2.892A.339.339,0,0,1,13.979,2.892ZM19.6,2.1,17.91.4a1.358,1.358,0,0,0-1.917,0L14.764,1.632a.34.34,0,0,0,0,.479L17.9,5.243a.339.339,0,0,0,.479,0L19.6,4.014a1.358,1.358,0,0,0,0-1.917Z"
+                transform="translate(-5.555 -0.007)"
+                fill="#cecece"
+              />
+            </svg>
+          </a>
+          <i class="text-uppercase">corner 1</i>
+        </div>
+      </div>
+
+      <!-- Corner 2 -->
+      <div class="card-item text-end">
+        <ng-template
+          [ngTemplateOutlet]="newValueDisplayCorner"
+          [ngTemplateOutletContext]="{ form: formGroup?.get('corner2'), corner: 2 }"
+        ></ng-template>
+
+        <div class="card-image">
+          <a href="javascript:void(0)" title="Edit" (click)="openCornerDetails(2)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14.445" height="14.442" viewBox="0 0 14.445 14.442">
+              <path
+                id="Icon_awesome-edit"
+                data-name="Icon awesome-edit"
+                d="M13.979,2.892l3.132,3.132a.339.339,0,0,1,0,.479L9.528,14.087l-3.222.358a.675.675,0,0,1-.747-.747l.358-3.222L13.5,2.892A.339.339,0,0,1,13.979,2.892ZM19.6,2.1,17.91.4a1.358,1.358,0,0,0-1.917,0L14.764,1.632a.34.34,0,0,0,0,.479L17.9,5.243a.339.339,0,0,0,.479,0L19.6,4.014a1.358,1.358,0,0,0,0-1.917Z"
+                transform="translate(-5.555 -0.007)"
+                fill="#cecece"
+              />
+            </svg>
+          </a>
+          <i class="text-uppercase">corner 2</i>
+        </div>
+      </div>
+
+      <!-- Corner 4 -->
+      <div class="card-item">
+        <ng-template
+          [ngTemplateOutlet]="newValueDisplayCorner"
+          [ngTemplateOutletContext]="{ form: formGroup?.get('corner4'), corner: 4 }"
+        ></ng-template>
+
+        <div class="card-image">
+          @if (formGroup?.get('corner4')?.get('amountType')?.value !== '2' || !isEndWithnine) {
+          <a href="javascript:void(0)" title="Edit" (click)="openCornerDetails(4)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14.445" height="14.442" viewBox="0 0 14.445 14.442">
+              <path
+                id="Icon_awesome-edit"
+                data-name="Icon awesome-edit"
+                d="M13.979,2.892l3.132,3.132a.339.339,0,0,1,0,.479L9.528,14.087l-3.222.358a.675.675,0,0,1-.747-.747l.358-3.222L13.5,2.892A.339.339,0,0,1,13.979,2.892ZM19.6,2.1,17.91.4a1.358,1.358,0,0,0-1.917,0L14.764,1.632a.34.34,0,0,0,0,.479L17.9,5.243a.339.339,0,0,0,.479,0L19.6,4.014a1.358,1.358,0,0,0,0-1.917Z"
+                transform="translate(-5.555 -0.007)"
+                fill="#cecece"
+              />
+            </svg>
+          </a>
+          }
+
+          <i class="text-uppercase">corner 4</i>
+        </div>
+      </div>
+
+      <!-- Corner 3 -->
+      <div class="card-item text-end">
+        <ng-template
+          [ngTemplateOutlet]="newValueDisplayCorner"
+          [ngTemplateOutletContext]="{ form: formGroup?.get('corner3'), corner: 3 }"
+        ></ng-template>
+
+        <div class="card-image">
+          <a href="javascript:void(0)" title="Edit" (click)="openCornerDetails(3)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14.445" height="14.442" viewBox="0 0 14.445 14.442">
+              <path
+                id="Icon_awesome-edit"
+                data-name="Icon awesome-edit"
+                d="M13.979,2.892l3.132,3.132a.339.339,0,0,1,0,.479L9.528,14.087l-3.222.358a.675.675,0,0,1-.747-.747l.358-3.222L13.5,2.892A.339.339,0,0,1,13.979,2.892ZM19.6,2.1,17.91.4a1.358,1.358,0,0,0-1.917,0L14.764,1.632a.34.34,0,0,0,0,.479L17.9,5.243a.339.339,0,0,0,.479,0L19.6,4.014a1.358,1.358,0,0,0,0-1.917Z"
+                transform="translate(-5.555 -0.007)"
+                fill="#cecece"
+              />
+            </svg>
+          </a>
+          <i class="text-uppercase">corner 3</i>
+        </div>
+      </div>
+    </div>
+
+    <div class="cards-action-button">
+      <ng-container *ngIf="!allowReplaceCard && !allowLockUnlock">
+        <div app-account-hash></div>
+      </ng-container>
+    </div>
+  </div>
+  <ng-template [ngTemplateOutlet]="cardSlideInfo"></ng-template>
+</div>
+
+<ng-template #cardSlideInfo>
+  <div class="card-info-slideout" [class.slideout-open]="openInfo" [formGroup]="formGroup">
+    <div class="card-info-slideout-inside">
+      <div class="cardinfo-title">
+        <button (click)="toggleCardInfoPanel()"><span class="material-icons"> arrow_back_ios </span></button>
+        <h3>Card info</h3>
+      </div>
+      <div class="card-row">
+        <div [class.is-invalid]="NameOnCard?.touched && NameOnCard?.invalid">
+          <label class="lbl--text">Name on Card: <em class="required">*</em></label>
+          <input #nameOnCardCtrl type="text" class="form-control" formControlName="nameOnCard" placeholder="Name" />
+        </div>
+      </div>
+      <div class="card-row two-col">
+        <div class="card-pin" [class.is-invalid]="CVV?.touched && CVV?.invalid">
+          <label class="lbl--text"> PIN <em class="required">*</em> </label>
+          <app-card-pin-input [isSubmit]="false" formControlName="cvv" [cardMask]="CVVMASK"></app-card-pin-input>
+          <ng-container *ngIf="CVV?.touched && CVV?.invalid">
+            <span class="cvv-tooltip-msg"> <span class="material-icons">warning</span> Please enter pin</span>
+          </ng-container>
+        </div>
+        <div class="card-exp">
+          <label class="lbl--text">Exp. Date <em class="required">*</em></label>
+          <app-card-expiry-input formControlName="cardExp"></app-card-expiry-input>
+        </div>
+      </div>
+      <div class="card-row">
+        <label class="lbl--text">Phone number Associated:</label>
+        <p>The phone number is displayed when donating with your card.</p>
+        <app-phone-input formControlName="phoneNum"></app-phone-input>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #displayInfoSection>
+  <div class="account-list--panel display-info mb-3" [formGroup]="formGroup">
+    <div class="item-collapse-panel">
+      <h4 class="item-collapse-heading">Personal Info</h4>
+
+      <div class="row">
+        <div class="col-md-6" [@shakeTrigger]="NameOnCard?.invalid && inAnimation">
+          <label>CARD NICKNAME:</label>
+          <p>Recognize this card easily by setting a nickname.</p>
+          <input
+            #nameOnCardCntrl
+            type="text"
+            class="form-control"
+            formControlName="nameOnCard"
+            placeholder="Name"
+            (keyup)="canSubmit = true"
+          />
+        </div>
+
+        <div class="col-md-6" [@shakeTrigger]="PhoneNum?.invalid && inAnimation">
+          <label>Display Phone Number:</label>
+          <p>Let collectors see your phone number for their reference.</p>
+
+          <ng-select
+            class="ng-select-phone"
+            bindLabel="label"
+            bindValue="value"
+            formControlName="phoneNum"
+            [items]="phoneList"
+            [clearable]="false"
+            [selectOnTab]="true"
+            [searchable]="false"
+            (change)="canSubmit = true"
+          >
+            <!-- for list of option -->
+            <ng-template ng-option-tmp let-item="item">
+              <input type="radio" class="not-selected" />
+
+              @if (item.value) {
+              {{ item.value | mask : '(000)-000-0000' }}
+              } @else {
+              {{ item.label }}
+              }
+            </ng-template>
+
+            <!-- for selected -->
+            <ng-template ng-label-tmp let-item="item">
+              <input type="radio" class="selected" checked />
+
+              @if (item.value) {
+              {{ item.value | mask : '(000)-000-0000' }}
+              } @else {
+              {{ item.label }}
+              }
+            </ng-template>
+
+            <ng-template ng-footer-tmp>
+              <button class="btn-pin" [routerLink]="getProfileRouterLink()">
+                <i>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14.445" height="14.442" viewBox="0 0 14.445 14.442">
+                    <path
+                      id="Icon_awesome-edit"
+                      data-name="Icon awesome-edit"
+                      d="M13.979,2.892l3.132,3.132a.339.339,0,0,1,0,.479L9.528,14.087l-3.222.358a.675.675,0,0,1-.747-.747l.358-3.222L13.5,2.892A.339.339,0,0,1,13.979,2.892ZM19.6,2.1,17.91.4a1.358,1.358,0,0,0-1.917,0L14.764,1.632a.34.34,0,0,0,0,.479L17.9,5.243a.339.339,0,0,0,.479,0L19.6,4.014a1.358,1.358,0,0,0,0-1.917Z"
+                      transform="translate(-5.555 -0.007)"
+                      fill="currentColor"
+                    />
+                  </svg>
+                </i>
+                EDIT PHONE NUMBERS
+              </button>
+            </ng-template>
+          </ng-select>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #newValueDisplayCorner let-form="form" let-corner="corner">
+  @if (form?.get('amountType')?.value) { @if (form?.get('amountType')?.value === '1') {
+
+  <span>Preset amount</span>
+  <label>{{ form?.get('value')?.value | currency }}</label>
+  } @if (form?.get('amountType')?.value === '2') {
+  <label>Manual Entry</label>
+  @if (corner === 4) {
+  <span class="manual-preset-txt">This corner is pre-set for manual entry only, and cannot be customized</span>
+  } } @if (form?.get('amountType')?.value === '3') {
+  <label>Digital Envelope</label>
+  } @if (form?.get('amountType')?.value === '4') {
+
+  <span class="mb-2">User Cap</span>
+  <div class="d-inline-block small">
+    <div>
+      ATTEMPT 1:
+      <strong>
+        {{ form?.get('capPerUser')?.get('attempt1')?.value || null | currency }}
+      </strong>
+    </div>
+    <div>
+      ATTEMPT 2:
+      <strong>{{ form?.get('capPerUser')?.get('attempt2')?.value || null | currency }}</strong>
+    </div>
+    <div>
+      ATTEMPT 3:
+      <strong>{{ form?.get('capPerUser')?.get('attempt3')?.value || null | currency }}</strong>
+    </div>
+    <div>
+      ATTEMPT 4: @if (form?.get('capPerUser')?.get('attempt4')?.value) {
+      <strong>{{ form?.get('capPerUser')?.get('attempt4')?.value | currency }}</strong>
+      }
+    </div>
+
+    <div>
+      Resets Every <Strong>{{ form?.get('capPerUser')?.get('days')?.value }}</Strong> days
+    </div>
+  </div>
+
+  } @if (form?.get('amountType')?.value === '5') {
+  <span class="mb-2">Mystery Donation</span>
+  <div class="d-inline-block small">
+    <div>
+      Minimum: <strong>{{ form?.get('chargeRandomAmount')?.get('minValue')?.value | currency }}</strong>
+    </div>
+    <div>
+      Maximum: <strong>{{ form?.get('chargeRandomAmount')?.get('maxValue')?.value | currency }}</strong>
+    </div>
+  </div>
+  } }
+</ng-template>

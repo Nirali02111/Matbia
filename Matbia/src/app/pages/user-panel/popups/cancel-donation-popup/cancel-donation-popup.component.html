@@ -1,0 +1,75 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="staticBackdropLabel">
+      <ng-container *ngIf="isConfirmation">
+        <ng-container *ngIf="isRefund">Refund donation</ng-container>
+        <ng-container *ngIf="isRedeem">Void Redeem</ng-container>
+        <ng-container *ngIf="!isRefund && !isRedeem">Void donation</ng-container>
+      </ng-container>
+      <ng-container *ngIf="!isConfirmation">
+        <ng-container *ngIf="isRefund"> Donation refund </ng-container>
+        <ng-container *ngIf="isRedeem"> Redeem voided </ng-container>
+        <ng-container *ngIf="!isRefund && !isRedeem"> Donation voided </ng-container>
+      </ng-container>
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
+  </div>
+
+  <ng-container *ngIf="isConfirmation">
+    <ng-template [ngTemplateOutlet]="confirmationTmp"></ng-template>
+  </ng-container>
+
+  <ng-container *ngIf="!isConfirmation">
+    <ng-template [ngTemplateOutlet]="responseMessageTmp"></ng-template>
+  </ng-container>
+</div>
+
+<ng-template #confirmationTmp>
+  <div class="modal-body text-center">
+    <ng-container *ngIf="isRedeem">
+      <h6>Are you sure you want to this redeem of {{ amount | currency }}?</h6>
+    </ng-container>
+
+    <ng-container *ngIf="!isRedeem">
+      <h6>Are you sure you want to this donation of {{ amount | currency }}?</h6>
+    </ng-container>
+
+    <p>This action cannot be undone.</p>
+  </div>
+  <div class="modal-footer border-0">
+    <button class="btn btn-danger w-100" (click)="onConfirm()">
+      <ng-container *ngIf="isRefund">Confirm Refund</ng-container>
+      <ng-container *ngIf="!isRefund">Confirm Void</ng-container>
+    </button>
+    <button class="btn btn-link w-100" (click)="simpleClose()">Nevermind</button>
+  </div>
+</ng-template>
+
+<!-- Response Message Modal -->
+<ng-template #responseMessageTmp>
+  <div class="modal-body text-center">
+    <div class="deposite-cancel"><span class="material-icons">close</span></div>
+    <h2>{{ amount | currency }}</h2>
+    <p class="big-para">
+      <ng-container *ngIf="isRefund">
+        <ng-container *ngIf="errorResponse">{{ errorResponse }}</ng-container>
+        <ng-container *ngIf="!errorResponse">Your Donation was refunded.</ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="isRedeem">
+        <ng-container *ngIf="errorResponse">{{ errorResponse }}</ng-container>
+        <ng-container *ngIf="successResponse">{{ successResponse }}</ng-container>
+        <ng-container *ngIf="!errorResponse && !successResponse"> Your Redeem was voided. </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="!isRefund && !isRedeem">
+        <ng-container *ngIf="errorResponse">{{ errorResponse }}</ng-container>
+        <ng-container *ngIf="!errorResponse">Your Donation was voided.</ng-container>
+      </ng-container>
+    </p>
+  </div>
+  <div class="modal-footer border-0">
+    <button class="btn btn-primary w-100" (click)="closePopup()">Done</button>
+  </div>
+</ng-template>
+<!-- Response Message Modal -->

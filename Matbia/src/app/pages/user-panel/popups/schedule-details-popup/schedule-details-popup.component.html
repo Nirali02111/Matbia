@@ -1,0 +1,212 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="staticBackdropLabel">
+      <i (click)="closePopup()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="7.663" height="12.496" viewBox="0 0 7.663 12.496">
+          <path id="Path_475" data-name="Path 475" d="M0,5.542,5.541,0l5.541,5.542"
+            transform="translate(1.414 11.789) rotate(-90)" fill="none" stroke="#454545" stroke-width="2" />
+        </svg>
+      </i>
+      Scheduled {{ scheduleDetails?.transType }}
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13.423" height="13.426" viewBox="0 0 13.423 13.426">
+        <path id="Icon_ionic-ios-close" data-name="Icon ionic-ios-close"
+          d="M19.589,18l4.8-4.8A1.124,1.124,0,0,0,22.8,11.616l-4.8,4.8-4.8-4.8A1.124,1.124,0,1,0,11.616,13.2l4.8,4.8-4.8,4.8A1.124,1.124,0,0,0,13.2,24.384l4.8-4.8,4.8,4.8A1.124,1.124,0,1,0,24.384,22.8Z"
+          transform="translate(-11.289 24.711) rotate(-90)" opacity="0.303" />
+      </svg>
+    </button>
+  </div>
+  <div class="modal-body pb-0">
+    <div class="row">
+      <div class="col-md-6">
+        <ng-container *appBusinessAccessControl>
+          <ng-template [ngTemplateOutlet]="donorContentInfo"></ng-template>
+        </ng-container>
+
+        <ng-container *appOrganizationAccessControl>
+          <ng-template [ngTemplateOutlet]="donorContentInfo"></ng-template>
+        </ng-container>
+
+        <ng-container *appPersonalAccessControl>
+          <ng-template [ngTemplateOutlet]="orgContentInfo"></ng-template>
+        </ng-container>
+
+        <ng-container *appBusinessDonorAccessControl>
+          <ng-template [ngTemplateOutlet]="orgContentInfo"></ng-template>
+        </ng-container>
+      </div>
+      <div class="col-md-6">
+        <div class="shedule-card-wrap">
+          <div class="shedule-card d-flex align-items-center">
+            <div class="w-100 flex-fill d-flex flex-column">
+              <span>Total Amount:</span>
+              <h4>{{ scheduleDetails?.totalAmount | currency }}</h4>
+            </div>
+            <div class="w-100 flex-fill d-flex flex-column gap-3">
+              <div class="d-flex align-items-center">
+                <span>Open ({{ openCount }})</span>
+                <h6>{{ scheduleDetails?.openAmount | currency }}</h6>
+              </div>
+              <div class="d-flex align-items-center">
+                <span>Paid ({{ paidCount }})</span>
+                <h6>{{ scheduleDetails?.totalPaid | currency }}</h6>
+              </div>
+            </div>
+          </div>
+
+          <ng-container *ngIf="!isCompleted && !isStopped">
+            <ng-container *ngIf="canStopSchedule">
+              <button type="button" class="btn btn-primary" (click)="onStopSchedule()">
+                <i class="fa fa-times"></i> Stop Schedule
+              </button>
+            </ng-container>
+            <ng-container *ngIf="!canStopSchedule">
+              <ng-container *ngIf="isScheduled || isScheduleInProgress">
+                <button type="button" class="btn btn-primary" (click)="onCancelSchedule()">
+                  <i class="fa fa-times"></i>
+                  Cancel Schedule
+                </button>
+              </ng-container>
+            </ng-container>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div class="py-4 py-md-5 d-inline-block w-100">
+      <div class="row row-list">
+        <div class="col-12 col-sm-6">
+          <label class="lbl--text">Frequency details:</label>
+          <h6>{{ scheduleDetails?.amount + '/' + scheduleDetails?.frequency }}</h6>
+        </div>
+        <div class="col-12 col-sm-6">
+          <label class="lbl--text">Next Payment:</label>
+          @if(scheduleDetails?.nextScheduleDateTime){
+          <h6>
+            {{ scheduleDetails?.nextScheduleDateTime | date : 'MMM dd' }}
+            {{ '/' + scheduleDetails?.remaining + ' out of ' + scheduleDetails?.repeatTimes }}
+          </h6>
+          }
+        </div>
+        <div class="col-12 col-sm-6">
+          <label class="lbl--text">Schedule #:</label>
+          <h6>{{ scheduleDetails?.scheduleNum }}</h6>
+        </div>
+        <div class="col-12 col-sm-6">
+          <label class="lbl--text">Created on:</label>
+          <h6>{{ createdOn }}</h6>
+        </div>
+        <div class="col-12 col-sm-6">
+          <label class="lbl--text">Schedule Admin:</label>
+          <h6>{{ scheduleDetails?.createdBy }}</h6>
+        </div>
+        <div class="col-12 col-sm-6">
+          <label class="lbl--text">Method:</label>
+          <h6>{{ scheduleDetails?.method }}</h6>
+        </div>
+        <div class="col-12">
+          <label class="lbl--text">Note:</label>
+          <h6>{{ scheduleDetails?.note }}</h6>
+        </div>
+      </div>
+    </div>
+
+    <div class="shedule-table">
+      <h3>Activity</h3>
+
+      <div class="shedule-accordion">
+        <div class="shedule-accordion-title" data-bs-toggle="collapse" data-bs-target="#past-payments"
+          aria-expanded="false" aria-controls="past-payments">
+          <span>
+            Past Payments ({{ pastScheduleList?.length }}) &nbsp;
+            <span [class]="'status status-declined'">{{ declinedStatus }}</span>
+          </span>
+
+          <i class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14.494" height="8.661" viewBox="0 0 14.494 8.661">
+              <path id="Path_19172" data-name="Path 19172" d="M2272.063,294.188l6.54-6.54,6.54,6.54"
+                transform="translate(-2271.356 -286.233)" fill="none" stroke="#454545" stroke-width="2" opacity="0.7" />
+            </svg>
+          </i>
+        </div>
+        <div id="past-payments" class="shedule-accordion-body show">
+          <table class="w-100">
+            <ng-container *ngFor="let item of pastScheduleList">
+              <ng-template [ngTemplateOutlet]="PastAndUpcomingTmp" [ngTemplateOutletContext]="{ item: item }">
+              </ng-template>
+            </ng-container>
+          </table>
+        </div>
+      </div>
+      <div class="shedule-accordion">
+        <div class="shedule-accordion-title" data-bs-toggle="collapse" data-bs-target="#upcoming-payments"
+          aria-expanded="false" aria-controls="upcoming-payments">
+          <span>Upcoming Payments ({{ upcomingScheduleList?.length }}) </span>
+          <i class="icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14.494" height="8.661" viewBox="0 0 14.494 8.661">
+              <path id="Path_19172" data-name="Path 19172" d="M2272.063,294.188l6.54-6.54,6.54,6.54"
+                transform="translate(-2271.356 -286.233)" fill="none" stroke="#454545" stroke-width="2" opacity="0.7" />
+            </svg>
+          </i>
+        </div>
+        <div id="upcoming-payments" class="show shedule-accordion-body">
+          <table class="w-100">
+            <ng-container *ngFor="let item of upcomingScheduleList">
+              <ng-template [ngTemplateOutlet]="PastAndUpcomingTmp" [ngTemplateOutletContext]="{ item: item }">
+              </ng-template>
+            </ng-container>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isLoading" class="overlay">
+    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+  </div>
+</div>
+
+<ng-template #PastAndUpcomingTmp let-item="item">
+  <tr>
+    <td>{{ item.scheduleDateTime | date : 'MMM dd, YYYY' }}</td>
+    <td class="ref-id">{{ item.scheduleStatus == 'Completed' ? '#' + item?.refNum || '' : '' }}</td>
+    <td>
+      <span [class]="'status status-' + item?.scheduleStatus?.toLowerCase()">{{ item?.scheduleStatus }}</span>
+    </td>
+    <td class="text-end">
+      <strong> {{ item.scheduleAmount | currency }}</strong>
+    </td>
+  </tr>
+</ng-template>
+
+<ng-template #donorContentInfo>
+  <div class="shedule-profile mb-3 mb-md-0">
+    <label>DONOR:</label>
+    <div class="d-flex align-items-center mb-3 pb-1">
+      <figure class="rounded-circle overflow-hidden"></figure>
+      <div class="flex-fill d-flex flex-column">
+        <h6>{{ scheduleDetails?.fullName }}</h6>
+      </div>
+    </div>
+    <div class="status" [class]="'status-' + scheduleDetails?.scheduleStatus?.toLowerCase()">
+      {{ scheduleDetails?.scheduleStatus }}
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #orgContentInfo>
+  <div class="shedule-profile mb-3 mb-md-0">
+    <label>Organization:</label>
+    <div class="d-flex align-items-center mb-3 pb-1">
+      <figure class="rounded-circle overflow-hidden">
+        <img [src]="scheduleDetails.orgLogo" alt="" />
+      </figure>
+      <div class="flex-fill d-flex flex-column">
+        <h6>{{ scheduleDetails?.org }}</h6>
+      </div>
+    </div>
+    <div class="status" [class]="'status-' + scheduleDetails?.scheduleStatus?.toLowerCase()">
+      {{ scheduleDetails?.scheduleStatus }}
+    </div>
+  </div>
+</ng-template>

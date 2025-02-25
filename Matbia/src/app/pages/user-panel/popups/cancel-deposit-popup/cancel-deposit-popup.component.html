@@ -1,0 +1,43 @@
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title" id="staticBackdropLabel">
+      <ng-container *ngIf="isConfirmation"> Cancel deposit </ng-container>
+      <ng-container *ngIf="!isConfirmation"> Deposit canceled </ng-container>
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
+  </div>
+
+  <ng-container *ngIf="isConfirmation">
+    <ng-template [ngTemplateOutlet]="confirmationTmp"></ng-template>
+  </ng-container>
+
+  <ng-container *ngIf="!isConfirmation">
+    <ng-template [ngTemplateOutlet]="responseMessageTmp"></ng-template>
+  </ng-container>
+</div>
+
+<ng-template #confirmationTmp>
+  <div class="modal-body text-center">
+    <h6>Are you sure you want to cancel your deposit of {{ amount | currency }}?</h6>
+    <p>This action cannot be undone.</p>
+  </div>
+  <div class="modal-footer border-0">
+    <button class="btn btn-danger w-100" (click)="onConfirm()">Confirm Cancel</button>
+    <button class="btn btn-link w-100" (click)="simpleClose()">Nevermind</button>
+  </div>
+</ng-template>
+
+<!-- Response Message Modal -->
+<ng-template #responseMessageTmp>
+  <div class="modal-body text-center">
+    <div class="deposite-cancel"><span class="material-icons">close</span></div>
+    <h2>
+      {{ amount | currency }}
+    </h2>
+    <p class="big-para">Your Deposit was canceled.</p>
+  </div>
+  <div class="modal-footer border-0">
+    <button class="btn btn-primary w-100" (click)="closePopup()">Done</button>
+  </div>
+</ng-template>
+<!-- Response Message Modal -->

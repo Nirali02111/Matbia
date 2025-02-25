@@ -1,0 +1,153 @@
+@if(tmpName === 'setupPassword'){
+<ng-template [ngTemplateOutlet]="setupPasswordTmp"></ng-template>
+
+} @if(tmpName === 'checkEmail'){
+<ng-template [ngTemplateOutlet]="checkEmailTmp"></ng-template>
+
+} @if(tmpName === 'checkEmailTmp2'){
+<ng-template [ngTemplateOutlet]="checkEmailTmp2"></ng-template>
+}
+
+<ng-template #setupPasswordTmp>
+  <section class="section-text">
+    <div class="small-container">
+      <span class="back-link" (click)="redirectToCardEmailLoginPage()">{{ cardOrEmailValue }}</span>
+      <h1 class="mb-34">Your account doesn't have a password yet</h1>
+      <h6>Set up your password</h6>
+      <p class="para">
+        We will send you an email to <strong>{{ cardOrEmailValue }}</strong> with a link to set up your password.
+      </p>
+      <button class="btn btn-primary w-100" (click)="sendEmail()">
+        <i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="19.449" height="19.449" viewBox="0 0 19.449 19.449">
+            <path
+              id="Path_37367"
+              data-name="Path 37367"
+              d="M18.6.6,11.389,18.116a.783.783,0,0,1-1.443.01L7.284,11.918M18.6.6,9.548,4.329M18.6.6,7.284,11.918m0,0L1.075,9.257a.783.783,0,0,1,.01-1.443l2.8-1.155"
+              transform="translate(0 0.248)"
+              fill="none"
+              stroke="#fff"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.2"
+            />
+          </svg>
+        </i>
+        SEND ME THE EMAIL
+      </button>
+    </div>
+  </section>
+</ng-template>
+
+<ng-template #checkEmailTmp>
+  <section class="section-text">
+    <div class="small-container">
+      <span class="back-link" (click)="redirectToCardEmailLoginPage()">{{
+        accountemail ? accountemail : cardOrEmailValue
+      }}</span>
+      <h1 class="mb-34">Check your email</h1>
+      <h6 class="text-success">Email sent!</h6>
+      <p class="para mb-18">
+        We’ve sent an email to <strong>{{ accountemail ? accountemail : cardOrEmailValue }}</strong> , click the link in
+        the email to create your password.
+      </p>
+      <figure class="m-0 w-100 text-center mb-3">
+        <img src="assets/dist/img/image-mail.png" alt="" />
+      </figure>
+      <button class="btn btn-primary w-100" (click)="openEmail()">
+        <i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="19.511" height="16.578" viewBox="0 0 19.511 16.578">
+            <g id="mail-open-outline" transform="translate(-17.64 -30.867)">
+              <path
+                id="Path_37368"
+                data-name="Path 37368"
+                d="M35.564,35.384l-7.69-3.8a1.081,1.081,0,0,0-.957,0l-7.69,3.8a1.761,1.761,0,0,0-.986,1.575v8.125a1.772,1.772,0,0,0,1.783,1.761H34.768a1.772,1.772,0,0,0,1.783-1.761V36.959A1.761,1.761,0,0,0,35.564,35.384Z"
+                transform="translate(0)"
+                fill="none"
+                stroke="#fff"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.2"
+              />
+              <path
+                id="Path_37369"
+                data-name="Path 37369"
+                d="M54.221,104.361l-5.689-4.425a1.056,1.056,0,0,0-1.3,0l-5.69,4.425"
+                transform="translate(-20.606 -60.333)"
+                fill="none"
+                stroke="#fff"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.2"
+              />
+              <path
+                id="Path_37370"
+                data-name="Path 37370"
+                d="M117.545,77.493l5.986-4.533"
+                transform="translate(-87.803 -36.678)"
+                fill="none"
+                stroke="#fff"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.2"
+              />
+              <path
+                id="Path_37371"
+                data-name="Path 37371"
+                d="M23.305,72.96l6.118,4.621"
+                transform="translate(-4.479 -36.678)"
+                fill="none"
+                stroke="#fff"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.2"
+              />
+            </g>
+          </svg>
+        </i>
+        OPEN EMAIL
+      </button>
+      <div class="text-center mt-3 mt-sm-4 mt-md-5">
+        <a class="link mb-0" href="javascript:void(0)" (click)="sendEmail()">I didn’t recieve the email</a>
+      </div>
+    </div>
+  </section>
+</ng-template>
+
+<ng-template #checkEmailTmp2>
+  <section class="section-text">
+    <div class="small-container">
+      <span class="back-link" (click)="redirectToCardEmailLoginPage()">{{ accountemail }}</span>
+      @if(showValidatecard){
+      <div class="alert alert-success">
+        Your card was validated!<br />
+        @if(cardValueFromEmail){
+        <small>{{ cardValueFromEmail }}</small>
+        } @else if(SignUpcardNum){
+        <small>{{ SignUpcardNum }}</small>
+        }
+      </div>
+      }
+      <h1 class="mt-62 mb-18">Set up your password</h1>
+      <p class="para">We will send you an email to {{ accountemail }} with a link to set up your password.</p>
+      <button class="btn btn-primary w-100" (click)="sendEmail()">
+        <i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="19.449" height="19.449" viewBox="0 0 19.449 19.449">
+            <path
+              id="Path_37367"
+              data-name="Path 37367"
+              d="M18.6.6,11.389,18.116a.783.783,0,0,1-1.443.01L7.284,11.918M18.6.6,9.548,4.329M18.6.6,7.284,11.918m0,0L1.075,9.257a.783.783,0,0,1,.01-1.443l2.8-1.155"
+              transform="translate(0 0.248)"
+              fill="none"
+              stroke="#fff"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.2"
+            />
+          </svg>
+        </i>
+        SEND ME THE EMAIL
+      </button>
+    </div>
+  </section>
+</ng-template>

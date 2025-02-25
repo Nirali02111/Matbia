@@ -1,0 +1,27 @@
+<div class="modal-header justify-content-center pb-0 border-0">
+  <div class="modal-account-header text-center">
+    <h4>Use API Key</h4>
+    <p class="mb-0">Connect an integration using an API key provided.</p>
+  </div>
+  <button type="button" class="close" aria-label="Close" (click)="closePopup()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="form-wrap text-center mb-5 position-relative">
+    <h5>COPY API KEY:</h5>
+
+    <div class="form-control" app-apikey [value]="OrgHandle?.value" [withLabel]="false"></div>
+  </div>
+  <div class="text-center text-wrap d-flex flex-column align-items-center">
+    <p class="mb-0">This method is available with:</p>
+    <img src="assets/dist/img/logo-Donary.png" alt="Donary" width="126" height="51" />
+  </div>
+</div>
+
+<div class="modal-footer justify-content-start border-0">
+  <p class="m-0">
+    If you already swiped using Donary and would like to integrate it with your current account
+    <a (click)="clickIntegratingAccount()" class="link">Click Here</a>.
+  </p>
+</div>

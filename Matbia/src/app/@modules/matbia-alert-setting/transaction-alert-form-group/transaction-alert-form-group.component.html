@@ -1,0 +1,67 @@
+<div class="card card-alert">
+  <div class="card-body">
+    <div class="d-flex align-items-center justify-content-between w-100">
+      <h6 class="flex-fill m-0 fw-normal">
+        @if (!isRequestType) { Transactions alerts } @if (isRequestType) { Digital envelope alerts }
+      </h6>
+      <div class="form-check toogle--btn d-flex justify-content-end my-0 mx-3 mx-md-4" [formGroup]="formGroup">
+        <input class="form-check-input" type="checkbox" [id]="SwitchHtmlIdValue" formControlName="isPaused" />
+        <label class="form-check-label" [for]="SwitchHtmlIdValue"></label>
+      </div>
+      @if (!isRequestType) {
+      <i
+        class="mdi mdi-arrow-d fs-4 lh-1 d-inline-flex"
+        data-bs-toggle="collapse"
+        data-bs-target="#tra-alert"
+        aria-expanded="false"
+        aria-controls="tra-alert"
+      ></i>
+      } @if (isRequestType) {
+      <i
+        class="mdi mdi-arrow-d fs-4 lh-1 d-inline-flex"
+        data-bs-toggle="collapse"
+        data-bs-target="#req-alert"
+        aria-expanded="false"
+        aria-controls="req-alert"
+      ></i>
+      }
+    </div>
+
+    <div class="collapse w-100" [ngClass]="{ show: expand }" [id]="AccordionHtmlIdValue" [formGroup]="formGroup">
+      <ng-container *ngIf="!isRequestType">
+        <div
+          class="d-flex alert--wrap alert--details w-100 pt-3 border-top mt-3"
+          [class.border-top-none]="isRequestType"
+        >
+          <div class="amount--div d-flex flex-column flex-md-row justify-content-md-between align-items-md-center">
+            <label class="lbl--text">Send alerts if transaction is greater than:</label>
+
+            <div class="amout-wrap d-flex align-items-center">
+              <ng-container *ngIf="MaxLimit?.touched && MaxLimit?.invalid">
+                <app-input-error [errors]="MaxLimit?.errors"></app-input-error>
+              </ng-container>
+
+              <div class="input--group ms-2">
+                <i class="fas fa-dollar-sign dollar--icon"></i>
+                <app-amount-input
+                  [isSwitchOn]="isSwitchOn"
+                  formControlName="maxLimit"
+                  [isSubmit]="false"
+                ></app-amount-input>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <app-select-email-and-phone
+        [isSwitchOn]="isSwitchOn"
+        [emailPhoneRequiredError]="isEmailPhoneRequiredError"
+        [formGroup]="formGroup"
+        [emailList]="emailList"
+        [phoneList]="phoneList"
+      >
+      </app-select-email-and-phone>
+    </div>
+  </div>
+</div>

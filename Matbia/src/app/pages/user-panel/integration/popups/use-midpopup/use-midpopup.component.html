@@ -1,0 +1,55 @@
+<div class="modal-header justify-content-center pb-0 border-0">
+  <div class="modal-account-header text-center">
+    <h4>Use Account number</h4>
+    <p class="mb-0">Connect an integration using your processing merchants MID number.</p>
+  </div>
+  <button type="button" class="close" aria-label="Close" (click)="closePopup()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="form-wrap text-center mb-5 position-relative" [formGroup]="formGroup">
+    <h5>ENTER MID:</h5>
+    <div class="form-group position-relative with-icon">
+      <input type="text" class="form-control" placeholder="Enter Mid Number" formControlName="midNum" />
+      <svg
+        class="icon-delete"
+        xmlns="http://www.w3.org/2000/svg"
+        width="11.529"
+        height="14.823"
+        viewBox="0 0 11.529 14.823"
+      >
+        <path
+          id="Icon_material-delete"
+          data-name="Icon material-delete"
+          d="M8.324,17.676a1.652,1.652,0,0,0,1.647,1.647h6.588a1.652,1.652,0,0,0,1.647-1.647V7.794H8.324ZM19.029,5.324H16.147L15.323,4.5H11.206l-.824.824H7.5V6.971H19.029Z"
+          transform="translate(-7.5 -4.5)"
+          fill="#cdcdcd"
+          (click)="clearValue()"
+        />
+      </svg>
+
+      <ng-container *ngIf="MIDNumber?.touched && MIDNumber?.invalid">
+        <app-input-error [errors]="MIDNumber?.errors"></app-input-error>
+      </ng-container>
+    </div>
+
+    <input type="text" class="form-control" placeholder="Enter another MID" formControlName="anotherMidNum" />
+
+    <ng-container *ngIf="AnotherMidNum?.touched && AnotherMidNum?.invalid">
+      <app-input-error [errors]="AnotherMidNum?.errors"></app-input-error>
+    </ng-container>
+    <button class="btn btn-secondary text-center w-100" (click)="onSubmit()">Submit</button>
+  </div>
+  <div class="text-center text-wrap d-flex flex-column align-items-center">
+    <p class="mb-0">This method is available with:</p>
+    <img src="assets/dist/img/logo-Cardknox.png" alt="Donary" width="126" height="51" />
+  </div>
+</div>
+
+<div class="modal-footer justify-content-start border-0">
+  <p class="m-0">
+    If you already swiped using Cardknox and would like to integrate it with your current account
+    <a (click)="clickIntegratingAccount()" class="link">Click Here</a>.
+  </p>
+</div>

@@ -1,0 +1,21 @@
+<div class="send-card d-flex align-items-center flex-column">
+  <div class="send-top">
+    <img src="assets/dist/img/matbia-send-card.png" alt="Send Card" />
+    <div class="send-address-detail">
+      <h5 class="send-head">We will send your card to:</h5>
+      <h4 class="send-address">
+        {{ Name?.value }}
+        <br />
+        {{ DisplayAddress }}
+      </h4>
+      <button class="edit-link edit-link-light" (click)="open()" [disabled]="isLoading">
+        <app-button-loader [loading]="isLoading" label="Edit Address"></app-button-loader>
+      </button>
+    </div>
+    <button class="btn btn-primary" (click)="onRequest()" [disabled]="isLoading">
+      <app-button-loader [loading]="isLoading" label="SEND ME A CARD"></app-button-loader>
+    </button>
+  </div>
+
+  <ng-content select="[alreadyHaveCard]"></ng-content>
+</div>

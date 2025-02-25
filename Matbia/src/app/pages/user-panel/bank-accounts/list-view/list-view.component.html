@@ -1,0 +1,48 @@
+<div class="account-content--wrap small--container w-75 m-auto pt-5">
+  <div class="top-head--section">
+    <div class="d-flex justify-content-between align-items-center link-new-account-row mb-3">
+      <div class="title--bar">Linked Bank Accounts</div>
+      <div class="nav-link right-end">
+        @if (schedulesFromAccount) {
+        <a href="#" (click)="onCancelDelete($event)">
+          <span class="material-icons align-middle me-1">close</span>
+          CANCEL
+        </a>
+        } @else {
+        <a class="btn btn-card" href="#" [routerLink]="linkNewAccountRouterLink()">
+          <span class="material-icons">add</span>
+          Link New Account
+        </a>
+        }
+      </div>
+    </div>
+  </div>
+
+  @if (isLoading) {
+  <app-matbia-skeleton-loader-component></app-matbia-skeleton-loader-component>
+  } @else {
+  <div class="account-list--panel">
+    <ng-container *ngFor="let item of linkedAccountList; let i = index">
+      <ng-container *ngIf="!schedulesFromAccount || schedulesFromAccount !== item.bankAccountId">
+        <app-linked-account-row-item
+          [item]="item"
+          [id]="item.bankAccountId"
+          [primaryAccount]="primaryAccount"
+          [schedulesFromAccount]="schedulesFromAccount"
+          [schedulesToAccount]="schedulesToAccount"
+          (selectPrimary)="onSelectPrimary($event)"
+          (deleted)="onDeleteAccount()"
+          (reload)="getAccountList()"
+          (isTransferringSchedules)="onTransferringSchedules($event)"
+          (transferTo)="onTransferringSchedulesTo($event)"
+        >
+        </app-linked-account-row-item>
+      </ng-container>
+    </ng-container>
+  </div>
+  }
+
+  <div class="action--buttons justify-content-end mt-5 d-flex" *ngIf="linkedAccountList.length !== 0">
+    <div class="btn btn-primary" (click)="onSaveBankAccount()">Save Changes</div>
+  </div>
+</div>

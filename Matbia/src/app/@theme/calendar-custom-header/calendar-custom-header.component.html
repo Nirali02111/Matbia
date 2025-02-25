@@ -1,0 +1,136 @@
+<div class="head-calendar d-flex align-items-center justify-content-between gap-2">
+  <span (click)="previousClicked('year')">
+    <svg
+      id="Group_2953"
+      data-name="Group 2953"
+      xmlns="http://www.w3.org/2000/svg"
+      width="32"
+      height="32"
+      viewBox="0 0 32 32"
+    >
+      <rect id="Rectangle_296" data-name="Rectangle 296" width="32" height="32" rx="8" fill="#454545" opacity="0.05" />
+      <path
+        id="Path_128"
+        data-name="Path 128"
+        d="M0,4.974,5.28,0l5.286,4.974"
+        transform="translate(16.513 21.709) rotate(-90)"
+        fill="none"
+        stroke="#454545"
+        stroke-linecap="round"
+        stroke-width="1.5"
+        opacity="0.45"
+      />
+      <path
+        id="Path_1886"
+        data-name="Path 1886"
+        d="M0,4.974,5.28,0l5.286,4.974"
+        transform="translate(10.513 21.709) rotate(-90)"
+        fill="none"
+        stroke="#454545"
+        stroke-linecap="round"
+        stroke-width="1.5"
+        opacity="0.45"
+      />
+    </svg>
+  </span>
+  <span (click)="previousClicked('month')">
+    <svg
+      id="Group_2952"
+      data-name="Group 2952"
+      xmlns="http://www.w3.org/2000/svg"
+      width="32"
+      height="32"
+      viewBox="0 0 32 32"
+    >
+      <rect
+        id="Rectangle_4662"
+        data-name="Rectangle 4662"
+        width="32"
+        height="32"
+        rx="8"
+        fill="#454545"
+        opacity="0.05"
+      />
+      <path
+        id="Path_1884"
+        data-name="Path 1884"
+        d="M0,4.974,5.28,0l5.286,4.974"
+        transform="translate(13.274 21.709) rotate(-90)"
+        fill="none"
+        stroke="#454545"
+        stroke-linecap="round"
+        stroke-width="1.5"
+        opacity="0.45"
+      />
+    </svg>
+  </span>
+
+  <span class="flex-fill text-center">{{ periodLabel }}</span>
+
+  <span (click)="nextClicked('month')">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <g id="Group_1591" data-name="Group 1591" transform="translate(-322 -387)">
+        <rect
+          id="Rectangle_4662"
+          data-name="Rectangle 4662"
+          width="32"
+          height="32"
+          rx="8"
+          transform="translate(322 387)"
+          fill="#454545"
+          opacity="0.05"
+        />
+        <path
+          id="Path_1884"
+          data-name="Path 1884"
+          d="M0,0,5.28,4.974,10.566,0"
+          transform="translate(335.752 408.709) rotate(-90)"
+          fill="none"
+          stroke="#454545"
+          stroke-linecap="round"
+          stroke-width="1.5"
+          opacity="0.45"
+        />
+      </g>
+    </svg>
+  </span>
+
+  <span (click)="nextClicked('year')">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <g id="Group_1592" data-name="Group 1592" transform="translate(-364 -387)">
+        <rect
+          id="Rectangle_296"
+          data-name="Rectangle 296"
+          width="32"
+          height="32"
+          rx="8"
+          transform="translate(364 387)"
+          fill="#454545"
+          opacity="0.05"
+        />
+        <path
+          id="Path_128"
+          data-name="Path 128"
+          d="M0,0,5.28,4.974,10.566,0"
+          transform="translate(374.513 408.709) rotate(-90)"
+          fill="none"
+          stroke="#454545"
+          stroke-linecap="round"
+          stroke-width="1.5"
+          opacity="0.45"
+        />
+        <path
+          id="Path_1886"
+          data-name="Path 1886"
+          d="M0,0,5.28,4.974,10.566,0"
+          transform="translate(380.513 408.709) rotate(-90)"
+          fill="none"
+          stroke="#454545"
+          stroke-linecap="round"
+          stroke-width="1.5"
+          opacity="0.45"
+        />
+      </g>
+    </svg>
+  </span>
+</div>

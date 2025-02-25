@@ -1,0 +1,213 @@
+<div class="modal-content" [class.thankyou-modal]="isThankYou">
+  <div class="modal-header">
+    <h5 class="modal-title" id="staticBackdropLabel">
+      <ng-container *ngIf="!isThankYou">
+        <ng-container *ngIf="isSuggestion"> Suggest org information </ng-container>
+        <ng-container *ngIf="!isSuggestion"> Report missing organization </ng-container>
+      </ng-container>
+      <ng-container *ngIf="isThankYou"> Thank you! </ng-container>
+    </h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
+  </div>
+
+  <ng-container *ngIf="!isThankYou">
+    <ng-template [ngTemplateOutlet]="reportMissingOrganizationTmp"></ng-template>
+  </ng-container>
+
+  <ng-container *ngIf="isThankYou">
+    <ng-template [ngTemplateOutlet]="thankYouReportMissingOrganizationTmp"></ng-template>
+  </ng-container>
+</div>
+
+<ng-template #reportMissingOrganizationTmp>
+  <div class="modal-body">
+    <ng-container *ngIf="!orgId">
+      <ng-template [ngTemplateOutlet]="missingOrganizationTmp"></ng-template>
+    </ng-container>
+
+    <ng-container *ngIf="orgId">
+      <ng-template [ngTemplateOutlet]="electronicallyNotLinkedOrganizationTmp"></ng-template>
+    </ng-container>
+  </div>
+  <div class="modal-footer gap-2">
+    <button type="button" class="btn m-0 btn-primary w-100" (click)="onSubmit()">Submit</button>
+    <button type="button" class="btn btn-default w-100 m-0" (click)="closePopup()">Cancel</button>
+  </div>
+</ng-template>
+
+<ng-template #electronicallyNotLinkedOrganizationTmp>
+  <div class="mt-2 d-flex align-items-center position-relative">
+    <img
+      style="object-fit: cover"
+      [src]="organization?.orgLogo || profileIcon"
+      appDefaultImgOnMissing
+      class="me-3 rounded-circle"
+      width="40"
+      height="40"
+      alt=""
+    />
+
+    <div class="donate-info-sendto">
+      <h6>{{ displayOrgDetails() }}</h6>
+      <h5>{{ organization?.orgJewishName }}</h5>
+      <span class="sendto-address">{{ organization?.address }}</span>
+      <span class="sendto-tax"><strong>TAX ID:</strong> {{ organization?.taxId }}</span>
+      <span class="sendto-tax"><strong>PHONE #:</strong> {{ organization?.phone }}</span>
+    </div>
+  </div>
+
+  <div class="row gy-4 mt-4" [formGroup]="formGroup" [@shakeTrigger]="formGroup?.invalid && inAnimation">
+    <div class="col-md-12">
+      <div class="form-group mb-0">
+        <label class="form-label">Contact Name:</label>
+        <input type="text" class="form-control" placeholder="Contact name" formControlName="contactName" />
+        <ng-container *ngIf="ContactName?.touched && ContactName?.invalid">
+          <app-input-error [errors]="ContactName?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group mb-0">
+        <label class="form-label">EMAIL ADDRESS:</label>
+        <input type="email" class="form-control" placeholder="Enter email address" formControlName="email" />
+        <ng-container *ngIf="Email?.touched && Email?.invalid">
+          <app-input-error [errors]="Email?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="form-group mb-0">
+        <label class="form-label">ORG. REP. CONTACT NUMBER:</label>
+        <app-phone-input [isSubmit]="false" placeholder="( ) - -" formControlName="contactNumber"></app-phone-input>
+        <ng-container *ngIf="ContactNumber?.touched && ContactNumber?.invalid">
+          <app-input-error [errors]="ContactNumber?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Missing Organization -->
+<ng-template #missingOrganizationTmp>
+  <p>Please provide us with the organizations information by filling in the fields below.</p>
+  <div class="row gy-4" [formGroup]="formGroup" [@shakeTrigger]="formGroup?.invalid && inAnimation">
+    <div class="col-md-12">
+      <div class="form-group mb-0">
+        <label class="form-label">ORG. NAME:</label>
+        <input type="text" class="form-control" placeholder="Org Name" formControlName="orgName" />
+        <ng-container *ngIf="OrgName?.touched && OrgName?.invalid">
+          <app-input-error [errors]="OrgName?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group mb-0">
+        <label class="form-label">EIN:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="00-0000000"
+          formControlName="taxID"
+          [mask]="employerIdMask"
+        />
+        <ng-container *ngIf="TaxID?.touched && TaxID?.invalid">
+          <app-input-error [errors]="TaxID?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <div class="form-group mb-0">
+        <label class="form-label">STREET ADDRESS:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Street Address"
+          appAddressAutocomplete
+          (onAddressChange)="onAddressChange($event)"
+          formControlName="address"
+        />
+        <ng-container *ngIf="Address?.touched && Address?.invalid">
+          <app-input-error [errors]="Address?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group mb-0">
+        <label class="form-label">CITY:</label>
+        <input type="text" class="form-control" placeholder="City" formControlName="city" />
+        <ng-container *ngIf="City?.touched && City?.invalid">
+          <app-input-error [errors]="City?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="form-group mb-0">
+        <label class="form-label">STATE:</label>
+        <ng-select
+          bindLabel="item_id"
+          bindValue="item_id"
+          [addTag]="true"
+          [searchable]="true"
+          formControlName="state"
+          [searchFn]="commonDataService.customSearchFn"
+          [items]="commonDataService.stateList"
+        >
+          <ng-template ng-option-tmp let-item="item">
+            {{ item.item_id }}
+          </ng-template>
+        </ng-select>
+        <ng-container *ngIf="State?.touched && State?.invalid">
+          <app-input-error [errors]="State?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="form-group mb-0">
+        <label class="form-label">ZIP:</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Zip"
+          [validation]="zipCodeValidation"
+          [mask]="zipCodeMask"
+          formControlName="zip"
+        />
+        <ng-container *ngIf="Zip?.touched && Zip?.invalid">
+          <app-input-error [errors]="Zip?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group mb-0">
+        <label class="form-label">ORG. REP. CONTACT NUMBER:</label>
+        <app-phone-input [isSubmit]="false" placeholder="( ) - -" formControlName="contactNumber"></app-phone-input>
+        <ng-container *ngIf="ContactNumber?.touched && ContactNumber?.invalid">
+          <app-input-error [errors]="ContactNumber?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="form-group mb-0">
+        <label class="form-label">EMAIL ADDRESS:</label>
+        <input type="email" class="form-control" placeholder="Enter email address" formControlName="email" />
+        <ng-container *ngIf="Email?.touched && Email?.invalid">
+          <app-input-error [errors]="Email?.errors"></app-input-error>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-template>
+<!-- Missing Organization end -->
+
+<!-- Thankyou  Modal -->
+<ng-template #thankYouReportMissingOrganizationTmp>
+  <div class="modal-body text-center">
+    <img src="/assets/dist/img/icon-checked.png" alt="Checked" class="check-icon" />
+    <h4 class="thankyou-subheading">Thank you for submitting information regarding</h4>
+    <h2 class="thankyou-heading">{{ reportedOrganizationName }}</h2>
+    <p class="thankyou-para">We will verify the info, once the info is verified we will add them to our platform.</p>
+
+    <button type="button" class="btn btn-primary w-100 mt-3" (click)="closePopup()">Done</button>
+  </div>
+</ng-template>

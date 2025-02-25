@@ -1,0 +1,75 @@
+<section class="section-text">
+  <div class="small-container" [formGroup]="signInFormGroup">
+    <span class="back-link" (click)="goBackToCardLoginPage()">{{ card }}</span>
+    <h5>We found your account associated with {{ hasOtherEmailValue | emailMask }}</h5>
+    <div class="form-group">
+      <label class="form-label">CONFIRM EMAIL ADDRESS:</label>
+      <input
+        type="text"
+        class="form-control"
+        id="matbia-signin-username"
+        placeholder="name@company.com"
+        #signInInput
+        formControlName="userName"
+        [class.is-invalid]="isSubmitted && Username?.invalid"
+      />
+      <div *ngIf="isSubmitted && Username?.invalid" class="input-group col-12">
+        <span class="error invalid-feedback" style="display: block">User name is required</span>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">ENTER PASSWORD:</label>
+      <input
+        [attr.type]="passwordType"
+        class="form-control"
+        id="matbia-signin-password-id"
+        placeholder="Password"
+        formControlName="password"
+        [class.is-invalid]="isSubmitted && Password?.invalid"
+      />
+    </div>
+    <a class="link mb-4" href="javascript:void(0)" (click)="showForgotPassword()">Forgot Password?</a>
+
+    <button class="btn btn-primary w-100" (click)="login()">
+      <i>
+        <svg xmlns="http://www.w3.org/2000/svg" width="15.198" height="19.2" viewBox="0 0 15.198 19.2">
+          <g id="Group_3518" data-name="Group 3518" transform="translate(-826 -415.999)">
+            <path
+              id="Path_37362"
+              data-name="Path 37362"
+              d="M3.6,8.6v-4a4,4,0,1,1,8,0v4m-8,0h-2.1A.893.893,0,0,0,.6,9.489v8.216a.893.893,0,0,0,.893.893H13.705a.893.893,0,0,0,.893-.893V9.493a.893.893,0,0,0-.893-.893H11.6m-8,0h8"
+              transform="translate(826 416)"
+              fill="none"
+              stroke="#fff"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="1.2"
+            />
+            <line
+              id="Line_1648"
+              data-name="Line 1648"
+              y2="1.873"
+              transform="translate(833.599 429.913)"
+              fill="none"
+              stroke="#fff"
+              stroke-linecap="round"
+              stroke-width="1.2"
+            />
+            <circle
+              id="Ellipse_732"
+              data-name="Ellipse 732"
+              cx="1.271"
+              cy="1.271"
+              r="1.271"
+              transform="translate(832.328 427.36)"
+              fill="none"
+              stroke="#fff"
+              stroke-width="1.2"
+            />
+          </g>
+        </svg>
+      </i>
+      Login
+    </button>
+  </div>
+</section>

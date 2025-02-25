@@ -1,0 +1,135 @@
+<div class="setup-business-container business-account">
+  <div class="inside-setup-bussiness">
+    <div class="setup-business-left">
+      <div class="title">
+        <h3>Business Sign Up</h3>
+        <p>
+          We need to gather some information to see if this business meets KYB guidelines.<br />
+          To register a new end-user as a business instead of an individual, the following must be sent in the request.
+        </p>
+      </div>
+      <div class="tabbing-content">
+        <ul class="nav nav-tabs" id="myTab" role="tablist" ngbNav #nav="ngbNav" [(activeId)]="activeId">
+          <li class="nav-item" role="presentation" [ngbNavItem]="1">
+            <button
+              class="nav-link active"
+              id="home-tab"
+              type="button"
+              [class.active]="activeId === 1"
+              (click)="selectTab(1)"
+            >
+              BUSINESS SETUP
+            </button>
+
+            <ng-template ngbNavContent>
+              <div class="tab-pane fade show active">
+                <app-business-register-form-group
+                  [formGroup]="businessForm"
+                  #businessRegisterForm
+                  (fgSubmit)="onBusinessRegister()"
+                ></app-business-register-form-group>
+              </div>
+            </ng-template>
+          </li>
+          <li class="nav-item" role="presentation" [ngbNavItem]="2">
+            <button
+              class="nav-link"
+              id="profile-tab"
+              type="button"
+              [class.active]="activeId === 2"
+              (click)="selectTab(2)"
+            >
+              ADD USERS
+            </button>
+
+            <ng-template ngbNavContent>
+              <div class="tab-pane fade show">
+                <app-business-user-form-group
+                  [formGroup]="businessUserForm"
+                  (fgSubmit)="onBusinessUser()"
+                  #businessUserFormGroup
+                ></app-business-user-form-group>
+              </div>
+            </ng-template>
+          </li>
+          <li class="nav-item" role="presentation" [ngbNavItem]="3">
+            <button
+              class="nav-link"
+              id="contact-tab"
+              type="button"
+              [class.active]="activeId === 3"
+              (click)="selectTab(3)"
+            >
+              PERMISSIONS
+            </button>
+
+            <ng-template ngbNavContent>
+              <div class="tab-pane fade show">
+                <app-add-business-permission-form-group
+                  [formGroup]="businessPermissionForm"
+                  (fgSubmit)="onBusinessPermission()"
+                  (businessDetails)="onBusinessDetails($event)"
+                  #businessPermissionFormGroup
+                ></app-add-business-permission-form-group>
+              </div>
+            </ng-template>
+          </li>
+        </ul>
+        <div class="tab-content" id="myTabContent" [ngbNavOutlet]="nav"></div>
+      </div>
+    </div>
+
+    <div class="setup-business-right">
+      <div class="register-personal-ac">
+        <a href="#" (click)="goToCardSetup($event)">REGISTER PERSONAL ACCOUNT</a>
+      </div>
+      <div class="basic-information" *ngIf="businessName || (businessMemberList && businessMemberList.length !== 0)">
+        <ul>
+          <li><label>Business Information</label></li>
+          <li>
+            <span *ngIf="businessName"> {{ businessName }} <span class="material-icons">visibility</span></span>
+          </li>
+        </ul>
+        <ul>
+          <li>
+            <label>Business Members <span class="material-icons" (click)="addNewMember()">add_circle</span></label>
+          </li>
+
+          <ng-container *ngFor="let item of businessMemberList">
+            <li>
+              <span> {{ item.member }} <span class="material-icons" (click)="viewMember(item)">visibility</span></span>
+            </li>
+          </ng-container>
+        </ul>
+      </div>
+    </div>
+
+    <div class="action--button justify-content-end mt-4 mb-5 d-flex">
+      <ng-container *ngIf="activeId === 1">
+        <button class="btn btn-primary" (click)="onBusinessRegister()" [disabled]="isLoading">
+          <app-button-loader [loading]="isLoading" label="SAVE & CONTINUE"></app-button-loader>
+        </button>
+      </ng-container>
+
+      <ng-container *ngIf="activeId === 2">
+        <ng-container *ngIf="!businessUserForm?.disabled">
+          <button class="btn btn-primary" (click)="onBusinessUser()" [disabled]="isLoading">
+            <app-button-loader [loading]="isLoading" label="SAVE & CONTINUE"></app-button-loader>
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="businessUserForm?.disabled">
+          <button class="btn btn-danger" (click)="onBusinessUserDelete()" [disabled]="isLoading">
+            <app-button-loader [loading]="isLoading" label="Delete"></app-button-loader>
+          </button>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngIf="activeId === 3">
+        <button class="btn btn-primary" (click)="onBusinessPermission()" [disabled]="isLoading">
+          <app-button-loader [loading]="isLoading" label="SAVE & CONTINUE"></app-button-loader>
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</div>

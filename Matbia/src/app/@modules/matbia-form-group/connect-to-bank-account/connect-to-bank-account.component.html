@@ -1,0 +1,60 @@
+<div class="card--custom connect-block" [style.justify-content]="isBlockPlaid ? 'center' : 'space-between'">
+  <ng-container *ngIf="!isBlockPlaid">
+    <div class="connect-inner text-center position-relative">
+      <h4>Connect with Username and Password</h4>
+      <div class="connect-icons">
+        <div class="connect-icon connect-top">
+          <img src="/assets/dist/img/plaid-logo.png" alt="" />
+        </div>
+        <div class="connect-icon connect-bottom">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            class="bi bi-bank2"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M8.277.084a.5.5 0 0 0-.554 0l-7.5 5A.5.5 0 0 0 .5 6h1.875v7H1.5a.5.5 0 0 0 0 1h13a.5.5 0 1 0 0-1h-.875V6H15.5a.5.5 0 0 0 .277-.916l-7.5-5zM12.375 6v7h-1.25V6h1.25zm-2.5 0v7h-1.25V6h1.25zm-2.5 0v7h-1.25V6h1.25zm-2.5 0v7h-1.25V6h1.25zM8 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2zM.5 15a.5.5 0 0 0 0 1h15a.5.5 0 1 0 0-1H.5z"
+            />
+          </svg>
+        </div>
+      </div>
+      <p class="text-center">
+        Link your bank account through a secure Plaid connection, using your online bank login info.
+      </p>
+
+      <button class="btn btn-primary connect-btn" (click)="connectUsingCredentials()" [disabled]="loading">
+        <app-button-loader [loading]="loading && isConnectWithCredentials" label="Connect"></app-button-loader>
+      </button>
+    </div>
+    <div class="connect-seprator"><span>OR</span></div>
+  </ng-container>
+  <div class="connect-inner text-center position-relative">
+    <h4>Connect with Account and Routing number</h4>
+    <div class="connect-icons">
+      <div class="connect-icon connect-top">
+        <img src="/assets/dist/img/matbia-icon.svg" alt="" />
+      </div>
+      <div class="connect-icon connect-bottom">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          fill="currentColor"
+          class="bi bi-bank2"
+          viewBox="0 0 16 16"
+        >
+          <path
+            d="M8.277.084a.5.5 0 0 0-.554 0l-7.5 5A.5.5 0 0 0 .5 6h1.875v7H1.5a.5.5 0 0 0 0 1h13a.5.5 0 1 0 0-1h-.875V6H15.5a.5.5 0 0 0 .277-.916l-7.5-5zM12.375 6v7h-1.25V6h1.25zm-2.5 0v7h-1.25V6h1.25zm-2.5 0v7h-1.25V6h1.25zm-2.5 0v7h-1.25V6h1.25zM8 4a1 1 0 1 1 0-2 1 1 0 0 1 0 2zM.5 15a.5.5 0 0 0 0 1h15a.5.5 0 1 0 0-1H.5z"
+          />
+        </svg>
+      </div>
+    </div>
+    <p class="text-center">Link your bank account through Matbia using your account and routing number.</p>
+    <button class="btn btn-primary connect-btn" (click)="connectUsingRouting()" [disabled]="loading">
+      <app-button-loader [loading]="loading && isConnectWithRouting" label="Connect"></app-button-loader>
+    </button>
+  </div>
+</div>

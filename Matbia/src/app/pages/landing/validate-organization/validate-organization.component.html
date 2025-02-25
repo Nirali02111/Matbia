@@ -1,0 +1,164 @@
+<div class="validating-org-wrap">
+  <div class="validate-org-inside">
+    <div class="validate-org-container">
+      <ng-container *ngIf="!isValidate">
+        <ng-template [ngTemplateOutlet]="orgValidationTmp"></ng-template>
+      </ng-container>
+      <ng-container *ngIf="isValidate">
+        <ng-template [ngTemplateOutlet]="orgResetPasswordTmp"></ng-template>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<ng-template #orgValidationMessageTmp>
+  <div class="account-validate">
+    <img src="assets/dist/img/check-circle-green.svg" />
+    <h4>ACCOUNT VALIDATED</h4>
+  </div>
+</ng-template>
+
+<ng-template #orgValidationTmp>
+  <div class="validate-org-main">
+    <div class="validate-title">
+      <h3 *ngIf="businessName">Welcome, {{ businessName }}</h3>
+      <p>Login to see donations & link your bank to redeem your money.</p>
+    </div>
+    <div class="validate-form-wrap" [formGroup]="organizationValidateForm">
+      <div class="validate-form-inside">
+        <!-- TaxtId -->
+        <div class="form--group" [@shakeTrigger]="TaxId?.invalid && inAnimation" appHasFocus>
+          <div class="lbl-col"><label>TAX ID:</label></div>
+          <div class="input-col" [class.is-invalid]="TaxId?.touched && TaxId?.invalid">
+            <input
+              appAutoFocus
+              type="text"
+              class="form-control"
+              placeholder="00-0000000"
+              [mask]="taxIdMask"
+              formControlName="taxId"
+            />
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="form--group" [@shakeTrigger]="Email?.invalid && inAnimation" appHasFocus>
+          <div class="lbl-col"><label>EMAIL ADDRESS:</label></div>
+          <div class="input-col" [class.is-invalid]="Email?.touched && Email?.invalid">
+            <input type="email" class="form-control" placeholder="Email Address" formControlName="email" />
+          </div>
+        </div>
+        <div class="action-button btn-loader-common">
+          <button class="btn btn-primary btn-loader-inside" [disabled]="isLoading" (click)="onValidateOrganization()">
+            <span *ngIf="!isLoading">Validate</span>
+          </button>
+          <div *ngIf="isLoading" class="loader">
+            <img src="assets/dist/img/rolling-loader.svg" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #orgResetPasswordTmp>
+  <div class="org-create-password">
+    <ng-template [ngTemplateOutlet]="orgValidationMessageTmp"></ng-template>
+
+    <div class="validate-title">
+      <h3>Create Password</h3>
+      <p>Login to see donations & link your bank to redeem your money.</p>
+    </div>
+    <div class="validate-form-wrap" [formGroup]="organizationResetPasswordForm">
+      <div class="validate-form-inside">
+        <div
+          class="form--group"
+          [@shakeTrigger]="NewPassword?.invalid && inAnimation"
+          appHasFocus
+          [class.is-invalid-er]="NewPassword?.touched && NewPassword?.invalid"
+          (focusin)="passwordFieldFocusOut = false"
+          (focusout)="passwordFieldFocusOut = true"
+        >
+          <div class="lbl-col"><label>TYPE PASSWORD:</label></div>
+          <div class="input-col">
+            <input
+              appAutoFocus
+              [attr.type]="passwordType"
+              class="form-control"
+              placeholder="Password"
+              formControlName="newPassword"
+              (focus)="passwordFocused()"
+            />
+
+            <ng-container *ngIf="NewPassword?.value">
+              <ng-container *ngIf="passwordType === 'text'">
+                <span class="material-icons" (click)="ShowPassword(true)">visibility_off</span>
+              </ng-container>
+              <ng-container *ngIf="passwordType !== 'text'">
+                <span class="material-icons" (click)="ShowPassword(false)">visibility</span>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+        <!-- Display Error -->
+        <ng-container *ngIf="(NewPassword?.touched || NewPassword?.dirty) && NewPassword?.invalid">
+          <div class="validate-org-error" [class.not-in-focus]="isSubmitted || passwordFieldFocusOut">
+            <app-input-error [errors]="NewPassword?.errors"></app-input-error>
+          </div>
+        </ng-container>
+        <div
+          class="form--group"
+          [@shakeTrigger]="ConfirmNewPassword?.invalid && inAnimation"
+          appHasFocus
+          [class.is-invalid-er]="ConfirmNewPassword?.touched && ConfirmNewPassword?.invalid"
+          (focusin)="confirmPasswordFieldFocusOut = false"
+          (focusout)="confirmPasswordFieldFocusOut = true"
+        >
+          <div class="lbl-col"><label>CONFIRM PASSWORD:</label></div>
+          <div class="input-col">
+            <input
+              [attr.type]="confirmPasswordType"
+              class="form-control"
+              placeholder="Confirm Password"
+              formControlName="confirmNewPassword"
+              (focus)="confirmPasswordFocused()"
+            />
+
+            <ng-container *ngIf="ConfirmNewPassword?.value">
+              <ng-container *ngIf="confirmPasswordType === 'text'">
+                <span class="material-icons" (click)="ShowConfirmPassword(true)">visibility_off</span>
+              </ng-container>
+              <ng-container *ngIf="confirmPasswordType !== 'text'">
+                <span class="material-icons" (click)="ShowConfirmPassword(false)">visibility</span>
+              </ng-container>
+            </ng-container>
+          </div>
+        </div>
+        <!-- Display Errors -->
+        <ng-container *ngIf="(ConfirmNewPassword?.touched || ConfirmNewPassword?.dirty) && ConfirmNewPassword?.invalid">
+          <div class="validate-org-error" [class.not-in-focus]="isSubmitted || confirmPasswordFieldFocusOut">
+            <ng-container *ngIf="ConfirmNewPassword?.errors?.required">
+              <span class="error invalid-feedback" style="display: block">Confirm Password is required</span>
+            </ng-container>
+
+            <ng-container *ngIf="ConfirmNewPassword?.errors?.mismatch">
+              <span class="error invalid-feedback" style="display: block">Confirm Password not match</span>
+            </ng-container>
+
+            <ng-container *ngIf="!ConfirmNewPassword?.errors?.required && !ConfirmNewPassword?.errors?.mismatch">
+              <app-input-error [errors]="ConfirmNewPassword?.errors"></app-input-error>
+            </ng-container>
+          </div>
+        </ng-container>
+        <div class="action-button btn-loader-common">
+          <button class="btn btn-primary btn-loader-inside" [disabled]="isLoading" (click)="onSetPassword()">
+            <span *ngIf="!isLoading">CONTINUE</span>
+          </button>
+          <div *ngIf="isLoading" class="loader">
+            <img src="assets/dist/img/rolling-loader.svg" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

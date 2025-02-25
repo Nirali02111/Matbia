@@ -1,0 +1,203 @@
+<div class="row">
+  <div class="col-md-7 enter--amount" [formGroup]="formGroup">
+    <div class="card--custom">
+      <div class="form--group panel--title">
+        <label class="form-check-label">Enter Amount:</label>
+        <app-amount-input formControlName="totalAmount"></app-amount-input>
+      </div>
+      <div class="form--group d-flex transfer-to justify-content-between align-items-center mt-3 mb-1">
+        <label class="form-check-label">TRANSFER TO:</label>
+        <div class="select--wrap d-flex align-items-center">
+          <div class="filter by-transaction">
+            <ng-select
+              bindLabel="accountNickName"
+              bindValue="bankAccountId"
+              formControlName="bankAccountId"
+              [items]="linkedAccountList"
+              [loading]="isAccountListLoading"
+              [selectOnTab]="true"
+              [searchable]="false"
+              [clearable]="linkedAccountList && linkedAccountList.length > 1"
+            >
+              <!-- for list of option -->
+              <ng-template ng-option-tmp let-item="item">
+                {{ item.accountNickName }}
+                <ng-container *ngIf="item.isDefault">
+                  <i class="ng-option-primary"> Primary </i>
+                </ng-container>
+              </ng-template>
+
+              <!-- for selected -->
+              <ng-template ng-label-tmp let-item="item">
+                {{ item.accountNickName }}
+              </ng-template>
+            </ng-select>
+
+            <ng-container *ngIf="BankAccountId?.touched && BankAccountId?.invalid">
+              <app-input-error [errors]="BankAccountId?.errors"></app-input-error>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-5 available-redeem">
+    <div class="redeem-amount-inside" [class.amount-top-height]="TotalAmount?.valid && TotalAmount?.value">
+      <div class="amount-top" [class.amount-top-border-bottom]="TotalAmount?.valid && TotalAmount?.value">
+        <h4>{{ orgBalance?.availableBalance || 0 | currency }}</h4>
+        <p>TOTAL FUNDS</p>
+      </div>
+      <div class="amount-bottom" *ngIf="TotalAmount?.value">
+        <ng-container *ngIf="TotalAmount?.valid">
+          <div class="amount-row">
+            <label>MATBIA FEE:</label>
+            <span>{{ CalculatedFees || 0 | currency }}</span>
+          </div>
+
+          <div class="amount-row">
+            <label>DEPOSIT AMOUNT:</label>
+            <span>{{ DepositAmount || 0 | currency }}</span>
+          </div>
+
+          <div class="amount-row">
+            <p style="font-size: 12px">Amount you will receive in your bank</p>
+          </div>
+        </ng-container>
+      </div>
+
+      <ng-container *ngIf="!isLoading && !isAlreadyScheduleAutoRedeem">
+        <button class="btn btn-primary btn-auto-transfer" (click)="onSetUpAutomaticTransfer()">
+          SETUP AUTOMATIC TRANSFERS
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<!-- Automatic transfer section -->
+<ng-container *ngIf="isAlreadyScheduleAutoRedeem">
+  <ng-template [ngTemplateOutlet]="autoTransferTmp"></ng-template>
+</ng-container>
+
+<!-- Automatic transfer Template -->
+<ng-template #autoTransferTmp>
+  <div class="row mt-3 autometic-transfer" [formGroup]="formGroup">
+    <div class="col-md-12">
+      <div class="card--custom recurring--section" [class.with-padding]="!(isOnSchedule || isOnAutoRedeem)">
+        <div class="row">
+          <ng-container *ngIf="isOnSchedule || isOnAutoRedeem; else autoTransferDefaultTmp">
+            <div [class.col-md-6]="isOnSchedule" [class.col-md-8]="isOnAutoRedeem">
+              <div class="transfer-row" style="justify-content: normal">
+                <div class="transfer-action">
+                  <img src="assets/dist/img/dollar-circle.png" />
+
+                  <ng-container *ngIf="isOnSchedule">
+                    <ng-container
+                      *ngIf="
+                        autoTransferData.recurringPayment.frequency === 1 ||
+                        !autoTransferData.recurringPayment.frequency
+                      "
+                    >
+                      Daily Schedule
+                    </ng-container>
+
+                    <ng-container *ngIf="autoTransferData.recurringPayment.frequency === 2">
+                      Every {{ autoTransferData.recurringPayment.selectedDay }} Schedule
+                    </ng-container>
+
+                    <ng-container *ngIf="autoTransferData.recurringPayment.frequency === 4">
+                      <ng-container *ngIf="nextMonthDate()"> Next redeem {{ nextMonthDate() }} Schedule</ng-container>
+                    </ng-container>
+                  </ng-container>
+                  <ng-container *ngIf="isOnAutoRedeem">
+                    Account will auto redeem when funds reach {{ orgBalance?.autoRedeemAmount || 0 | currency }}
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+            <div [class.col-md-6]="isOnSchedule" [class.col-md-4]="isOnAutoRedeem">
+              <ng-template [ngTemplateOutlet]="editAndCancelTmp"></ng-template>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #autoTransferDefaultTmp>
+  <div class="col-md-6">
+    <div class="recurring--label align-items-center">
+      <div class="form-check toogle--btn">
+        <input type="checkbox" id="flexSwitchCheckDefault" class="form-check-input" formControlName="isSchedule" />
+        <label for="flexSwitchCheckDefault" class="form-check-label">AUTOMATIC TRANSFERS:</label>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="transfer-row">
+      <div class="transfer-action" (click)="onAutomaticTransfer()">
+        <img src="assets/dist/img/dollar-circle.png" />
+        <ng-container
+          *ngIf="autoTransferData.recurringPayment.frequency === 1 || !autoTransferData.recurringPayment.frequency"
+        >
+          Daily
+        </ng-container>
+
+        <ng-container *ngIf="autoTransferData.recurringPayment.frequency === 2">
+          Every {{ autoTransferData.recurringPayment.selectedDay }}
+        </ng-container>
+
+        <ng-container *ngIf="autoTransferData.recurringPayment.frequency === 4">
+          <ng-container *ngIf="nextMonthDate()"> Next redeem {{ nextMonthDate() }} </ng-container>
+        </ng-container>
+
+        <i class="fa fa-edit" style="margin-left: 5px"></i>
+      </div>
+
+      <div class="transfer-action">
+        <i class="fas fa-trash" (click)="onCancel($event)" style="margin-left: 10px"></i>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #editAndCancelTmp>
+  <div class="transfer-row">
+    <div class="transfer-action" (click)="onAutomaticTransfer()">
+      <i class="fa fa-edit" style="margin-left: 5px"></i>
+    </div>
+
+    <div class="transfer-action">
+      <i class="fas fa-trash" (click)="onCancel($event)" style="margin-left: 10px"></i>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #relinkContentModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Important message</h5>
+  </div>
+  <div class="modal-body">
+    <div class="relink-card">
+      <div class="relink-content">
+        <div class="text-wrap">
+          <p>
+            Due to a security update from the banking system the link to your bank account has expired.
+            <b>please relink your bank account to redeem funds</b>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <a
+      class="btn btn-primary"
+      [routerLink]="getLinkNewAccountRouterLink()"
+      (click)="modal.close()"
+      [queryParams]="{ addFunds: true, reLinkBankId: BankAccountId?.value }"
+      >Relink your account</a
+    >
+  </div>
+</ng-template>

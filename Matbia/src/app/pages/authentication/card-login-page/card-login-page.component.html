@@ -1,0 +1,35 @@
+<ng-container *ngIf="tmpName === 'cardLogin'">
+  <ng-template [ngTemplateOutlet]="loginCardTmp"></ng-template>
+</ng-container>
+<ng-container *ngIf="tmpName === 'scenarios'">
+  <ng-template [ngTemplateOutlet]="scenariosTmp"></ng-template>
+</ng-container>
+<ng-template #loginCardTmp>
+  <section class="section-text">
+    <div class="small-container">
+      <form [formGroup]="formGroup" (ngSubmit)="continueToCards()">
+        <span class="back-link" (click)="redirectToCardEmailLoginPage()">{{ userCardEmail?.cardOrEmailValue }}</span>
+
+        <div class="alert alert-warning">
+          We couldn't find any account with this email address. Please try login with your Card #.
+        </div>
+
+        <h1 class="mt-62">Login with card</h1>
+
+        <div class="form-group">
+          <label class="form-label">Enter your card #:</label>
+          <app-credit-card-input formControlName="cardNum"></app-credit-card-input>
+        </div>
+
+        <div class="d-flex flex-column pt-4">
+          <button class="btn btn-primary w-100" type="submit">Continue</button>
+          <hr />
+          <button class="btn btn-light mx-auto" (click)="noCard()">I don't have a card</button>
+        </div>
+      </form>
+    </div>
+  </section>
+</ng-template>
+<ng-template #scenariosTmp>
+  <app-card-email-login-scenarios></app-card-email-login-scenarios>
+</ng-template>

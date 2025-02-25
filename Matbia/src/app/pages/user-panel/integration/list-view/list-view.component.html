@@ -1,0 +1,103 @@
+<section class="section-integrations">
+  <div class="row">
+    <div class="col-md-7">
+      <section class="section-merchant">
+        <div
+          class="merchant-search text-center d-flex flex-column alig-items-center"
+          [formGroup]="filterForm"
+          ngbDropdown
+        >
+          <h4 class="inner-head">SEARCH A MERCHANT:</h4>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search merchant"
+            formControlName="search"
+            ngbDropdownToggle
+          />
+
+          <div ngbDropdownMenu class="merchant-list-dropdown-class">
+            <ng-container *ngFor="let item of rows$ | async">
+              <button type="button" ngbDropdownItem (click)="onSelectMerchant(item)">
+                <span class="merchant-list-name">{{ item.name }}</span>
+                <img [src]="item.merchantIcon" alt="" appDefaultImgOnMissing />
+                <span class="material-icons">keyboard_arrow_right</span>
+              </button>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="seperator position-relative text-center">
+          <span>OR</span>
+        </div>
+        <div class="merchant-card">
+          <h4 class="text-center inner-head">SELECT A INTEGRATION METHOD:</h4>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="card-block bg-white text-center d-flex flex-column align-items-center">
+                <h5 class="card-head">Use API Key</h5>
+                <p class="card-desc">Connect an integration using an API key provided.</p>
+                <button class="btn card-btn" (click)="apiKey()">SELECT</button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card-block bg-white text-center d-flex flex-column align-items-center">
+                <h5 class="card-head">Use MID</h5>
+                <p class="card-desc">Connect an integration using your processing merchants MID number.</p>
+                <button class="btn card-btn" (click)="useMid()">SELECT</button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card-block bg-white text-center d-flex flex-column align-items-center">
+                <h5 class="card-head">Enter Account Number</h5>
+                <p class="card-desc">Connect an integration using a different Matbia account number.</p>
+                <button class="btn card-btn" (click)="clickIntegratingAccount()">SELECT</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section-logo d-flex flex-column align-items-center">
+        <h4 class="heading text-center">Matbia integrates with most merchants</h4>
+        <div class="merchant-slider">
+          <ng-container *ngIf="merchantsList.length !== 0">
+            <carousel
+              [itemsPerSlide]="itemsPerSlide"
+              [singleSlideOffset]="singleSlideOffset"
+              [noWrap]="!noWrap"
+              [interval]="slideInterval"
+            >
+              <slide *ngFor="let item of merchantsList">
+                <img [src]="item.merchantIcon" appDefaultImgOnMissing [alt]="item.name" />
+              </slide>
+            </carousel>
+          </ng-container>
+        </div>
+      </section>
+    </div>
+    <div class="col-md-5">
+      <section class="section-profile h-100">
+        <h4 class="heading mb-4">Your merchant portfolio</h4>
+
+        <ng-container *ngIf="integratedLoading">
+          <app-matbia-skeleton-loader-component></app-matbia-skeleton-loader-component>
+        </ng-container>
+
+        <ng-container *ngIf="!integratedLoading">
+          <div class="row">
+            <ng-template *ngFor="let item of integratedMerchants">
+              <div class="col-md-6">
+                <div class="img-logo d-flex alig-items-center justify-content-center position-relative">
+                  <img [src]="item.merchantIcon" [alt]="item.name" width="131" height="38" />
+                  <ng-container *ngIf="item.midNum">
+                    <span class="logo-span">MID: {{ item.midNum }}</span>
+                  </ng-container>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </ng-container>
+      </section>
+    </div>
+  </div>
+</section>

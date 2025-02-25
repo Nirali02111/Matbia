@@ -1,0 +1,35 @@
+<div class="modal-content">
+  <div class="modal-body">
+    <ng-template [ngTemplateOutlet]="hasValidated"></ng-template>
+  </div>
+</div>
+
+<ng-template #hasValidated>
+  <div class="success-card">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onClose()">
+      <span aria-hidden="true" style="font-size: 26px">&times;</span>
+    </button>
+    <div class="success-content">
+      <span class="icon">
+        <img src="assets/dist/img/success-icon.svg" alt="" />
+      </span>
+
+      <div class="text-wrap">
+        <h3>Your organization was validated!</h3>
+        <ng-template [ngTemplateOutlet]="checkEmailTemp"></ng-template>
+      </div>
+
+      <button class="btn btn-primary" (click)="onClose()">Close</button>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #checkEmailTemp>
+  <div class="check-email-wrap">
+    <span>Check Your Email</span>
+    <p>
+      We've sent an email to {{ email }}, click <br />
+      the link in the email to create your password
+    </p>
+  </div>
+</ng-template>

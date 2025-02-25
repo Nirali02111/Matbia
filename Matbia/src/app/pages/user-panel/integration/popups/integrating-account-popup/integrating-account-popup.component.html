@@ -1,0 +1,60 @@
+<div class="modal-header justify-content-center pb-0 border-0">
+  <div class="modal-account-header text-center">
+    <h4>Enter account number</h4>
+    <p class="mb-0">Connect an integration using a different Matbia account number.</p>
+  </div>
+  <button type="button" class="close" aria-label="Close" (click)="closePopup()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="modal-steps">
+    <h5>Please follow promptly the steps below:</h5>
+    <ul class="list-unstyled p-0 m-0">
+      <li class="d-flex justify-content-between">
+        <span class="step-count">1</span>
+        <p class="step-desc flex-fill mb-0">Swipe a Matbia card using your processing merchant.</p>
+        <img src="assets/dist/img/Account-step-1.svg" alt="Step" width="58" height="44" class="step-img" />
+      </li>
+      <li class="d-flex justify-content-between">
+        <span class="step-count">2</span>
+        <p class="step-desc flex-fill mb-0">
+          You will receive an email to the email address registered with your processing merchant, notifying you about a
+          new account that was opened up. The email will show the account number on top.
+          <span class="learn-more" (click)="learnMore()">
+            <svg id="icon" enable-background="new 0 0 24 24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="m12 0c-6.617 0-12 5.383-12 12s5.383 12 12 12 12-5.383 12-12-5.383-12-12-12zm0 23c-6.065 0-11-4.935-11-11s4.935-11 11-11 11 4.935 11 11-4.935 11-11 11z"
+              />
+              <path
+                d="m12.963 5.102c-1.258-.287-2.542 0-3.528.787s-1.551 1.96-1.551 3.22c0 .276.224.5.5.5s.5-.224.5-.5c0-.954.428-1.842 1.175-2.438.746-.596 1.725-.813 2.682-.594 1.116.255 2.036 1.175 2.291 2.291.292 1.28-.179 2.538-1.23 3.284-1.441 1.022-2.301 2.688-2.301 4.456 0 .276.224.5.5.5s.5-.224.5-.5c0-1.444.703-2.805 1.88-3.64 1.366-.97 2.004-2.666 1.626-4.322-.344-1.506-1.538-2.7-3.044-3.044z"
+              />
+              <path
+                d="m12 17.833c-.458 0-.829.371-.829.829s.371.829.829.829.829-.371.829-.829c0-.457-.371-.829-.829-.829z"
+              />
+            </svg>
+            LEARN MORE</span
+          >
+        </p>
+        <img src="assets/dist/img/Account-step-2.svg" alt="Step" width="58" height="44" class="step-img" />
+      </li>
+      <li class="d-flex justify-content-between align-items-center mb-0">
+        <span class="step-count">3</span>
+        <p class="step-desc flex-fill mb-0">Copy the account number, and paste it in below:</p>
+        <img src="assets/dist/img/Account-step-3.svg" alt="Step" width="58" height="44" class="step-img" />
+      </li>
+    </ul>
+  </div>
+  <div class="form-wrap text-center mb-5" [formGroup]="formGroup">
+    <h5>ENTER ACCOUNT #:</h5>
+    <input type="text" class="form-control" placeholder="Enter account #" formControlName="accountNum" />
+    <ng-container *ngIf="AccountNumber?.touched && AccountNumber?.invalid">
+      <app-input-error [errors]="AccountNumber?.errors"></app-input-error>
+    </ng-container>
+    <button class="btn btn-primary w-100" (click)="onValidate()">Validate</button>
+  </div>
+</div>
+
+<div class="modal-footer justify-content-start border-0">
+  <p class="m-0">This method is available with <span>"ALL"</span> merchants.</p>
+</div>

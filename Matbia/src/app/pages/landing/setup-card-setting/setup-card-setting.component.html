@@ -1,0 +1,282 @@
+<div class="finish-setup-content small--container m-auto setup-card-setting setupcard-page">
+  <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs setup-card-item-tab">
+    @if(!isShulkiosk) {
+
+    <li [ngbNavItem]="0" [disabled]="active !== 0">
+      <div class="setup-tabs-item item-setup-card">
+        <a ngbNavLink [class.active]="isCreatePinDone || active === 0">CREATE YOUR PIN</a>
+      </div>
+      <ng-template ngbNavContent>
+        <div class="setup-your-amount-wrap">
+          <h2 class="pb-2">Create your PIN</h2>
+
+          <div class="account-box text-center">
+            <p class="text-center">
+              Create a 4 digit pin number <br />
+              This will be your personal pin for your card and for customer service assistance
+            </p>
+            <ng-otp-input [config]="pinConfig" (onInputChange)="onOtpChange($event)"></ng-otp-input>
+            <div>
+              <button
+                (click)="onHideShowPassword()"
+                class="icon-eye"
+                [class.icon-eye-show]="pinConfig.inputClass == 'form-control otp-input-password'"
+              >
+                @if (pinConfig.inputClass == 'form-control otp-input-password') { Hide } @else { Show }
+              </button>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100" (click)="onPinContinue()">CONTINUE</button>
+          </div>
+        </div>
+      </ng-template>
+    </li>
+    }
+
+    <li [ngbNavItem]="1" [disabled]="active !== 1">
+      <div class="setup-tabs-item item-setup-card">
+        <a ngbNavLink [class.finished]="isSetupCardDone">SET UP YOUR CARD</a>
+      </div>
+
+      <ng-template ngbNavContent>
+        <div
+          class="setup-your-amount-wrap"
+          (keyup.enter)="matbiaCardSubmitButton ? onMatbiaCardSetup() : onMatbiaCardNextCorner()"
+        >
+          <h2>SET UP YOUR CARD</h2>
+
+          <app-matbia-card-form-group
+            [formGroup]="matbiaCardDetailForm"
+            [allowLockUnlock]="false"
+            [allowReplaceCard]="false"
+            [showCardNumberExpDate]="showCardNumberExpDate"
+            (allCornerSet)="canMatbiaCardSetup($event)"
+            [cardNumber]="cardNumber"
+            [expiry]="expiry"
+            [isEndWithnine]="isEndWithnine"
+          ></app-matbia-card-form-group>
+
+          <div class="action--buttons justify-content-center btn-for-setup-card align-items-center mt-5 d-flex">
+            <ng-container *ngIf="!matbiaCardSubmitButton">
+              <button type="submit" class="btn btn-primary" (click)="onMatbiaCardNextCorner()">Next</button>
+            </ng-container>
+            <ng-container *ngIf="matbiaCardSubmitButton">
+              <button type="submit" class="btn btn-primary btn-loader-inside" (click)="onMatbiaCardSetup()">
+                <app-button-loader [loading]="isLoading" label="Update"></app-button-loader>
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </ng-template>
+    </li>
+    <li [ngbNavItem]="2" [disabled]="active !== 2">
+      <div class="setup-tabs-item item-conect-bank">
+        <a ngbNavLink [class.finished]="isConnectBankDone">CONNECT YOUR BANK</a>
+      </div>
+      <ng-template ngbNavContent>
+        <div class="connect-you-bank-wrap" [hidden]="isInLinking">
+          <h2>Connect Your Bank</h2>
+
+          <div class="finish-setup-content small--container m-auto setup-account-wrap">
+            <form [formGroup]="setupAccountForm">
+              <div class="card--custom prefilled-info-wrap" formGroupName="nameRegisterWithBank">
+                <div class="data-row">
+                  <div class="checkbox-label info-col">
+                    <div class="custom-checkbox">
+                      <input
+                        type="checkbox"
+                        id="bankName"
+                        class="checkbox-custom"
+                        formControlName="confirmName"
+                        value="true"
+                      />
+
+                      <label class="tooltip-content" for="bankName"
+                        >I confirm <span class="user-name">{{ displayDonorFullName() }}</span> is the name registered on
+                        my bank account.
+                        <a
+                          data-hover="To securely link you bank account your name must match the name on your bank account"
+                          ><i class="fas fa-question-circle"></i></a
+                      ></label>
+                    </div>
+                  </div>
+
+                  <div class="prefilled-info action-col">
+                    <div
+                      class="edit-info"
+                      (click)="collapse.toggle()"
+                      [attr.aria-expanded]="!isEditNameCollapsed"
+                      aria-controls="collapseExample"
+                    >
+                      <i class="fa fa-edit"></i>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="user-info-row">
+                  <div #collapse="ngbCollapse" [(ngbCollapse)]="isEditNameCollapsed">
+                    <div class="row">
+                      <div class="col" [@shakeTrigger]="isAnimate && FirstName?.touched && FirstName?.invalid">
+                        <div class="input-box" [class.is-invalid-er]="FirstName?.touched && FirstName?.invalid">
+                          <input type="text" class="form-control" formControlName="firstName" />
+                        </div>
+                      </div>
+                      <div class="col" [@shakeTrigger]="isAnimate && LastName?.touched && LastName?.invalid">
+                        <div class="input-box" [class.is-invalid-er]="LastName?.touched && LastName?.invalid">
+                          <input type="text" class="form-control" formControlName="lastName" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="confirmName?.touched && !confirmName?.valid" class="val-error">
+                <span class="material-icons">warning</span>Need to confirm in order to connect to bank
+              </div>
+
+              <div class="card--custom mt-4 plan-transfer" formGroupName="donateMore" *ngIf="false">
+                <div class="top-content">
+                  <div class="info-col">
+                    <label class="tooltip-content"
+                      >I plan to transfer more then $299.00 per month.
+                      <a
+                        data-hover="For security purpose account with higher deposit amounts need to be registered and validated using Date of Birth and Social Security Number, Tip: you can also do this step later on at any time..."
+                        ><i class="fas fa-question-circle"></i></a
+                    ></label>
+                  </div>
+                  <div class="action-col">
+                    <div class="custom-radio">
+                      <input
+                        id="toggle-yes"
+                        class="toggle toggle-left"
+                        value="1"
+                        type="radio"
+                        formControlName="needMoreTransfer"
+                      />
+                      <label for="toggle-yes" class="btn"><span>Yes</span></label>
+                      <input
+                        id="toggle-no"
+                        class="toggle toggle-right"
+                        value="0"
+                        type="radio"
+                        formControlName="needMoreTransfer"
+                      />
+                      <label for="toggle-no" class="btn"><span>No</span></label>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bottom-content" [hidden]="needToMoreTransfer?.value && needToMoreTransfer?.value === '0'">
+                  <div class="transfer-row">
+                    <div class="date-colm">
+                      <div class="inside-colm">
+                        <label>DATE OF BIRTH:</label>
+                        <div class="date-birth">
+                          <input
+                            type="text"
+                            readonly
+                            ngxDaterangepickerMd
+                            formControlName="birthDate"
+                            class="form-control"
+                            [singleDatePicker]="true"
+                            [closeOnAutoApply]="true"
+                            [autoApply]="true"
+                            [maxDate]="maxDate"
+                            [minDate]="minDate"
+                            [showDropdowns]="true"
+                          />
+
+                          <ng-container *ngIf="BirthDate?.touched && BirthDate?.invalid">
+                            <app-input-error [errors]="BirthDate?.errors"></app-input-error>
+                          </ng-container>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="security-colm">
+                      <div class="inside-colm" [@shakeTrigger]="isAnimate && SSN?.touched && SSN?.invalid">
+                        <label>SOCIAL SECURITY NUMBER:</label>
+                        <div class="input-box" [class.is-invalid-er]="SSN?.touched && SSN?.invalid">
+                          <input
+                            type="tel"
+                            (focusin)="SSNhasFocus = true"
+                            (focusout)="SSNhasFocus = false"
+                            class="form-control"
+                            formControlName="ssn"
+                            mask="000-00-0000"
+                          />
+                          <ng-container *ngIf="!SSNhasFocus && SSN?.touched && SSN?.invalid">
+                            <app-input-error [errors]="SSN?.errors"></app-input-error>
+                          </ng-container>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card--custom mt-4" formGroupName="linkWith">
+                <div class="terms-note">
+                  <div class="custom-checkbox">
+                    <input type="checkbox" id="termsAgreed" class="checkbox-custom" formControlName="isAgree" />
+                    <label for="termsAgreed"
+                      >I agree to the <a (click)="openTerms($event)">terms and conditions</a>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div *ngIf="isAgree?.touched && !isAgree?.valid" class="val-error">
+                <span class="material-icons">warning</span> Need to agree in order to connect to bank
+              </div>
+
+              <div class="btn-action" [hidden]="true">
+                <app-plaid-button
+                  [userHandle]="userHandle?.value"
+                  title="Connect"
+                  (linked)="onLinked($event)"
+                  classList="connect-btn"
+                  [requestKYCFirst]="true"
+                ></app-plaid-button>
+              </div>
+
+              <app-connect-to-bank-account
+                [loading]="isLoadingConnect"
+                [isBlockPlaid]="isBlockPlaid"
+                (connectClick)="commonConnectButton($event)"
+              ></app-connect-to-bank-account>
+
+              <button class="btn btn-skip" (click)="onSkipAddFunds()">SKIP FOR NOW</button>
+            </form>
+          </div>
+        </div>
+      </ng-template>
+    </li>
+    <li [ngbNavItem]="3" [disabled]="active !== 3">
+      <div class="setup-tabs-item item-start-funding">
+        <a ngbNavLink>START FUNDING</a>
+      </div>
+      <ng-template ngbNavContent>
+        <div class="start-funding-wrap">
+          <h2>Add Funds To Your Account</h2>
+          <app-add-funds-from-bank
+            [formGroup]="matbiaAddFundForm"
+            [inFlow]="true"
+            #addFund
+            (autoDepositsClicked)="goToAutoDepositsPage()"
+          ></app-add-funds-from-bank>
+
+          <div class="action--buttons justify-content-between btn-for-setup-card align-items-center mt-5 d-flex">
+            <button class="btn btn-blue-dark" (click)="onSkipAddFunds()">SKIP THIS STEP</button>
+            <button class="btn btn-primary" (click)="onAddFunds()">CONTINUE</button>
+          </div>
+        </div>
+      </ng-template>
+    </li>
+  </ul>
+
+  <div [ngbNavOutlet]="nav" class="setup-card-content-wrap"></div>
+</div>
+
+<div *ngIf="isLoading" class="overlay">
+  <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+</div>

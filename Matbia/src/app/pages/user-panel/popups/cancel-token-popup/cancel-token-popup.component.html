@@ -1,0 +1,48 @@
+<form [formGroup]="tokenForm">
+  <div class="modal-header">
+    <h5 class="modal-title">Cancel Tokens: {{ totalAmount | currency }}</h5>
+    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close" (click)="closePopup()"></button>
+  </div>
+  <div class="modal-body">
+    <div class="mb-4 pb-1">
+      <label class="mb-2 pb-1">Please specify a reason for canceling</label>
+      <span class="span"
+        >Our team will review your reason and determine cancellation approval within 2-3 business days.</span
+      >
+    </div>
+    <div class="form-group mb-0">
+      <label class="small">WRITE REASON:</label>
+      <textarea class="form-control" placeholder="Write reason..." formControlName="reason"></textarea>
+      @if (Reason?.touched && Reason?.invalid) {
+      <app-input-error [errors]="Reason?.errors"></app-input-error>
+      }
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary" (click)="SubmitTokenVoidRequest()">SUBMIT FOR REVIEW</button>
+    <button type="button" data-bs-dismiss="modal" class="btn btn-secondary" (click)="closePopup()">Cancel</button>
+  </div>
+</form>
+
+<ng-template #cancelSubmitTokenModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">cancellation submitted!</h5>
+    <button type="button" data-bs-dismiss="modal" aria-label="Close" class="btn-close" (click)="close(modal)"></button>
+  </div>
+  <div class="modal-body">
+    <figure class="text-center mb-3 mb-md-4">
+      <img src="assets/dist/img/icon-checked-dark.svg" alt="Success" width="" height="" />
+    </figure>
+    <div class="text-center pb-2">
+      <p class="mb-3 mb-md-5">
+        We received your request to cancel your tokens. You will hear back from our team in:
+        <br class="d-inline-block" /><strong>2-3 business days</strong>
+      </p>
+      <label class="small mb-1">YOUR REASON:</label>
+      <span class="span">{{ reasons }}</span>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-light" (click)="close(modal); refresh.emit(true)">Done</button>
+  </div>
+</ng-template>

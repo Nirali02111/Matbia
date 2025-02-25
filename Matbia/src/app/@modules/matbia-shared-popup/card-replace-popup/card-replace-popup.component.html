@@ -1,0 +1,76 @@
+<div class="modal-header card-replace-modal-header">
+  <ng-container *ngIf="!isRequested">
+    <h4 class="modal-title" id="modal-basic-title">Deactivate & request new card</h4>
+    <button type="button" class="btn-close" aria-label="Close" (click)="onClose()"></button>
+  </ng-container>
+</div>
+<div class="modal-body card-replace-modal-body">
+  <ng-container *ngIf="!isRequested; else hasRequested">
+    <ng-container *ngIf="!isDeactivationConfirm">
+      <ng-template [ngTemplateOutlet]="confirmDeactivation"></ng-template>
+    </ng-container>
+    <ng-container *ngIf="isDeactivationConfirm">
+      <ng-template [ngTemplateOutlet]="confirmAddress"></ng-template>
+    </ng-container>
+  </ng-container>
+</div>
+
+<ng-template #hasRequested>
+  <div class="request-card-success">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" (click)="onClose()">
+      <span aria-hidden="true" style="font-size: 26px">&times;</span>
+    </button>
+
+    <div class="success-content">
+      <span class="material-icons" style="font-size: 80px; color: #5d62e0">warning</span>
+
+      <div class="text-wrap">
+        <h3>
+          Your card has been deactivated
+          <ng-container *ngIf="isYes">
+            <br />
+            A new card will be mailed out
+          </ng-container>
+        </h3>
+      </div>
+
+      <button class="btn btn-primary" (click)="onClose()">Close</button>
+    </div>
+  </div>
+</ng-template>
+
+<div *ngIf="isLoading" class="overlay">
+  <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+</div>
+
+<ng-template #confirmDeactivation>
+  <h5>Are you sure you want to deactivate your card ending in {{ cardNumber | displayLast }}</h5>
+  <p class="name-card">
+    <span class="material-icons">info</span>For your protection we'll immediately deactivate this card. This action can
+    not be reversed. Once submitted, your card will no longer be active.
+  </p>
+
+  <div class="card-action-buttons">
+    <button class="btn btn-primary btn-yes" (click)="onConfirmDeactivation()" [disabled]="isLoading || isRequesting">
+      <app-button-loader [loading]="isRequesting" label="Deactivate & Get new card"></app-button-loader>
+    </button>
+    <button class="btn btn-dont-send" (click)="onDontSendCard()">Deactivate card</button>
+    <button class="btn btn-default" (click)="onClose()">Cancel</button>
+  </div>
+</ng-template>
+
+<ng-template #confirmAddress>
+  <p class="card-deactivate">Your card ending in {{ cardNumber | displayLast }} will be deactivated</p>
+  <div class="edit-card-address">
+    <p>We will send a new card to:</p>
+    <h5 cl ass="name-card">{{ this.cardOwnerDetails?.firstName }} {{ this.cardOwnerDetails?.lastName }}</h5>
+    <h5 class="address-receive">{{ displayFullAddress() }}</h5>
+  </div>
+  <div class="card-action-buttons">
+    <button class="btn btn-editaddress" (click)="onEdit()">EDIT ADDRESS</button>
+    <button class="btn btn-primary btn-yes" (click)="onReplace()" [disabled]="isLoading || isRequesting">
+      <app-button-loader [loading]="isRequesting" label="Send New Card"></app-button-loader>
+    </button>
+    <button class="btn btn-default" (click)="onClose()">Cancel</button>
+  </div>
+</ng-template>

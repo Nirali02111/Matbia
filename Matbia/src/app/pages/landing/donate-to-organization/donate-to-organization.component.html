@@ -1,0 +1,88 @@
+<div class="donate-org">
+  <div class="donate-container">
+    <div class="w-100 d-flex justify-content-between">
+      <div class="donate-left">
+        <div class="d-flex align-items-center donate-details mb-3">
+          <img
+            width="40"
+            height="40"
+            alt=""
+            class="me-3 rounded-circle"
+            style="object-fit: cover"
+            [src]="organization?.orgLogo || profileIcon"
+            appDefaultImgOnMissing
+          />
+          <div class="donate-info-sendto">
+            <span class="sendto-title">DONATE TO:</span>
+            <span class="sendto-tax"
+              ><strong>{{ organization?.businessName }}</strong>
+            </span>
+            <h6>{{ organization?.displayName }}</h6>
+            <span class="sendto-address">{{ organization?.address }}</span>
+            <span class="sendto-tax">{{ organization?.phone }}</span>
+            <span class="sendto-tax"><strong>TAX ID:</strong> {{ organization?.taxId }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="donate-right">
+        <div class="donate-payment d-flex justify-content-center mt-2">
+          <span class="position-relative">Matbia payment form</span>
+          <a href="#">
+            <img src="assets/dist/img/logo.svg" alt="Logo" />
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="w-100 d-flex justify-content-between">
+      <div class="donate-left">
+        <div class="donate-amount position-relative mb-4" [formGroup]="processCardFormGroup">
+          <div class="panel--title">
+            <h6 class="mb-0">Enter Amount:</h6>
+          </div>
+          <app-amount-input formControlName="amount"></app-amount-input>
+        </div>
+        <div class="card--custom">
+          <div class="d-flex mb-3 recurring-block matbia-card" [formGroup]="processCardFormGroup">
+            <div class="panel--title">
+              <label>MATBIA CARD NUMBER:</label>
+              <app-credit-card-input formControlName="cardNum"></app-credit-card-input>
+            </div>
+            <div class="panel--title">
+              <label>EXP. DATE:</label>
+              <app-card-expiry-input formControlName="exp" [cardMask]="cardExp"></app-card-expiry-input>
+            </div>
+          </div>
+          <div>
+            <app-recurring-form-group
+              [formGroup]="processCardFormGroup"
+              [customLayout]="true"
+              [transactionRecurrences]="transactionRecurrences"
+            ></app-recurring-form-group>
+          </div>
+        </div>
+        <div class="signup-action">
+          <button class="btn btn-primary w-100 mb-2" (click)="onSubmit()">CONTINUE</button>
+          <button class="btn btn-cancel w-100">Cancel</button>
+        </div>
+      </div>
+      <div class="donate-right">
+        <div class="login-card text-center">
+          <h6 class="mb-4">Log into Matbia to quickly donate to this organization</h6>
+          <button class="btn btn-secondary w-100 position-relative" (click)="goToAuth()">
+            <img src="assets/dist/img/matbia-icon.svg" alt="Logo" /> LOG IN
+          </button>
+        </div>
+        <ul class="donate-payment-detail list-unstyled mb-0 d-flex align-items-center flex-column text-center">
+          <li>
+            <h6>General Support:</h6>
+            <a href="mailto:info@matbia.com">info&#64;matbia.com</a>
+          </li>
+          <li>
+            <h6>Call Us:</h6>
+            <a href="tel:8777628242">(877)-762-8242</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

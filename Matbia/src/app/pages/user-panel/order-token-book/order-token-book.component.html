@@ -1,0 +1,185 @@
+<div
+  class="donate-content--wrap donate-voucher mx-auto pt-5 page-overview d-flex flex-column flex-xl-row align-items-start"
+>
+  <!-- Voucher Left Start -->
+  <div class="flex-fill pt-3 pt-sm-0" *ngIf="!isConfirmCheckOut">
+    <h2>Give without hesitation</h2>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="text-content d-flex align-items-xl-center">
+          <figure>
+            <img src="assets/dist/img/icon-image.svg" />
+          </figure>
+          <div class="flex-fill">
+            <h6>This Purim, we are vouching for easier giving!</h6>
+            <p>
+              Donating with prepaid Matbia Tokens is simple and fully accountable down to the dollar. All, of course,
+              the Matbia way; with no extra charge to you.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="text-content d-flex align-items-xl-center">
+          <figure>
+            <img src="assets/dist/img/icon-image-1.svg" />
+          </figure>
+          <div class="flex-fill">
+            <h6>Choose the Token amounts to suit your needs.</h6>
+            <p>
+              Matbia Token Books are available to order in packs of 50 or 25. You can even choose a single booklet with
+              assorted amounts. Complete the order form below and experience even easier giving.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="voucher-item">
+      <h6>SELECT TOKENS</h6>
+      <ul>
+        <li class="d-flex align-items-center" *ngFor="let product of checkOutList; let i = index">
+          <figure>
+            <img src="{{ product.tokenImage }}" />
+          </figure>
+          <div class="flex-fill d-flex flex-column">
+            <h5>{{ product.title }}</h5>
+            <small>{{ product.description }}</small>
+          </div>
+          <div class="number d-flex flex-column">
+            <div class="d-flex align-items-center">
+              <i class="minus" (click)="DecreaseProduct(product.productId)"></i>
+              <span class="flex-fill">{{ product.productCount }} Packs</span>
+              <i class="plus" (click)="IncreaseProduct(product.productId)"></i>
+            </div>
+            <span>{{ product.voucherCount }} tokens</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- Voucher Left End -->
+
+  <!-- Checkout Left Start -->
+  <div class="voucher-checkout flex-fill" *ngIf="isConfirmCheckOut">
+    <h1>Your prepaid tokens are on it's way!</h1>
+
+    <p><strong>We're sending your new tokens to:</strong></p>
+
+    <p>
+      {{ donarInfoName }}<br />
+      {{ donarInfoAdress }}
+    </p>
+    <figure>
+      <img src="assets/dist/img/confirm_order_image.png" />
+    </figure>
+  </div>
+  <!-- Checkout Left Emd -->
+
+  <div
+    class="voucher-right d-flex flex-xl-column-reverse"
+    [class.flex-column-reverse]="isConfirmCheckOut"
+    [class.flex-column]="!isConfirmCheckOut"
+  >
+    <div class="card-voucher-fund d-flex align-items-center" *ngIf="!isConfirmCheckOut">
+      <div class="flex-fill d-flex flex-column">
+        <h6>${{ availableBalance }}</h6>
+        <span
+          >YOUR AVAILABLE FUNDS
+          <sup><a data-hover="Includes Pending Transactions" class="present-tooltip postion-relative">?</a></sup></span
+        >
+      </div>
+      <a [routerLink]="getAddFundsRouterLink()" class="nav-link active" (click)="onAddFunds()"
+        ><i class="icon-add"></i> ADD FUNDS</a
+      >
+    </div>
+    <button
+      *ngIf="!isConfirmCheckOut"
+      class="btn btn-primary w-100"
+      (click)="confirmOrderPopup()"
+      [disabled]="isAvailableBalanceEroor"
+    >
+      CONFIRM ORDER
+    </button>
+    <button *ngIf="isConfirmCheckOut" class="btn btn-primary w-100" (click)="backToOverView()">BACK TO OVERVIEW</button>
+    <div class="card-voucher">
+      <div class="card-voucher-padding" *ngIf="summerySectionShow()">
+        <h6 *ngIf="!isConfirmCheckOut">SUMMARY:</h6>
+        <h6 *ngIf="isConfirmCheckOut">YOUR ORDER:</h6>
+        <ul class="card-voucher-item" *ngFor="let product of checkOutList; let i = index">
+          <li class="d-flex align-items-center" *ngIf="product.productCount > 0">
+            <div class="flex-fill d-flex align-items-center" *ngIf="product.productCount > 0">
+              <i>{{ removeMix(product.title) }}</i>
+              <div class="d-flex flex-column">
+                <label>{{ product.productCount }} Packs</label>
+                <small>{{ product.voucherCount }} tokens</small>
+              </div>
+            </div>
+            <span *ngIf="product.productCount > 0">${{ product.selectedVoucherAmount }}<sup>.00</sup></span>
+          </li>
+        </ul>
+        <ul class="card-voucher-item">
+          <li class="d-flex align-items-center">
+            <div class="flex-fill d-flex align-items-center">
+              <i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="19.134" height="15" viewBox="0 0 19.134 15">
+                  <g id="delivery-truck" transform="translate(-12 -36)" opacity="0.9">
+                    <path id="Path_38903" data-name="Path 38903" d="M31.079,43.25l-2.05-4.783a.683.683,0,0,0-.629-.417H26.35V36.683A.683.683,0,0,0,25.667,36H12.683a.683.683,0,0,0-.683.683V48.3a.683.683,0,0,0,.683.683h1.462a2.733,2.733,0,0,0,5.275,0h4.291a2.733,2.733,0,0,0,5.275,0H30.45a.683.683,0,0,0,.683-.683V43.517A.683.683,0,0,0,31.079,43.25ZM26.35,39.417h1.6l1.462,3.417H26.35Zm-9.567,10.25A1.367,1.367,0,1,1,18.15,48.3,1.367,1.367,0,0,1,16.783,49.667Zm6.929-2.05H19.421a2.733,2.733,0,0,0-5.275,0h-.779V37.367H24.984v8.583A2.733,2.733,0,0,0,23.712,47.617Zm2.638,2.05A1.367,1.367,0,1,1,27.717,48.3,1.367,1.367,0,0,1,26.35,49.667Zm3.417-2.05h-.779a2.733,2.733,0,0,0-2.638-2.05V44.2h3.417Z" transform="translate(0)" fill="#434246"/>
+                  </g>
+                </svg>
+              </i>
+              <div class="d-flex flex-column">
+                <label
+                  >Shipping & Handling Fee
+                  <!-- <em
+                    ngbTooltip="If you would like to avoid the shipping fee, please return to this page to order on Thursday, as we are working to finalize pickup locations where the shipping fee will be waived. (A minimal handling fee will still be applied to the order)"
+                    ><svg xmlns="http://www.w3.org/2000/svg" width="11.789" height="11.789" viewBox="0 0 11.789 11.789">
+                      <g
+                        id="Icon_ionic-ios-help-circle-outline"
+                        data-name="Icon ionic-ios-help-circle-outline"
+                        transform="translate(-3.375 -3.375)"
+                      >
+                        <path
+                          id="Path_1824"
+                          data-name="Path 1824"
+                          d="M9.27,4.168A5.1,5.1,0,1,1,5.662,5.662,5.067,5.067,0,0,1,9.27,4.168m0-.793A5.895,5.895,0,1,0,15.164,9.27,5.894,5.894,0,0,0,9.27,3.375Z"
+                          transform="translate(0 0)"
+                          fill="#8b8b8b"
+                        />
+                        <path
+                          id="Path_1825"
+                          data-name="Path 1825"
+                          d="M15.334,11.25c1.063,0,1.794.589,1.794,1.437a1.386,1.386,0,0,1-.8,1.258c-.493.286-.66.5-.66.859v.224h-.983l-.009-.244a1.18,1.18,0,0,1,.669-1.247c.479-.286.68-.468.68-.819a.688.688,0,0,0-.762-.609.717.717,0,0,0-.759.7H13.5A1.617,1.617,0,0,1,15.334,11.25Zm-.745,4.857a.608.608,0,1,1,.606.584A.594.594,0,0,1,14.588,16.107Z"
+                          transform="translate(-6.044 -4.701)"
+                          fill="#8b8b8b"
+                        />
+                      </g>
+                    </svg>
+                  </em> -->
+                </label>
+              </div>
+            </div>
+            <span>${{ ShippingFeeDetails?.[0]?.price }}<sup>.00</sup></span>
+          </li>
+        </ul>
+        <div class="d-flex align-items-center justify-content-between w-100 pt-3" *ngIf="isConfirmCheckOut">
+          <h6 class="m-0">TOTAL</h6>
+          <h5 class="m-0">${{ totalAmout }}</h5>
+        </div>
+      </div>
+      <div class="card-voucher-padding card-voucher-bottom" *ngIf="!isConfirmCheckOut">
+        <div class="d-flex align-items-center justify-content-between w-100">
+          <h6 class="m-0">TOTAL:</h6>
+          <h5 class="m-0">${{ totalAmout }}<sup>.00</sup></h5>
+        </div>
+        <div *ngIf="isAvailableBalanceEroor" class="add-fund">You don't have enough in your account</div>
+        <ul>
+          <li>• Tokens will expire on 12/14/2025 and will automatically be refunded to your account.</li>
+          <li *ngIf="ShippingFeeDetails && ShippingFeeDetails.length > 0 && !ShippingFeeDetails[0]?.price">
+            • Free shipping.
+          </li>
+          <li>• Tokens are prepaid.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

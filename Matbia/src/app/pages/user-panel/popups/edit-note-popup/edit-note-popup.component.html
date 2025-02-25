@@ -1,0 +1,20 @@
+<div class="modal-content">
+  <div class="modal-header card-replace-modal-header">
+    <h5 class="modal-title">Edit donation Note</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" (click)="closePopup()"></button>
+  </div>
+  <div class="modal-body p-4">
+    <div class="p-md-2">
+      <form [formGroup]="formGroup">
+        <div class="form-group">
+          <label for="firstName" class="form-label text-uppercase mb-2">Note:</label>
+          <textarea formControlName="note" class="form-control" cols="30" rows="10"></textarea>
+        </div>
+      </form>
+      <div class="card-action-buttons d-flex justify-content-end flex-row gap-4 pt-4 mt-2">
+        <button type="button" class="btn btn-default m-0" data-bs-dismiss="modal" (click)="closePopup()">Close</button>
+        <button type="button" class="btn btn-primary px-4 m-0" (click)="onSubmit()">Save note</button>
+      </div>
+    </div>
+  </div>
+</div>

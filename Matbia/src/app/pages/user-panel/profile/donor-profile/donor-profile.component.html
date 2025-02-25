@@ -1,0 +1,355 @@
+<div class="signup-box profile-page account-content--wrap small--container w-75 m-auto info-box">
+  <div class="d-flex profile-title gap-3 justify-content-sm-between align-items-sm-center flex-column flex-sm-row mb-3">
+    <h4 class="mb-0">Personal Info</h4>
+    <div app-account-hash></div>
+  </div>
+
+  <form [formGroup]="registerDonorCard" (ngSubmit)="onUpdate()">
+    <div
+      class="card--custom flex-wrap account-list--item d-flex position-relative page-profile"
+      [class.animate]="IsAnimate"
+    >
+      <div class="form--details w-100 business-view-of-profile" [class.business-view-of-profile]="isBusinessView">
+        <div class="form-profile row gx-3 gy-4">
+          <ng-template
+            [ngTemplateOutlet]="firstNameAndLastNameFieldRow"
+            [ngTemplateOutletContext]="{ formGroup: registerDonorCard }"
+          ></ng-template>
+
+          <div class="col-sm-9">
+            <div
+              [class.disabled-field]="Address?.disabled && isBusinessView"
+              appHasFocus
+              [class.is-invalid-er]="
+                Address?.touched && ((Address?.invalid && registerDonorCardSubmitted) || Address?.errors?.hebrewFound)
+              "
+            >
+              <label class="form-label"> MAILING ADD&#8204;RESS: </label>
+              <input
+                type="text"
+                id="data_input_field_3"
+                placeholder="Enter location"
+                class="form-control"
+                formControlName="data_input_field_3"
+                appAddressAutocomplete
+                (onAddressChange)="onAddressChange($event)"
+              />
+
+              <ng-container
+                *ngIf="
+                  Address?.touched && ((Address?.invalid && registerDonorCardSubmitted) || Address?.errors?.hebrewFound)
+                "
+              >
+                <ng-container *ngIf="Address?.value && Address?.errors?.hebrewFound">
+                  <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+          <div class="col-sm-3 col-small">
+            <div
+              [class.disabled-field]="Apt?.disabled && isBusinessView"
+              appHasFocus
+              [class.is-invalid-er]="
+                Apt?.touched && (Apt?.invalid || Apt?.errors?.uspsError) && registerDonorCardSubmitted
+              "
+            >
+              <label class="form-label"> APT#: </label>
+              <input
+                type="text"
+                id="Apt"
+                placeholder=""
+                class="form-control"
+                formControlName="apt"
+                [attr.autocomplete]="isAutoSuggestion ? 'new-apt' : null"
+              />
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div
+              [class.disabled-field]="City?.disabled && isBusinessView"
+              appHasFocus
+              [class.is-invalid-er]="
+                City?.touched && ((City?.invalid && registerDonorCardSubmitted) || City?.errors?.hebrewFound)
+              "
+            >
+              <label class="form-label"> CITY: </label>
+              <input
+                type="text"
+                placeholder="Enter City"
+                class="form-control"
+                formControlName="city"
+                [attr.autocomplete]="isAutoSuggestion ? 'new-city' : null"
+              />
+
+              <ng-container
+                *ngIf="City?.touched && ((City?.invalid && registerDonorCardSubmitted) || City?.errors?.hebrewFound)"
+              >
+                <ng-container *ngIf="City?.value && City?.errors?.hebrewFound">
+                  <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div
+              [class.disabled-field]="State?.disabled && isBusinessView"
+              appHasFocus
+              [class.is-invalid-er]="State?.touched && State?.invalid && registerDonorCardSubmitted"
+            >
+              <label class="form-label"> STATE: </label>
+              <ng-select
+                bindLabel="item_id"
+                bindValue="item_id"
+                [addTag]="true"
+                [searchable]="true"
+                formControlName="state"
+                [searchFn]="customSearchFn"
+                [items]="commonDataService.stateList"
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  {{ item.item_id }}
+                </ng-template>
+              </ng-select>
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div
+              [class.disabled-field]="Zip?.disabled && isBusinessView"
+              appHasFocus
+              [class.is-invalid-er]="Zip?.touched && Zip?.invalid && registerDonorCardSubmitted"
+            >
+              <label class="form-label"> ZIP: </label>
+              <input
+                type="tel"
+                id="zipcode"
+                placeholder="Zip Code"
+                class="form-control"
+                formControlName="zip"
+                [validation]="zipCodeValidation"
+                [mask]="zipCodeMask"
+                [attr.autocomplete]="isAutoSuggestion ? 'new-zip' : null"
+              />
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div appHasFocus [class.is-invalid-er]="Phone?.touched && Phone?.invalid && registerDonorCardSubmitted">
+              <label class="form-label">
+                <ng-container *appBusinessAccessControl> OFFICE NUMBER: </ng-container>
+
+                <ng-container *appOrganizationAccessControl> OFFICE NUMBER: </ng-container>
+
+                <ng-container *appPersonalAccessControl> HOME NUMBER: </ng-container>
+
+                <ng-container *appBusinessDonorAccessControl> HOME NUMBER: </ng-container>
+              </label>
+              <app-phone-input [isSubmit]="false" formControlName="phone"></app-phone-input>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div
+              appHasFocus
+              [class.is-invalid-er]="Cellphone?.touched && Cellphone?.invalid && registerDonorCardSubmitted"
+            >
+              <label class="form-label" [class.lbl-contact-phone-field]="isBusinessView">
+                <ng-container *appBusinessAccessControl> CONTACT NUMBER: </ng-container>
+                <ng-container *appOrganizationAccessControl> CONTACT NUMBER: </ng-container>
+                <ng-container *appPersonalAccessControl> Cell PHONE: </ng-container>
+                <ng-container *appBusinessDonorAccessControl> Cell PHONE: </ng-container>
+              </label>
+              <app-phone-input [isSubmit]="false" formControlName="cellPhone"></app-phone-input>
+            </div>
+          </div>
+          <div class="col-sm-12">
+            <div
+              appHasFocus
+              [class.is-invalid-er]="
+                Email?.touched && ((Email?.invalid && registerDonorCardSubmitted) || Email?.errors?.hebrewFound)
+              "
+            >
+              <label class="form-label">EMAIL ADDRESS:</label>
+              <input
+                type="email"
+                placeholder="Enter Email Address"
+                class="form-control"
+                formControlName="email"
+                [attr.autocomplete]="isAutoSuggestion ? 'new-email' : null"
+              />
+
+              <ng-container
+                *ngIf="Email?.touched && ((Email?.invalid && registerDonorCardSubmitted) || Email?.errors?.hebrewFound)"
+              >
+                <ng-container *ngIf="Email?.value && Email?.errors?.hebrewFound">
+                  <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+          @if (BusinessName?.value != null) {
+          <div class="col-sm-6">
+            <div
+              appHasFocus
+              [class.is-invalid-er]="
+                BusinessName?.touched &&
+                ((BusinessName?.invalid && registerDonorCardSubmitted) || BusinessName?.errors?.hebrewFound)
+              "
+            >
+              <label class="form-label"> BUSINESS NAME: </label>
+
+              <input
+                type="text"
+                id="businessName"
+                class="form-control"
+                placeholder="Name of business"
+                formControlName="businessName"
+                [attr.autocomplete]="isAutoSuggestion ? 'new-firstName' : null"
+              />
+
+              <ng-container
+                *ngIf="
+                  FirstName?.touched &&
+                  ((FirstName?.invalid && registerDonorCardSubmitted) || FirstName?.errors?.hebrewFound)
+                "
+              >
+                <ng-container *ngIf="BusinessName?.value && BusinessName?.errors?.hebrewFound">
+                  <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+          } @if (TaxId?.value!=null) {
+          <div class="col-sm-4">
+            <div
+              appHasFocus
+              [class.is-invalid-er]="
+                TaxId?.touched && ((TaxId?.invalid && registerDonorCardSubmitted) || TaxId?.errors?.hebrewFound)
+              "
+            >
+              <label class="form-label"> TAX ID: </label>
+              <input
+                type="text"
+                id="taxId"
+                placeholder="Business tax ID"
+                class="form-control"
+                formControlName="taxId"
+                [attr.autocomplete]="isAutoSuggestion ? 'new-lastName' : null"
+              />
+
+              <ng-container
+                *ngIf="TaxId?.touched && ((TaxId?.invalid && registerDonorCardSubmitted) || TaxId?.errors?.hebrewFound)"
+              >
+                <ng-container *ngIf="TaxId?.value && TaxId?.errors?.hebrewFound">
+                  <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+                </ng-container>
+              </ng-container>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="action--buttons justify-content-end mt-5 mb-5 d-flex">
+      <button type="button" class="btn btn-cancel me-3">Cancel</button>
+      <button type="submit" class="btn btn-primary" [disabled]="isLoading">SAVE CHANGES</button>
+    </div>
+  </form>
+</div>
+
+<div *ngIf="isLoading" class="overlay">
+  <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+</div>
+
+<ng-template #profileImgField let-formGroup="formGroup">
+  <div
+    class="file-upload--row align-items-center d-flex flex-column flex-md-row justify-content-between w-100 gap-4"
+    [formGroup]="formGroup"
+  >
+    <div class="profile--upload d-flex flex-column flex-md-row align-items-center">
+      <div class="profile--pictue mb-3 mb-md-0 me-md-3">
+        <ng-container *ngIf="imageUrl">
+          <img [src]="imageUrl" alt="" class="rounded-circle" width="50" />
+        </ng-container>
+        <ng-container *ngIf="!imageUrl">
+          <img [src]="profileIcon" alt="" />
+        </ng-container>
+      </div>
+    </div>
+    <div class="upload--actionst d-flex gap-2">
+      <div class="btn btn-secondary" (click)="removeImage()">Remove Image</div>
+      <div class="upload-image-profile">
+        <label for="input-file-profile">Upload image</label>
+        <input id="input-file-profile" type="file" class="btn btn-primary upload-btn" (change)="onFileChange($event)" />
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #firstNameAndLastNameFieldRow let-formGroup="formGroup">
+  <div class="form-profile row gx-3 gy-4" [formGroup]="formGroup">
+    <div class="col-sm-6">
+      <div
+        appHasFocus
+        [class.is-invalid-er]="
+          FirstName?.touched && ((FirstName?.invalid && registerDonorCardSubmitted) || FirstName?.errors?.hebrewFound)
+        "
+      >
+        <label class="form-label"> FI&#8204;RST NA&#8204;ME: </label>
+        <input
+          type="text"
+          id="data_input_field_1"
+          class="form-control"
+          placeholder="Enter First Name"
+          formControlName="data_input_field_1"
+          [attr.autocomplete]="isAutoSuggestion ? 'new-firstName' : null"
+        />
+
+        <ng-container
+          *ngIf="
+            FirstName?.touched && ((FirstName?.invalid && registerDonorCardSubmitted) || FirstName?.errors?.hebrewFound)
+          "
+        >
+          <ng-container *ngIf="FirstName?.value && FirstName?.errors?.hebrewFound">
+            <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <div
+        appHasFocus
+        [class.is-invalid-er]="
+          LastName?.touched && ((LastName?.invalid && registerDonorCardSubmitted) || LastName?.errors?.hebrewFound)
+        "
+      >
+        <label class="form-label"> LA&#8204;ST NA&#8204;ME: </label>
+        <input
+          type="text"
+          id="data_input_field_2"
+          placeholder="Enter Last Name"
+          class="form-control"
+          formControlName="data_input_field_2"
+          [attr.autocomplete]="isAutoSuggestion ? 'new-lastName' : null"
+        />
+
+        <ng-container
+          *ngIf="
+            LastName?.touched && ((LastName?.invalid && registerDonorCardSubmitted) || LastName?.errors?.hebrewFound)
+          "
+        >
+          <ng-container *ngIf="LastName?.value && LastName?.errors?.hebrewFound">
+            <ng-template [ngTemplateOutlet]="noHebrewMessage"></ng-template>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #noHebrewMessage>
+  <div class="text-danger error-container">
+    <div class="val-error">Need to be English characters</div>
+  </div>
+</ng-template>
